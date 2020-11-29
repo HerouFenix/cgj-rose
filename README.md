@@ -29,4 +29,4 @@ If you\'re getting a "This application has failed to start because glew32.dll wa
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/heroufenix/cgj-utils/blob/master/LICENSE) file for more information
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/heroufenix/cgj-rose/blob/master/LICENSE) file for more information
