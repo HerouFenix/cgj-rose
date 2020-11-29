@@ -19,17 +19,13 @@ If you\'re getting a "This application has failed to start because glew32.dll wa
 -	Add the **glew32.dll** (that comes included in the glew > bin folder) to the project\'s root directory
 -	Add the **glew32.dll** to your **x64 > Debug** directory
 
-## Structure
-There are several projects associated with the main solution. Each of these projects corresponds to a specific Assignment and are named as such (AssignmentOne, ...) with exception of the CGJ-Engine project which represents the final project and includes classes developed within the other projects. This was done so that each assignment could have its own _main_ in order to test the specific components developed for that assignment. We have:
-- **AssignmentOne** - Contains the Vector classes and a main to test their behaviours.
-- **CGJ-Engine** - The main project which incorporates components of all other assignments
-
-To choose between which project within the sollution to run simply right click the project and click `Set as startup project`. You can then run the project as usual.
 
 ## Authors
 
 -   **Diogo Silva** - [HerouFenix](https://github.com/HerouFenix)
 -   **Daniel Gonçalves** - [4nd3l1](https://github.com/4nd3l1)
+-   **Henrique Gaspar** - [4nd3l1](https://github.com/4nd3l1)
+-   **Guilherme Menezes** - [4nd3l1](https://github.com/4nd3l1)
 
 ## License
 
