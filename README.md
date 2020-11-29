@@ -25,7 +25,7 @@ If you\'re getting a "This application has failed to start because glew32.dll wa
 -   **Diogo Silva** - [HerouFenix](https://github.com/HerouFenix)
 -   **Daniel Gonçalves** - [4nd3l1](https://github.com/4nd3l1)
 -   **Henrique Gaspar** - [HenriqueMetas](https://github.com/HenriqueMetas)
--   **Guilherme Menezes** - [4nd3l1](https://github.com/4nd3l1)
+-   **Guilherme Menezes** - [GuilhermeMenezes](https://github.com/GuilhermeMenezes)
 
 ## License
 
