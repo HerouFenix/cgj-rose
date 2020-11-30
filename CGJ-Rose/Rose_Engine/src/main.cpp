@@ -13,12 +13,9 @@
 #include "../headers/camera/Camera.h"
 #include "../headers/camera/ArcBallCamera.h"
 
-#include "../headers/scene/SceneManager.h"
 #include "../headers/drawing/Shader.h"
 #include "../headers/drawing/Mesh.h"
 
-
-#include "../headers/shapes/Tetromino.h"
 #include "../headers/drawing/Renderer.h"
 
 #include "../headers/scene/SceneGraph.h"
@@ -33,12 +30,12 @@
 #define TEXCOORDS 1
 #define NORMALS 2
 
-GLuint VaoId, ProgramId;
+GLuint ProgramId;
 std::vector <Vertex> Vertices;
 std::vector <Texcoord> Texcoords;
 std::vector <Normal> Normals;
 
-Mesh mesh;
+Mesh meshes[4];
 
 int window_width;
 int window_height;
@@ -47,7 +44,6 @@ float xOffset, yOffset;
 
 const float Threshold = (float)1.0e-5;
 
-SceneManager sceneManager;
 Scene scene;
 
 
@@ -127,20 +123,20 @@ void moveCamera() {
 
 void moveFloor() {
 	if (moveForward) {
-		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, -0.05));
-	}
-	if (moveBackward) {
 		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, 0.05));
 	}
+	if (moveBackward) {
+		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, -0.05));
+	}
 	if (moveLeft) {
-		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(-0.05, 0, 0));
+		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0.05, 0, 0));
 	}
 	if (moveRight) {
-		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0.05, 0, 0));
+		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(-0.05, 0, 0));
 	}
 }
 
-void drawScene_Tetramino()
+void drawScene()
 {
 	bool cameraMoved = (mouseMoved || projChanged || cameraReset || forwardKeyPressed || backwardKeyPressed);
 
@@ -152,15 +148,10 @@ void drawScene_Tetramino()
 		moveFloor();
 	}
 
-	glBindVertexArray(VaoId);
 	shader.Bind();
-
 	shader.SetUniform1i("isUniformColour", 1);
-
 	scene.DrawSceneGraphs(ortho);
-
 	shader.UnBind();
-	glBindVertexArray(0);
 }
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
@@ -177,13 +168,17 @@ void glfw_error_callback(int error, const char* description)
 
 void destroyBufferObjects()
 {
-	glBindVertexArray(VaoId);
-	glDisableVertexAttribArray(VERTICES);
-	glDisableVertexAttribArray(TEXCOORDS);
-	glDisableVertexAttribArray(NORMALS);
-	glDeleteVertexArrays(1, &VaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	for (Mesh m: meshes)
+	{
+		glBindVertexArray(m.VaoID);
+		glDisableVertexAttribArray(VERTICES);
+		glDisableVertexAttribArray(TEXCOORDS);
+		glDisableVertexAttribArray(NORMALS);
+		glDeleteVertexArrays(1, &(m.VaoID));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	
 }
 
 void window_close_callback(GLFWwindow* win)
@@ -382,11 +377,12 @@ void setupOpenGL(int winx, int winy)
 }
 
 void setupShaderProgram() {
-	shader.SetupShader(mesh.getTexcoordsLoaded(), mesh.getNormalsLoaded());
+	shader.SetupShader();
 	shader.SetUniformBlock("SharedMatrices", UBO_BP);
 }
 
-void setupBufferObjects() {
+void setupBufferObjects(GLuint& VaoId, Mesh mesh) {
+
 	GLuint VboVertices, VboTexcoords, VboNormals;
 
 	glGenVertexArrays(1, &VaoId);
@@ -394,7 +390,7 @@ void setupBufferObjects() {
 	{
 		glGenBuffers(1, &VboVertices);
 		glBindBuffer(GL_ARRAY_BUFFER, VboVertices);
-		glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(Vertex), &Vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, mesh.getVertices().size() * sizeof(Vertex), &mesh.getVertices()[0], GL_STATIC_DRAW);
 		glEnableVertexAttribArray(VERTICES);
 		glVertexAttribPointer(VERTICES, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
@@ -402,7 +398,7 @@ void setupBufferObjects() {
 		{
 			glGenBuffers(1, &VboTexcoords);
 			glBindBuffer(GL_ARRAY_BUFFER, VboTexcoords);
-			glBufferData(GL_ARRAY_BUFFER, Texcoords.size() * sizeof(Texcoord), &Texcoords[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, mesh.getTexCoords().size() * sizeof(Texcoord), &mesh.getTexCoords()[0], GL_STATIC_DRAW);
 			glEnableVertexAttribArray(TEXCOORDS);
 			glVertexAttribPointer(TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(Texcoord), 0);
 		}
@@ -410,7 +406,7 @@ void setupBufferObjects() {
 		{
 			glGenBuffers(1, &VboNormals);
 			glBindBuffer(GL_ARRAY_BUFFER, VboNormals);
-			glBufferData(GL_ARRAY_BUFFER, Normals.size() * sizeof(Normal), &Normals[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, mesh.getNormals().size() * sizeof(Normal), &mesh.getNormals()[0], GL_STATIC_DRAW);
 			glEnableVertexAttribArray(NORMALS);
 			glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, sizeof(Normal), 0);
 		}
@@ -425,10 +421,10 @@ void setupBufferObjects() {
 
 void setupCamera() {
 	// ARC BALL CAMERA SETUP //
-	ArcBallCamera c(5);
+	ArcBallCamera c(10);
 
-	c.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
-	c.setPrespProjectionMatrix(50, ((GLfloat)window_width / (GLfloat)window_height), 1.0f, 25.0f);
+	c.setOrthoProjectionMatrix(-2.0f, 2.0f, -2.0f, 2.0f, 0.0f, 50.0f);
+	c.setPrespProjectionMatrix(50, ((GLfloat)window_width / (GLfloat)window_height), 0.0f, 50.0f);
 
 	//Set initial cursor position to be the middle of the screen
 	cursorX = (float)window_width / 2;
@@ -442,7 +438,7 @@ void setupCamera() {
 }
 
 void setupScene() {
-	scene.SetupTetrominoSceneGraph(scene.GetSceneGraphs()[0], &mesh, &shader);
+	scene.SetupSceneGraph(scene.GetSceneGraphs()[0], meshes, &shader);
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -457,12 +453,23 @@ GLFWwindow* setup(int major, int minor,
 	setupErrorCallback();
 #endif
 
-	mesh.CreateMesh("resources/models/cube.obj");
-	Vertices = mesh.getVertices();
-	Normals = mesh.getNormals();
-	Texcoords = mesh.getTexCoords();
+	Mesh rose, stem, dome, base, cube;
 
-	setupBufferObjects();
+	rose.CreateMesh("resources/models/rose.obj");
+	stem.CreateMesh("resources/models/stem.obj");
+	dome.CreateMesh("resources/models/dome.obj");
+	base.CreateMesh("resources/models/base.obj");
+
+	setupBufferObjects(rose.VaoID, rose);
+	setupBufferObjects(stem.VaoID, stem);
+	setupBufferObjects(dome.VaoID, dome);
+	setupBufferObjects(base.VaoID, base);
+
+	meshes[0] = rose;
+	meshes[1] = stem;
+	meshes[2] = dome;
+	meshes[3] = base;
+
 	setupShaderProgram();
 	setupCamera();
 	setupScene();
@@ -491,7 +498,7 @@ void run(GLFWwindow* win)
 		}
 
 
-		drawScene_Tetramino();
+		drawScene();
 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
@@ -510,12 +517,11 @@ int main(int argc, char* argv[])
 {
 	// DRAW SCENE //
 	scene.CreateSceneGraph();
-
 	int gl_major = 4, gl_minor = 3;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		920, 920, "Tetromino 3D", is_fullscreen, is_vsync);
+		920, 920, "The Enchanted Rose", is_fullscreen, is_vsync);
 	run(win);
 
 	exit(EXIT_SUCCESS);

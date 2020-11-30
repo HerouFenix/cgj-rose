@@ -15,17 +15,17 @@ Shader::~Shader()
 	GLCall(glDeleteProgram(m_RendererID));
 }
 
-void Shader::SetupShader(bool TexcoordsLoaded, bool NormalsLoaded)
+void Shader::SetupShader()
 {
 	ShaderProgramSource source = ParseShader(m_path);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource, TexcoordsLoaded, NormalsLoaded);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
 void Shader::SetupShader(const std::string& path, bool TexcoordsLoaded, bool NormalsLoaded)
 {
 	m_path = path;
 	ShaderProgramSource source = ParseShader(m_path);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource, TexcoordsLoaded, NormalsLoaded);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& path)
@@ -87,7 +87,7 @@ GLuint Shader::CompileShader(GLuint type, const std::string& source)
 	return id;
 }
 
-GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, bool TexcoordsLoaded, bool NormalsLoaded)
+GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
 	GLuint program = glCreateProgram();
 	GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
@@ -96,10 +96,10 @@ GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& 
 	glAttachShader(program, fs);
 
 	glBindAttribLocation(program, VERTICES, "inPosition");
-	if (TexcoordsLoaded)
-		glBindAttribLocation(program, TEXCOORDS, "inTexcoord");
-	if (NormalsLoaded)
-		glBindAttribLocation(program, NORMALS, "inNormal");
+	
+	glBindAttribLocation(program, TEXCOORDS, "inTexcoord");
+	
+	glBindAttribLocation(program, NORMALS, "inNormal");
 
 	glLinkProgram(program);
 	glValidateProgram(program);

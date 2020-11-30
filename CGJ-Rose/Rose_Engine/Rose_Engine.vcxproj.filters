@@ -34,46 +34,13 @@
     <ClCompile Include="src\utils\scene\SceneGraph.cpp">
       <Filter>Source\Utils\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\scene\SceneManager.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\utils\scene\SceneNode.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\scene\SceneNodeTetromino.cpp">
       <Filter>Source\Utils\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\drawing\Mesh.cpp">
       <Filter>Source\Utils\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\drawing\Obj_Loader.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_DEBUG.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_I.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_L.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_RL.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_RS.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_S.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_SQ.cpp">
-      <Filter>Source\Utils\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\shapes\Tetromino_T.cpp">
       <Filter>Source\Utils\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\drawing\VertexBufferLayout.cpp">
@@ -163,9 +130,6 @@
       <Filter>Header\Scene</Filter>
     </ClInclude>
     <ClInclude Include="headers\scene\SceneGraph.h">
-      <Filter>Header\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\scene\SceneManager.h">
       <Filter>Header\Scene</Filter>
     </ClInclude>
     <ClInclude Include="headers\scene\SceneNode.h">

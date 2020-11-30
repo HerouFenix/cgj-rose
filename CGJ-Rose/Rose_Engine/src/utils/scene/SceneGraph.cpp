@@ -19,9 +19,9 @@ SceneNode* SceneGraph::GetRoot()
 	return root;
 }
 
-SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, float* c, Vector3 sc)
+SceneNode* SceneGraph::AddNode()
 {
-	SceneNode* newNode = new SceneNode(m, s, c, sc);
+	SceneNode* newNode = new SceneNode();
 	if (root == NULL) {
 		root = newNode;
 	}
@@ -32,30 +32,9 @@ SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, float* c, Vector3 sc)
 	return newNode;
 }
 
-SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, SceneNode* parent, float* c, Vector3 sc)
+SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, SceneNode* parent, Vector3 sc)
 {
-	SceneNode* newNode = new SceneNode(m, s, c, sc);
-	parent->AddChildNode(newNode);
-
-	return newNode;
-}
-
-SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, Tetromino t, Vector3 sc)
-{
-	SceneNode* newNode = new SceneNodeTetromino(m, s, t, sc);
-	if (root == NULL) {
-		root = newNode;
-	}
-	else {
-		root->AddChildNode(newNode);
-	}
-
-	return newNode;
-}
-
-SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, SceneNode* parent, Tetromino t, Vector3 sc)
-{
-	SceneNode* newNode = new SceneNodeTetromino(m, s, t, sc);
+	SceneNode* newNode = new SceneNode(m, s, parent, sc);
 	parent->AddChildNode(newNode);
 
 	return newNode;

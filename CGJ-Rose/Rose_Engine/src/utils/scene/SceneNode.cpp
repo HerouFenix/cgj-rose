@@ -1,32 +1,22 @@
 #include "../../headers/scene/SceneNode.h"
 
 
-SceneNode::SceneNode(Mesh* m, Shader* s, float* c, Vector3 sc) {
+SceneNode::SceneNode(Mesh* m, Shader* s, SceneNode* parent_node, Vector3 sc) {
 	mesh = m;
-	if (c == NULL) {
-		float r = (float)(rand() % 256) / 255;
-		float g = (float)(rand() % 256) / 255;
-		float b = (float)(rand() % 256) / 255;
-
-		colour[0] = r;
-		colour[1] = g;
-		colour[2] = b;
-		colour[3] = 1.0f;
-	}
-	else {
-		colour[0] = c[0];
-		colour[1] = c[1];
-		colour[2] = c[2];
-		colour[3] = c[3];
-	}
-
-	parent = NULL;
+	parent = parent_node;
 	shader = s;
 	scale = sc;
 
 	localTransform = Matrix4::identity();
 	worldTransform = localTransform;
 }
+
+SceneNode::SceneNode() {
+	scale = Vector3(1,1,1);
+	localTransform = Matrix4::identity();
+	worldTransform = localTransform;
+}
+
 
 SceneNode::~SceneNode()
 {
@@ -160,25 +150,25 @@ void SceneNode::Update()
 
 void SceneNode::Draw()
 {
-	Shader* sh = GetShader();
-	Mesh* me = GetMesh();
+	if (mesh != NULL) {
+		glBindVertexArray(mesh->VaoID);
+		if (shader != NULL && mesh != NULL) {
+			shader->Bind();
 
-	if (sh != NULL && me != NULL) {
-		sh->Bind();
+			shader->SetUniform4fvec("uniformColour", colour);
+			shader->UnBind();
 
-		sh->SetUniform4fvec("uniformColour", colour);
-		sh->UnBind();
+			Matrix4 scaleM = Matrix4::scaling(scale.getX(), scale.getY(), scale.getZ());
 
+			float model[16];
+			Matrix4 modelM = worldTransform * scaleM;
+			modelM.getRowMajor(model);
+			Renderer::DrawObject((GLsizei)mesh->getVertices().size(), (*shader), model);
+		}
 
-		Matrix4 scaleM = Matrix4::scaling(scale.getX(), scale.getY(), scale.getZ());
-
-		float model[16];
-		Matrix4 modelM = worldTransform * scaleM;
-		modelM.getRowMajor(model);
-		Renderer::DrawObject((GLsizei)me->getVertices().size(), (*sh), model);
+		glBindVertexArray(0);
 	}
-
-
+	
 	// Cascade Draw children
 	for (SceneNode* child : children) {
 		child->Draw();

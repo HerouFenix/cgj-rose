@@ -16,11 +16,8 @@ public:
 
 	SceneNode* GetRoot();
 
-	SceneNode* AddNode(Mesh* m, Shader* s, float* c, Vector3 sc = Vector3(1,1,1));
-	SceneNode* AddNode(Mesh* m, Shader* s, SceneNode* parent, float* c, Vector3 sc = Vector3(1, 1, 1));
-
-	SceneNode* AddNode(Mesh* m, Shader* s, Tetromino t, Vector3 sc = Vector3(1, 1, 1));
-	SceneNode* AddNode(Mesh* m, Shader* s, SceneNode* parent, Tetromino t, Vector3 sc = Vector3(1, 1, 1));
+	SceneNode* AddNode();
+	SceneNode* AddNode(Mesh* m, Shader* s, SceneNode* parent, Vector3 sc = Vector3(1, 1, 1));
 
 	void DrawSceneGraph(bool ortho = false);
 };

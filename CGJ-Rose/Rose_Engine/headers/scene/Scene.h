@@ -6,7 +6,6 @@
 #include <vector> 
 
 #include "SceneGraph.h"
-#include "../shapes/Tetromino.h"
 
 #include <cstdlib>  
 #include <ctime> 
@@ -21,7 +20,7 @@ public:
 
 	std::vector<SceneGraph*> GetSceneGraphs();
 
-	void SetupTetrominoSceneGraph(SceneGraph* sceneGraph, Mesh* m, Shader* s);
+	void SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[], Shader* s);
 
 	void ClearScene();
 	void DrawSceneGraphs(bool ortho);

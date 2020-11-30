@@ -16,13 +16,14 @@ class Mesh
 
 public:
 	Mesh();
-
+	GLuint VaoID;
 	const void CreateMesh(std::string filename);
 	std::vector <Vertex> getVertices();
 	std::vector <Normal> getNormals();
 	std::vector <Texcoord> getTexCoords();
 	bool getNormalsLoaded();
 	bool getTexcoordsLoaded();
+	
 private:
 	std::vector <Vertex> Vertices, vertexData;
 	std::vector <Texcoord> Texcoords, texcoordData;

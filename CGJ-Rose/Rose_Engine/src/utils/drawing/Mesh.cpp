@@ -5,6 +5,7 @@ Mesh::Mesh()
 {
 	NormalsLoaded = false;
 	TexcoordsLoaded = false;
+	VaoID = -1;
 }
 
 const void Mesh::CreateMesh(std::string filename)

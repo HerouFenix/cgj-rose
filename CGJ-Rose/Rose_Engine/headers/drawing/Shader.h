@@ -23,7 +23,7 @@ public:
 	Shader(const std::string& path);
 	~Shader();
 
-	void SetupShader(bool TexcoordsLoaded=false, bool NormalsLoaded=false);
+	void SetupShader();
 	void SetupShader(const std::string& path, bool TexcoordsLoaded = false, bool NormalsLoaded = false);
 
 	void Bind() const;
@@ -38,7 +38,7 @@ public:
 
 private:
 	ShaderProgramSource ParseShader(const std::string& path);
-	GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader, bool TexcoordsLoaded, bool NormalsLoaded);
+	GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 	GLuint CompileShader(GLuint type, const std::string& source);
 	int GetUniformLocation(const std::string& name);
 	GLuint GetUniformBlockIndex(const std::string& name);

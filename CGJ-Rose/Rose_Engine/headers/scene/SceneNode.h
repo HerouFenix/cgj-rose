@@ -5,7 +5,6 @@
 #include "../matrices/Matrix4.h"
 #include "../drawing/Mesh.h"
 #include "../drawing/Shader.h"
-#include "../shapes/Tetromino.h"
 #include "../drawing/Renderer.h"
 #include "../quaternions/Quaternion.h"
 
@@ -20,7 +19,8 @@ class SceneNode {
 public:
 	Vector3 pos;
 	Quaternion quat;
-	SceneNode(Mesh* m = NULL, Shader* s = NULL, float* c = NULL, Vector3 sc = Vector3(1,1,1));
+	SceneNode(Mesh* m, Shader* s, SceneNode* parent = NULL, Vector3 sc = Vector3(1,1,1));
+	SceneNode();
 	~SceneNode();
 
 	void ApplyLocalTransform(Matrix4 transform);
@@ -65,17 +65,4 @@ protected:
 	float colour[4];
 	std::vector<SceneNode*> children;
 	Shader* shader;
-};
-
-
-class SceneNodeTetromino : public SceneNode {
-public:
-	Tetromino getTetromino();
-	SceneNodeTetromino(Mesh* m = NULL, Shader* s = NULL, Tetromino t = NULL, Vector3 sc = Vector3(1, 1, 1));
-	~SceneNodeTetromino();
-
-	void Draw() override;
-
-protected:
-	Tetromino tetromino;
 };
