@@ -206,9 +206,4 @@
       <UniqueIdentifier>{9d178857-a125-4e45-beb5-ceabf94c6292}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="resources\models\cube.obj">
-      <Filter>Resources\Models</Filter>
-    </Object>
-  </ItemGroup>
 </Project>

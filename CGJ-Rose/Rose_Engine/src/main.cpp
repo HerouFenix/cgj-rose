@@ -35,7 +35,7 @@ std::vector <Vertex> Vertices;
 std::vector <Texcoord> Texcoords;
 std::vector <Normal> Normals;
 
-Mesh meshes[4];
+Mesh meshes[5];
 
 int window_width;
 int window_height;
@@ -97,7 +97,7 @@ void moveCamera() {
 		if (!quaternionRotation) {
 			//std::cout << "EULER ROTATION \n";
 			if (mouseMoved) {
-				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundHorizontal(xOffset);
+				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundHorizontal(-xOffset);
 				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundVertical(yOffset);
 				mouseMoved = false;
 			}
@@ -107,7 +107,7 @@ void moveCamera() {
 			//std::cout << "QUATERNION ROTATION \n";
 
 			if (mouseMoved) {
-				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionHorizontal(xOffset);
+				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionHorizontal(-xOffset);
 				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionVertical(yOffset);
 				mouseMoved = false;
 			}
@@ -453,22 +453,25 @@ GLFWwindow* setup(int major, int minor,
 	setupErrorCallback();
 #endif
 
-	Mesh rose, stem, dome, base, cube;
+	Mesh rose, stem, dome, base, handle;
 
 	rose.CreateMesh("resources/models/rose.obj");
 	stem.CreateMesh("resources/models/stem.obj");
 	dome.CreateMesh("resources/models/dome.obj");
 	base.CreateMesh("resources/models/base.obj");
+	handle.CreateMesh("resources/models/handle.obj");
 
 	setupBufferObjects(rose.VaoID, rose);
 	setupBufferObjects(stem.VaoID, stem);
 	setupBufferObjects(dome.VaoID, dome);
 	setupBufferObjects(base.VaoID, base);
+	setupBufferObjects(handle.VaoID, handle);
 
 	meshes[0] = rose;
 	meshes[1] = stem;
 	meshes[2] = dome;
 	meshes[3] = base;
+	meshes[4] = handle;
 
 	setupShaderProgram();
 	setupCamera();

@@ -55,6 +55,11 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[], Shader* s)
 	base->ApplyLocalTransform(Matrix4::rotationX(90, false));
 	base->ApplyLocalTransform(Matrix4::translation(0.0f, -4.0f, 0.0f));
 	base->SetColour(new float[] {0.7f, 0.3f, 0.0f});
+
+	// Handle
+	SceneNode* handle = sceneGraph->AddNode(&meshes[4], s, root);
+	handle->ApplyLocalTransform(Matrix4::translation(0.0f, 15.5f, 0.0f));
+	handle->SetColour(new float[] {0.7f, 0.3f, 0.0f});
 }
 
 void Scene::ClearScene()
