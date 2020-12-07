@@ -402,3 +402,6 @@ Debug.
 
 # Include the glew DLL
 !glew32.dll
+
+# Include the resources folder
+!*/resources/models/**
