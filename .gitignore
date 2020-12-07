@@ -405,3 +405,9 @@ Debug.
 
 # Include the resources folder
 !*/resources/models/**
+
+# Include the resources folder
+!*/Rose_Engine/resources/models/**
+
+# Include the resources folder
+!**/resources/models/**
