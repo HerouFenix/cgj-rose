@@ -34,7 +34,6 @@ in vec4 ex_Color;
 out vec4 out_Color;
 
 uniform int isBack;
-uniform int isUniformColour;
 uniform vec4 uniformColour;
 
 void main(void)

@@ -20,7 +20,7 @@ public:
 
 	std::vector<SceneGraph*> GetSceneGraphs();
 
-	void SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[], Shader* s);
+	void SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[]);
 
 	void ClearScene();
 	void DrawSceneGraphs(bool ortho);

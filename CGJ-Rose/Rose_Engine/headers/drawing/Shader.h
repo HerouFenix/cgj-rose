@@ -20,6 +20,7 @@ public:
 	std::string m_path;
 	std::unordered_map<std::string, int> m_UniformLocationCache;
 
+	Shader();
 	Shader(const std::string& path);
 	~Shader();
 
@@ -28,6 +29,8 @@ public:
 
 	void Bind() const;
 	void UnBind() const;
+
+	void SetUniform1f(const std::string& name, float value);
 
 	// Set uniforms
 	void SetUniform4fv(const std::string& name, float matrix[]);

@@ -24,6 +24,7 @@
 #include <ctime>
 #include <ratio>
 #include <chrono>
+#include "../headers/drawing/Basic_Material.h"
 
 
 #define VERTICES 0
@@ -45,9 +46,6 @@ float xOffset, yOffset;
 const float Threshold = (float)1.0e-5;
 
 Scene scene;
-
-
-Shader shader("resources/shaders/Basic3D.shader");
 
 const GLuint UBO_BP = 0;
 
@@ -148,10 +146,7 @@ void drawScene()
 		moveFloor();
 	}
 
-	shader.Bind();
-	shader.SetUniform1i("isUniformColour", 1);
 	scene.DrawSceneGraphs(ortho);
-	shader.UnBind();
 }
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
@@ -183,8 +178,9 @@ void destroyBufferObjects()
 
 void window_close_callback(GLFWwindow* win)
 {
-	shader.~Shader();
-	destroyBufferObjects();
+
+	//shader.~Shader();
+	//destroyBufferObjects();
 	std::cout << "Bye bye!" << std::endl;
 }
 
@@ -375,50 +371,12 @@ void setupOpenGL(int winx, int winy)
 	glFrontFace(GL_CCW);
 	glViewport(0, 0, winx, winy);
 }
-
+/*
 void setupShaderProgram() {
 	shader.SetupShader();
 	shader.SetUniformBlock("SharedMatrices", UBO_BP);
 }
-
-void setupBufferObjects(GLuint& VaoId, Mesh mesh) {
-
-	GLuint VboVertices, VboTexcoords, VboNormals;
-
-	glGenVertexArrays(1, &VaoId);
-	glBindVertexArray(VaoId);
-	{
-		glGenBuffers(1, &VboVertices);
-		glBindBuffer(GL_ARRAY_BUFFER, VboVertices);
-		glBufferData(GL_ARRAY_BUFFER, mesh.getVertices().size() * sizeof(Vertex), &mesh.getVertices()[0], GL_STATIC_DRAW);
-		glEnableVertexAttribArray(VERTICES);
-		glVertexAttribPointer(VERTICES, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
-		if (mesh.getTexcoordsLoaded())
-		{
-			glGenBuffers(1, &VboTexcoords);
-			glBindBuffer(GL_ARRAY_BUFFER, VboTexcoords);
-			glBufferData(GL_ARRAY_BUFFER, mesh.getTexCoords().size() * sizeof(Texcoord), &mesh.getTexCoords()[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(TEXCOORDS);
-			glVertexAttribPointer(TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(Texcoord), 0);
-		}
-		if (mesh.getNormalsLoaded())
-		{
-			glGenBuffers(1, &VboNormals);
-			glBindBuffer(GL_ARRAY_BUFFER, VboNormals);
-			glBufferData(GL_ARRAY_BUFFER, mesh.getNormals().size() * sizeof(Normal), &mesh.getNormals()[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(NORMALS);
-			glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, sizeof(Normal), 0);
-		}
-
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &VboVertices);
-	glDeleteBuffers(1, &VboTexcoords);
-	glDeleteBuffers(1, &VboNormals);
-}
-
+*/
 void setupCamera() {
 	// ARC BALL CAMERA SETUP //
 	ArcBallCamera c(10);
@@ -438,7 +396,7 @@ void setupCamera() {
 }
 
 void setupScene() {
-	scene.SetupSceneGraph(scene.GetSceneGraphs()[0], meshes, &shader);
+	scene.SetupSceneGraph(scene.GetSceneGraphs()[0], meshes);
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -452,20 +410,40 @@ GLFWwindow* setup(int major, int minor,
 #ifdef ERROR_CALLBACK
 	setupErrorCallback();
 #endif
+	
+	Shader basic("resources/shaders/Basic3D.shader");
+
+
+	// SET MATERIALS ////////////////////////////////////////////
+
+	Basic_Material* b1 = new Basic_Material(basic);
+	b1->setColour(Vector4(0.9f, 0.1f, 0.6f, 0.0f));
+
+	Basic_Material* b2 = new Basic_Material(basic);
+	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 0.0f));
+
+	Basic_Material* b3 = new Basic_Material(basic);
+	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 0.0f));
+
+	Basic_Material* b4 = new Basic_Material(basic);
+	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 0.0f));
+
+	Basic_Material* b5 = new Basic_Material(basic);
+	b5->setColour(Vector4(0.4f, 0.8f, 0.8f, 0.0f));
+
+	// SET MESHSES //////////////////////////////////////////////
 
 	Mesh rose, stem, dome, base, handle;
 
-	rose.CreateMesh("resources/models/rose.obj");
-	stem.CreateMesh("resources/models/stem.obj");
-	dome.CreateMesh("resources/models/dome.obj");
-	base.CreateMesh("resources/models/base.obj");
-	handle.CreateMesh("resources/models/handle.obj");
+	rose.CreateMesh("resources/models/rose.obj", (Material*)b1, UBO_BP);
 
-	setupBufferObjects(rose.VaoID, rose);
-	setupBufferObjects(stem.VaoID, stem);
-	setupBufferObjects(dome.VaoID, dome);
-	setupBufferObjects(base.VaoID, base);
-	setupBufferObjects(handle.VaoID, handle);
+	stem.CreateMesh("resources/models/stem.obj", (Material*)b2, UBO_BP);
+
+	base.CreateMesh("resources/models/base.obj", (Material*)b3, UBO_BP);
+
+	handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP);
+
+	dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
 
 	meshes[0] = rose;
 	meshes[1] = stem;
@@ -473,7 +451,6 @@ GLFWwindow* setup(int major, int minor,
 	meshes[3] = base;
 	meshes[4] = handle;
 
-	setupShaderProgram();
 	setupCamera();
 	setupScene();
 	return win;

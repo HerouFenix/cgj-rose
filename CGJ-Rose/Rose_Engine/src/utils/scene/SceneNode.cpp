@@ -1,10 +1,9 @@
 #include "../../headers/scene/SceneNode.h"
 
 
-SceneNode::SceneNode(Mesh* m, Shader* s, SceneNode* parent_node, Vector3 sc) {
+SceneNode::SceneNode(Mesh* m, SceneNode* parent_node, Vector3 sc) {
 	mesh = m;
 	parent = parent_node;
-	shader = s;
 	scale = sc;
 
 	localTransform = Matrix4::identity();
@@ -56,22 +55,6 @@ Matrix4 SceneNode::GetWorldTransform()
 	return worldTransform;
 }
 
-void SceneNode::GetColour(float* colours)
-{
-	colours[0] = colour[0];
-	colours[1] = colour[1];
-	colours[2] = colour[2];
-	colours[3] = colour[3];
-}
-
-void SceneNode::SetColour(float* colours)
-{
-	colour[0] = colours[0];
-	colour[1] = colours[1];
-	colour[2] = colours[2];
-	colour[3] = colours[3];
-}
-
 Mesh* SceneNode::GetMesh()
 {
 	if (mesh == NULL) {
@@ -99,25 +82,6 @@ Vector3 SceneNode::GetScale()
 void SceneNode::SetScale(Vector3 sc)
 {
 	scale = sc;
-}
-
-Shader* SceneNode::GetShader()
-{
-	if (shader == NULL) {
-		if (parent == NULL) {
-			return NULL;
-		}
-		else {
-			return parent->GetShader();
-		}
-	}
-
-	return shader;
-}
-
-void SceneNode::SetShader(Shader* s)
-{
-	shader = s;
 }
 
 void SceneNode::AddChildNode(SceneNode* s)
@@ -150,25 +114,14 @@ void SceneNode::Update()
 
 void SceneNode::Draw()
 {
+
 	if (mesh != NULL) {
-		glBindVertexArray(mesh->VaoID);
-		if (shader != NULL && mesh != NULL) {
-			shader->Bind();
-
-			shader->SetUniform4fvec("uniformColour", colour);
-			shader->UnBind();
-
 			Matrix4 scaleM = Matrix4::scaling(scale.getX(), scale.getY(), scale.getZ());
-
 			float model[16];
 			Matrix4 modelM = worldTransform * scaleM;
-			modelM.getRowMajor(model);
-			Renderer::DrawObject((GLsizei)mesh->getVertices().size(), (*shader), model);
-		}
-
-		glBindVertexArray(0);
-	}
-	
+			mesh->setWorldTransform(modelM);
+			mesh->Draw();
+	}	
 	// Cascade Draw children
 	for (SceneNode* child : children) {
 		child->Draw();

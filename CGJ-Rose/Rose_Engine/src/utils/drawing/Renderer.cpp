@@ -27,13 +27,7 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 
 void Renderer::DrawObject(GLsizei size, Shader& shader,float* model)
 {
-	shader.Bind();
-
-	shader.SetUniform4fv("ModelMatrix", model);
-
 	glDrawArrays(GL_TRIANGLES, 0, size);
-
-	glUseProgram(0);
 }
 
 void Renderer::clear()

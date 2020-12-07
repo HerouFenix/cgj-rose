@@ -32,9 +32,9 @@ SceneNode* SceneGraph::AddNode()
 	return newNode;
 }
 
-SceneNode* SceneGraph::AddNode(Mesh* m, Shader* s, SceneNode* parent, Vector3 sc)
+SceneNode* SceneGraph::AddNode(Mesh* m, SceneNode* parent, Vector3 sc)
 {
-	SceneNode* newNode = new SceneNode(m, s, parent, sc);
+	SceneNode* newNode = new SceneNode(m, parent, sc);
 	parent->AddChildNode(newNode);
 
 	return newNode;

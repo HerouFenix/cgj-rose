@@ -19,7 +19,7 @@ class SceneNode {
 public:
 	Vector3 pos;
 	Quaternion quat;
-	SceneNode(Mesh* m, Shader* s, SceneNode* parent = NULL, Vector3 sc = Vector3(1,1,1));
+	SceneNode(Mesh* m, SceneNode* parent = NULL, Vector3 sc = Vector3(1,1,1));
 	SceneNode();
 	~SceneNode();
 
@@ -34,9 +34,6 @@ public:
 
 	Matrix4 GetWorldTransform();
 
-	void GetColour(float* colours);
-	void SetColour(float* colours);
-
 	Mesh* GetMesh();
 	void SetMesh(Mesh* m);
 
@@ -44,9 +41,6 @@ public:
 
 	Vector3 GetScale();
 	void SetScale(Vector3 sc);
-
-	Shader* GetShader();
-	void SetShader(Shader* s);
 
 	void AddChildNode(SceneNode* s);
 
@@ -64,5 +58,4 @@ protected:
 	Vector3 scale;
 	float colour[4];
 	std::vector<SceneNode*> children;
-	Shader* shader;
 };

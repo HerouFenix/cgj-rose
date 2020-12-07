@@ -67,6 +67,8 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\drawing\Material.cpp" />
+    <ClCompile Include="src\utils\drawing\Basic_Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -138,6 +140,8 @@
     <ClInclude Include="headers\shapes\Tetromino.h">
       <Filter>Header\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="headers\drawing\Material.h" />
+    <ClInclude Include="headers\drawing\Basic_Material.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader">
