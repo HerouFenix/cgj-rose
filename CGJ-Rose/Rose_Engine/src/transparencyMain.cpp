@@ -1,4 +1,3 @@
-/*
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -169,7 +168,7 @@ void glfw_error_callback(int error, const char* description)
 
 void destroyBufferObjects()
 {
-	for (Mesh m: meshes)
+	for (Mesh m : meshes)
 	{
 		glBindVertexArray(m.VaoID);
 		glDisableVertexAttribArray(VERTICES);
@@ -179,7 +178,7 @@ void destroyBufferObjects()
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
-	
+
 }
 
 void window_close_callback(GLFWwindow* win)
@@ -367,6 +366,8 @@ void setupOpenGL(int winx, int winy)
 #endif
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 	glDepthRange(0.0, 1.0);
@@ -439,7 +440,7 @@ void setupCamera() {
 }
 
 void setupScene() {
-	scene.SetupSceneGraph(scene.GetSceneGraphs()[0], meshes, &shader);
+	scene.SetupSceneGraphTransparencies(scene.GetSceneGraphs()[0], meshes, &shader);
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -454,25 +455,20 @@ GLFWwindow* setup(int major, int minor,
 	setupErrorCallback();
 #endif
 
-	Mesh rose, stem, dome, base, handle;
+	Mesh rose, stem, dome, base, handle, cube;
 
 	rose.CreateMesh("resources/models/rose.obj");
 	stem.CreateMesh("resources/models/stem.obj");
-	dome.CreateMesh("resources/models/dome.obj");
+	dome.CreateMesh("resources/models/dome_centered.obj");
 	base.CreateMesh("resources/models/base.obj");
 	handle.CreateMesh("resources/models/handle.obj");
+	cube.CreateMesh("resources/models/cube.obj");
 
-	setupBufferObjects(rose.VaoID, rose);
-	setupBufferObjects(stem.VaoID, stem);
 	setupBufferObjects(dome.VaoID, dome);
-	setupBufferObjects(base.VaoID, base);
-	setupBufferObjects(handle.VaoID, handle);
+	setupBufferObjects(cube.VaoID, cube);
 
-	meshes[0] = rose;
-	meshes[1] = stem;
-	meshes[2] = dome;
-	meshes[3] = base;
-	meshes[4] = handle;
+	meshes[0] = dome;
+	meshes[1] = cube;
 
 	setupShaderProgram();
 	setupCamera();
@@ -532,4 +528,3 @@ int main(int argc, char* argv[])
 }
 
 /////////////////////////////////////////////////////////////////////////// END
-*/

@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\transparencyMain.cpp" />
     <ClCompile Include="src\utils\scene\Scene.cpp" />
     <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
     <ClCompile Include="src\main.cpp" />

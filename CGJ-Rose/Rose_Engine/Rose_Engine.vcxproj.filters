@@ -67,6 +67,7 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\transparencyMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">

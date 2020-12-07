@@ -36,31 +36,49 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[], Shader* s)
 	SceneNode* rose = sceneGraph->AddNode(&meshes[0], s, root);
 	rose->ApplyLocalTransform(Matrix4::rotationX(90, false));
 	rose->ApplyLocalTransform(Matrix4::translation(0.0f, 2.20f, 0.0f));
-	rose->SetColour(new float[] {0.7f, 0.0f, 1.0f});
+	rose->SetColour(new float[] {0.7f, 0.0f, 1.0f, 1.0f});
 
 	// Stem
 	SceneNode* stem = sceneGraph->AddNode(&meshes[1], s, root);
 	stem->ApplyLocalTransform(Matrix4::rotationX(90, false));
 	stem->ApplyLocalTransform(Matrix4::translation(0.3f, 0.2f, 0.0f));
-	stem->SetColour(new float[] {0.5f, 0.9f, 0.3f});
+	stem->SetColour(new float[] {0.5f, 0.9f, 0.3f, 1.0f});
 
 	// Dome
 	SceneNode* dome = sceneGraph->AddNode(&meshes[2], s, root);
 	dome->ApplyLocalTransform(Matrix4::rotationX(90, false));
 	dome->ApplyLocalTransform(Matrix4::translation(0.0f, 13.0f, 0.0f));
-	dome->SetColour(new float[] {0.6f, 1.0f, 0.9f});
+	dome->SetColour(new float[] {0.6f, 1.0f, 0.9f,1.0f});
 
 	// Base
 	SceneNode* base = sceneGraph->AddNode(&meshes[3], s, root);
 	base->ApplyLocalTransform(Matrix4::rotationX(90, false));
 	base->ApplyLocalTransform(Matrix4::translation(0.0f, -4.0f, 0.0f));
-	base->SetColour(new float[] {0.7f, 0.3f, 0.0f});
+	base->SetColour(new float[] {0.7f, 0.3f, 0.0f, 1.0f});
 
 	// Handle
 	SceneNode* handle = sceneGraph->AddNode(&meshes[4], s, root);
 	handle->ApplyLocalTransform(Matrix4::translation(0.0f, 15.5f, 0.0f));
-	handle->SetColour(new float[] {0.7f, 0.3f, 0.0f});
+	handle->SetColour(new float[] {0.7f, 0.3f, 0.0f, 1.0f});
 }
+
+void Scene::SetupSceneGraphTransparencies(SceneGraph* sceneGraph, Mesh meshes[], Shader* s)
+{
+	SceneNode* root = sceneGraph->AddNode();
+	root->ApplyLocalTransform(Matrix4::scaling(0.4f, 0.4f, 0.4f));
+	
+	// Cube
+	SceneNode* cube = sceneGraph->AddNode(&meshes[1], s, root);
+	cube->SetColour(new float[] {0.0f, 1.0f, 0.0f, 1.0f});
+
+	// Dome
+	SceneNode* dome = sceneGraph->AddNode(&meshes[0], s, root);
+	dome->ApplyLocalTransform(Matrix4::scaling(0.8f, 0.8f, 0.8f));
+	dome->ApplyLocalTransform(Matrix4::translation(0.0f, -2.5f, 0.0f));
+	dome->SetColour(new float[] {.77f, .89f, .89f, .3f});
+
+}
+
 
 void Scene::ClearScene()
 {

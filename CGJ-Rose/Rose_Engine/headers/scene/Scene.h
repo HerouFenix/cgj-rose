@@ -21,6 +21,7 @@ public:
 	std::vector<SceneGraph*> GetSceneGraphs();
 
 	void SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[], Shader* s);
+	void SetupSceneGraphTransparencies(SceneGraph* sceneGraph, Mesh meshes[], Shader* s);
 
 	void ClearScene();
 	void DrawSceneGraphs(bool ortho);
