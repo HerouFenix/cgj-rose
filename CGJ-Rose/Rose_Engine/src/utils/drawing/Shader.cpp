@@ -140,6 +140,11 @@ void Shader::SetUniform4fvec(const std::string& name, float vec[])
 	glUniform4fv(GetUniformLocation(name), 1, vec);
 }
 
+void Shader::SetUniform3fvec(const std::string& name, float vec[])
+{
+	glUniform3fv(GetUniformLocation(name), 1, vec);
+}
+
 void Shader::SetUniform1i(const std::string& name, int value)
 {
 	glUniform1i(GetUniformLocation(name), value);

@@ -12,9 +12,9 @@ public:
 	GLuint UBO_ID;
 	Shader shader;	
 
-	Vector3 ambient = Vector3(1.0f, 0.5f, 0.31f);
-	Vector3 diffuse = Vector3(1.0f, 0.5f, 0.31f);
-	Vector3 specular = Vector3(0.5f, 0.5f, 0.5f);
+	Vector3 ambient = Vector3();
+	Vector3 diffuse = Vector3();
+	Vector3 specular = Vector3();
 	float shininess = 32.0f;
 
 	Material();

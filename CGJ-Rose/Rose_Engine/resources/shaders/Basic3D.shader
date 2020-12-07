@@ -34,6 +34,12 @@ in vec4 ex_Color;
 out vec4 out_Color;
 
 uniform int isBack;
+
+uniform vec3 Ambient;
+uniform vec3 Diffuse;
+uniform vec3 Specular;
+uniform float Shininess;
+
 uniform vec4 uniformColour;
 
 void main(void)
