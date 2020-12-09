@@ -69,6 +69,7 @@
     </ClCompile>
     <ClCompile Include="src\utils\drawing\Material.cpp" />
     <ClCompile Include="src\utils\drawing\Basic_Material.cpp" />
+    <ClCompile Include="src\debug_Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">

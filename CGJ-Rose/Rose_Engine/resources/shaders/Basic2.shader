@@ -1,11 +1,15 @@
 #shader vertex
-#version 410 core
+#version 330 core
 
-in vec4 in_Position;
-in vec4 in_Color;
-out vec4 ex_Color;
+in vec3 inPosition;
+in vec2 inTexcoord;
+in vec3 inNormal;
 
-uniform mat4 Model;
+out vec3 exPosition;
+out vec2 exTexcoord;
+out vec3 exNormal;
+
+uniform mat4 ModelMatrix;
 
 uniform SharedMatrices
 {
@@ -15,31 +19,30 @@ uniform SharedMatrices
 
 void main(void)
 {
-	gl_Position = ProjectionMatrix * ViewMatrix * Model * in_Position;
-	ex_Color = in_Color;
+	exPosition = inPosition;
+	exTexcoord = inTexcoord;
+	exNormal = inNormal;
+
+	vec4 MCPosition = vec4(inPosition, 0.5);
+	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 }
 
 #shader fragment
-#version 410 core
+#version 330 core
 
 in vec4 ex_Color;
 out vec4 out_Color;
 
 uniform int isBack;
-uniform int isUniformColour;
+
+uniform vec3 Ambient;
+uniform vec3 Diffuse;
+uniform vec3 Specular;
+uniform float Shininess;
+
 uniform vec4 uniformColour;
 
 void main(void)
 {
-	if (isUniformColour == 1) {
-		out_Color = uniformColour;
-	}
-	else {
-		out_Color = ex_Color;
-	}
-
-	if (isBack != 0) {
-		out_Color = out_Color * 0.5f;
-	}
-
+	out_Color = uniformColour;
 }

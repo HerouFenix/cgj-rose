@@ -24,25 +24,22 @@ public:
 	Shader(const std::string& path);
 	~Shader();
 
-	void SetupShader();
+	void SetupShader(bool TexcoordsLoaded = false, bool NormalsLoaded = false);
 	void SetupShader(const std::string& path, bool TexcoordsLoaded = false, bool NormalsLoaded = false);
 
 	void Bind() const;
 	void UnBind() const;
 
-	void SetUniform1f(const std::string& name, float value);
-
 	// Set uniforms
 	void SetUniform4fv(const std::string& name, float matrix[]);
 	void SetUniform4fvec(const std::string& name, float vec[]);
-	void SetUniform3fvec(const std::string& name, float vec[]);
 	void SetUniform1i(const std::string& name, int value);
 	void SetUniformBlock(const std::string& name, GLuint UBO_BP);
 
 
 private:
 	ShaderProgramSource ParseShader(const std::string& path);
-	GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+	GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader, bool TexcoordsLoaded, bool NormalsLoaded);
 	GLuint CompileShader(GLuint type, const std::string& source);
 	int GetUniformLocation(const std::string& name);
 	GLuint GetUniformBlockIndex(const std::string& name);

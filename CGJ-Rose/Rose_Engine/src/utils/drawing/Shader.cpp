@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 
+
 Shader::Shader()
 {
 }
@@ -14,23 +15,22 @@ Shader::Shader(const std::string& path)
 {
 }
 
-
 Shader::~Shader()
 {
-	glDeleteProgram(m_RendererID);
+	GLCall(glDeleteProgram(m_RendererID));
 }
 
-void Shader::SetupShader()
+void Shader::SetupShader(bool TexcoordsLoaded, bool NormalsLoaded)
 {
 	ShaderProgramSource source = ParseShader(m_path);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource, TexcoordsLoaded, NormalsLoaded);
 }
 
 void Shader::SetupShader(const std::string& path, bool TexcoordsLoaded, bool NormalsLoaded)
 {
 	m_path = path;
 	ShaderProgramSource source = ParseShader(m_path);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource, TexcoordsLoaded, NormalsLoaded);
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& path)
@@ -92,7 +92,7 @@ GLuint Shader::CompileShader(GLuint type, const std::string& source)
 	return id;
 }
 
-GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, bool TexcoordsLoaded, bool NormalsLoaded)
 {
 	GLuint program = glCreateProgram();
 	GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
@@ -101,10 +101,10 @@ GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& 
 	glAttachShader(program, fs);
 
 	glBindAttribLocation(program, VERTICES, "inPosition");
-	
-	glBindAttribLocation(program, TEXCOORDS, "inTexcoord");
-	
-	glBindAttribLocation(program, NORMALS, "inNormal");
+	if (TexcoordsLoaded)
+		glBindAttribLocation(program, TEXCOORDS, "inTexcoord");
+	if (NormalsLoaded)
+		glBindAttribLocation(program, NORMALS, "inNormal");
 
 	glLinkProgram(program);
 	glValidateProgram(program);
@@ -117,7 +117,7 @@ GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& 
 
 void Shader::Bind() const
 {
-	glUseProgram(m_RendererID);
+	GLCall(glUseProgram(m_RendererID));
 }
 
 void Shader::UnBind() const
@@ -125,36 +125,24 @@ void Shader::UnBind() const
 	GLCall(glUseProgram(0));
 }
 
-void Shader::SetUniform1f(const std::string& name, float value)
-{
-	glUniform1f(GetUniformLocation(name), value);
-}
-
 void Shader::SetUniform4fv(const std::string& name, float matrix[])
 {
-	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, matrix);
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, matrix));
 }
 
 void Shader::SetUniform4fvec(const std::string& name, float vec[])
 {
-	glUniform4fv(GetUniformLocation(name), 1, vec);
-}
-
-void Shader::SetUniform3fvec(const std::string& name, float vec[])
-{
-	glUniform3fv(GetUniformLocation(name), 1, vec);
+	GLCall(glUniform4fv(GetUniformLocation(name), 1, vec));
 }
 
 void Shader::SetUniform1i(const std::string& name, int value)
 {
-	glUniform1i(GetUniformLocation(name), value);
+	GLCall(glUniform1i(GetUniformLocation(name), value));
 }
 
 void Shader::SetUniformBlock(const std::string& name, GLuint UBO_BP)
 {
-	Bind();
-	glUniformBlockBinding(m_RendererID, GetUniformBlockIndex(name), UBO_BP);
-	UnBind();
+	GLCall(glUniformBlockBinding(m_RendererID, GetUniformBlockIndex(name), UBO_BP));
 }
 
 int Shader::GetUniformLocation(const std::string& name)
@@ -162,7 +150,7 @@ int Shader::GetUniformLocation(const std::string& name)
 	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 		return m_UniformLocationCache[name];
 
-	int location = glGetUniformLocation(m_RendererID, name.c_str());
+	GLCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
 	if (location == -1)
 		std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
 	m_UniformLocationCache[name] = location;
@@ -171,7 +159,7 @@ int Shader::GetUniformLocation(const std::string& name)
 
 GLuint Shader::GetUniformBlockIndex(const std::string& name)
 {
-	GLuint UboId = glGetUniformBlockIndex(m_RendererID, name.c_str());
+	GLCall(GLuint UboId = glGetUniformBlockIndex(m_RendererID, name.c_str()));
 	if (UboId == -1)
 		std::cout << "Warning: Uniform Block '" << name << "' doesn't exist!" << std::endl;
 	return UboId;

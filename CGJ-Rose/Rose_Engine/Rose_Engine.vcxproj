@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\debug_Main.cpp" />
     <ClCompile Include="src\utils\drawing\Basic_Material.cpp" />
     <ClCompile Include="src\utils\drawing\Material.cpp" />
     <ClCompile Include="src\utils\scene\Scene.cpp" />

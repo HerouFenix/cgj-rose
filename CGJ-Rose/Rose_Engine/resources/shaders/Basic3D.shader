@@ -9,6 +9,9 @@ out vec3 exPosition;
 out vec2 exTexcoord;
 out vec3 exNormal;
 
+in vec4 in_Color;
+out vec4 ex_Color;
+
 uniform mat4 ModelMatrix;
 
 uniform SharedMatrices
@@ -25,6 +28,7 @@ void main(void)
 
 	vec4 MCPosition = vec4(inPosition, 1.0);
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
+	ex_Color = in_Color;
 }
 
 #shader fragment
