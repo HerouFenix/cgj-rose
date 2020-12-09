@@ -429,28 +429,28 @@ GLFWwindow* setup(int major, int minor,
 
 	// SET MATERIALS ////////////////////////////////////////////
 	Shader basic1("resources/shaders/Basic3D.shader");
-	Basic_Material* b1 = new Basic_Material(basic1);
+	Material* b1 = new Material(basic1);
 	b1->setColour(Vector4(0.9f, 0.1f, 0.6f, 1.0f));
 
 	Shader basic2("resources/shaders/Basic3D.shader");
-	Basic_Material* b2 = new Basic_Material(basic2);
+	Material* b2 = new Material(basic2);
 	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
 
 	Shader basic3("resources/shaders/Basic3D.shader");
-	Basic_Material* b3 = new Basic_Material(basic3);
+	Material* b3 = new Material(basic3);
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 
 	Shader basic4("resources/shaders/Basic3D.shader");
-	Basic_Material* b4 = new Basic_Material(basic4);
+	Material* b4 = new Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 
 	Shader basic5("resources/shaders/Basic3D.shader");
-	Basic_Material* b5 = new Basic_Material(basic5);
+	Material* b5 = new Material(basic5);
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.2f));
 
 	// SET MESHSES //////////////////////////////////////////////
 
-	Mesh rose, stem, dome, base, handle, base2;
+	Mesh rose, stem, dome, base, handle;
 
 	rose.CreateMesh("resources/models/rose.obj", (Material*)b1, UBO_BP);
 
