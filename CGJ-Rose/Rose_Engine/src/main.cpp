@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -26,6 +27,9 @@
 #include <chrono>
 #include "../headers/drawing/Basic_Material.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "../headers/drawing/stb_image.h"
+
 
 #define VERTICES 0
 #define TEXCOORDS 1
@@ -35,6 +39,10 @@ GLuint ProgramId;
 std::vector <Vertex> Vertices;
 std::vector <Texcoord> Texcoords;
 std::vector <Normal> Normals;
+
+unsigned int textureID;
+GLuint skyboxVAO;
+Shader skyboxShader("resources/shaders/Skybox.shader");
 
 Mesh meshes[5];
 
@@ -145,6 +153,19 @@ void drawScene()
 	if (floorMoved) {
 		moveFloor();
 	}
+
+	// Draw skybox
+	glDepthMask(GL_FALSE);
+	glBindVertexArray(skyboxVAO);
+	skyboxShader.Bind();
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	glBindVertexArray(0);
+	skyboxShader.UnBind();
+	glDepthMask(GL_TRUE);
 
 	scene.DrawSceneGraphs(ortho);
 }
@@ -393,6 +414,100 @@ void setupBufferObjects() {
 	}
 }
 
+void setupSkybox() {
+	std::string faces[6] = { "resources/images/right.jpg","resources/images/left.jpg" ,"resources/images/top.jpg" ,"resources/images/bottom.jpg" ,"resources/images/front.jpg" ,"resources/images/back.jpg" };
+
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+			);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	float skyboxVertices[] = {
+		// positions          
+		-10.0f,  10.0f, -10.0f,
+		-10.0f, -10.0f, -10.0f,
+		 10.0f, -10.0f, -10.0f,
+		 10.0f, -10.0f, -10.0f,
+		 10.0f,  10.0f, -10.0f,
+		-10.0f,  10.0f, -10.0f,
+				  		  
+		-10.0f, -10.0f,  10.0f,
+		-10.0f, -10.0f, -10.0f,
+		-10.0f,  10.0f, -10.0f,
+		-10.0f,  10.0f, -10.0f,
+		-10.0f,  10.0f,  10.0f,
+		-10.0f, -10.0f,  10.0f,
+		  		  		  
+		 10.0f, -10.0f, -10.0f,
+		 10.0f, -10.0f,  10.0f,
+		 10.0f,  10.0f,  10.0f,
+		 10.0f,  10.0f,  10.0f,
+		 10.0f,  10.0f, -10.0f,
+		 10.0f, -10.0f, -10.0f,
+		  		  		  
+		-10.0f, -10.0f,  10.0f,
+		-10.0f,  10.0f,  10.0f,
+		 10.0f,  10.0f,  10.0f,
+		 10.0f,  10.0f,  10.0f,
+		 10.0f, -10.0f,  10.0f,
+		-10.0f, -10.0f,  10.0f,
+		  		  		  
+		-10.0f,  10.0f, -10.0f,
+		 10.0f,  10.0f, -10.0f,
+		 10.0f,  10.0f,  10.0f,
+		 10.0f,  10.0f,  10.0f,
+		-10.0f,  10.0f,  10.0f,
+		-10.0f,  10.0f, -10.0f,
+		  		  		  
+		-10.0f, -10.0f, -10.0f,
+		-10.0f, -10.0f,  10.0f,
+		 10.0f, -10.0f, -10.0f,
+		 10.0f, -10.0f, -10.0f,
+		-10.0f, -10.0f,  10.0f,
+		 10.0f, -10.0f,  10.0f
+	};
+
+	// Setup cube vao
+
+	GLuint skyboxVBO;
+
+	glGenVertexArrays(1, &skyboxVAO);
+	glBindVertexArray(skyboxVAO);
+	{
+		glGenBuffers(1, &skyboxVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices[0], GL_STATIC_DRAW);
+		glEnableVertexAttribArray(VERTICES);
+		glVertexAttribPointer(VERTICES, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+	}
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	skyboxShader.SetupShader(false, false);
+	skyboxShader.SetUniformBlock("SharedMatrices", UBO_BP);
+}
+
 void setupCamera() {
 	// ARC BALL CAMERA SETUP //
 	ArcBallCamera c(5);
@@ -444,7 +559,8 @@ GLFWwindow* setup(int major, int minor,
 	Material* b4 = new Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 
-	Shader basic5("resources/shaders/Basic3D.shader");
+	Shader basic5("resources/shaders/Glass.shader");
+	//Shader basic5("resources/shaders/Basic3D.shader");
 	Material* b5 = new Material(basic5);
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.2f));
 
@@ -468,6 +584,7 @@ GLFWwindow* setup(int major, int minor,
 	meshes[3] = base;
 	meshes[4] = handle;
 
+	setupSkybox();
 	setupBufferObjects();
 	setupShaderProgram();
 	setupCamera();
