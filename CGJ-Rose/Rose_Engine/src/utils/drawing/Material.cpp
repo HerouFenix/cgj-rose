@@ -34,3 +34,9 @@ void Material::setColour(Vector4 colour_input)
 {
 	colour = colour_input;
 }
+
+void Material::setTextCoords(float coords[4]) {
+	for (int i = 0; i < 4; i++) {
+		textCoords[i] = coords[i];
+	}
+}

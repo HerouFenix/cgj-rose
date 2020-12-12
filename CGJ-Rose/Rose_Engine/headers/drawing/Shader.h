@@ -34,6 +34,7 @@ public:
 	void SetUniform4fv(const std::string& name, float matrix[]);
 	void SetUniform4fvec(const std::string& name, float vec[]);
 	void SetUniform1i(const std::string& name, int value);
+	void SetUniform1f(const std::string& name, float value);
 	void SetUniformBlock(const std::string& name, GLuint UBO_BP);
 
 

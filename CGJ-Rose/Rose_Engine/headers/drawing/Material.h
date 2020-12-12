@@ -18,12 +18,19 @@ public:
 	float shininess = 32.0f;
 
 	Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	float textCoords[6] = 
+	{ 0.0f, 0.0f,  // lower-left corner  
+	1.0f, 0.0f,  // lower-right corner
+	0.5f, 1.0f   // top-center corner
+	};
 
 
 	Material();
 	Material(Shader sh);
 	void virtual setUniforms(Matrix4 model);
 	void setColour(Vector4 colour_input);
+
+	void setTextCoords(float coords[4]);
 
 private:
 

@@ -140,6 +140,11 @@ void Shader::SetUniform1i(const std::string& name, int value)
 	GLCall(glUniform1i(GetUniformLocation(name), value));
 }
 
+void Shader::SetUniform1f(const std::string& name, float value)
+{
+	GLCall(glUniform1f(GetUniformLocation(name), value));
+}
+
 void Shader::SetUniformBlock(const std::string& name, GLuint UBO_BP)
 {
 	GLCall(glUniformBlockBinding(m_RendererID, GetUniformBlockIndex(name), UBO_BP));

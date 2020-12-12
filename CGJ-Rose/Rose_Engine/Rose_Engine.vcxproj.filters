@@ -70,6 +70,7 @@
     <ClCompile Include="src\utils\drawing\Material.cpp" />
     <ClCompile Include="src\utils\drawing\Basic_Material.cpp" />
     <ClCompile Include="src\debug_Main.cpp" />
+    <ClCompile Include="src\utils\drawing\Rose_Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -144,6 +145,7 @@
     <ClInclude Include="headers\drawing\Material.h" />
     <ClInclude Include="headers\drawing\Basic_Material.h" />
     <ClInclude Include="headers\drawing\stb_image.h" />
+    <ClInclude Include="headers\drawing\Rose_Material.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader">
@@ -169,6 +171,7 @@
     </None>
     <None Include="resources\shaders\Glass.shader" />
     <None Include="resources\shaders\Skybox.shader" />
+    <None Include="resources\shaders\Rose.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

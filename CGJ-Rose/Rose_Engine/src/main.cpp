@@ -26,6 +26,8 @@
 #include <ratio>
 #include <chrono>
 #include "../headers/drawing/Basic_Material.h"
+#include "../headers/drawing/Rose_Material.h"
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../headers/drawing/stb_image.h"
@@ -543,9 +545,9 @@ GLFWwindow* setup(int major, int minor,
 #endif
 
 	// SET MATERIALS ////////////////////////////////////////////
-	Shader basic1("resources/shaders/Basic3D.shader");
-	Material* b1 = new Material(basic1);
-	b1->setColour(Vector4(0.9f, 0.1f, 0.6f, 1.0f));
+	Shader basic1("resources/shaders/Rose.shader");
+	Rose_Material* b1 = new Rose_Material(basic1);
+	//b1->setColour(Vector4(0.9f, 0.1f, 0.6f, 1.0f));
 
 	Shader basic2("resources/shaders/Basic3D.shader");
 	Material* b2 = new Material(basic2);
