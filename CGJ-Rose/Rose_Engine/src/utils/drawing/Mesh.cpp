@@ -73,6 +73,7 @@ void Mesh::Draw()
 	if (material->colour.getW() < 1.0f) {
 		glDepthMask(GL_FALSE);
 	}
+
 	glBindVertexArray(VaoID);
 	material->shader.Bind();
 

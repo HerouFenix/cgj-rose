@@ -71,6 +71,7 @@
     <ClCompile Include="src\utils\drawing\Basic_Material.cpp" />
     <ClCompile Include="src\debug_Main.cpp" />
     <ClCompile Include="src\utils\drawing\Rose_Material.cpp" />
+    <ClCompile Include="src\utils\drawing\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -146,6 +147,7 @@
     <ClInclude Include="headers\drawing\Basic_Material.h" />
     <ClInclude Include="headers\drawing\stb_image.h" />
     <ClInclude Include="headers\drawing\Rose_Material.h" />
+    <ClInclude Include="headers\drawing\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.shader">

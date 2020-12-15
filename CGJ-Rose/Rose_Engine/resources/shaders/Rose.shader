@@ -40,6 +40,7 @@ void main(void)
 
 in vec4 ex_Color;
 in vec3 fNormal;
+in vec2 exTexcoord;
 
 out vec4 out_Color;
 
@@ -51,6 +52,7 @@ uniform vec3 Specular;
 uniform float Shininess;
 
 uniform float time_U;
+uniform sampler2D u_Texture;
 
 
 void main(void)
@@ -66,5 +68,6 @@ void main(void)
 	vec3 col1 = diffuse1 * vec3(1, 0, 0);
 	vec3 col2 = diffuse2 * vec3(1, 0, 1);
 
-	gl_FragColor = vec4(col1 + col2, 1.0);
+	out_Color = texture(u_Texture, exTexcoord);
+	//out_Color = vec4(col1 + col2, 1.0);
 }

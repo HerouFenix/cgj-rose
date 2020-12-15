@@ -547,7 +547,6 @@ GLFWwindow* setup(int major, int minor,
 	// SET MATERIALS ////////////////////////////////////////////
 	Shader basic1("resources/shaders/Rose.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
-	//b1->setColour(Vector4(0.9f, 0.1f, 0.6f, 1.0f));
 
 	Shader basic2("resources/shaders/Basic3D.shader");
 	Material* b2 = new Material(basic2);
@@ -569,6 +568,8 @@ GLFWwindow* setup(int major, int minor,
 	// SET MESHSES //////////////////////////////////////////////
 
 	Mesh rose, stem, dome, base, handle;
+
+
 
 	rose.CreateMesh("resources/models/rose.obj", (Material*)b1, UBO_BP);
 

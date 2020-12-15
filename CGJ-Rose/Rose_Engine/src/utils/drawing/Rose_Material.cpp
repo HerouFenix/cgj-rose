@@ -10,6 +10,7 @@ Rose_Material::Rose_Material(Shader sh)
 {
 	shader = sh;
 	initial_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+	texture = Texture("resources/images/rose_texture.png");
 }
 
 void Rose_Material::setUniforms(Matrix4 model)
@@ -23,6 +24,9 @@ void Rose_Material::setUniforms(Matrix4 model)
 
 	std::chrono::milliseconds elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()) - initial_time;
 	shader.SetUniform1f("time_U", elapsed.count()/1000.0f);
+
+	texture.Bind();
+	shader.SetUniform1i("u_Texture", 0);
 
 	//MODEL////////////////////
 	float model_arr[16];
