@@ -34,7 +34,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 
 	// Rose
 	SceneNode* rose = sceneGraph->AddNode(&meshes[0], root);
-	rose->ApplyLocalTransform(Matrix4::rotationX(90, false));
+	//rose->ApplyLocalTransform(Matrix4::rotationX(90, false));
 	rose->ApplyLocalTransform(Matrix4::translation(0.0f, 7.20f, 0.0f));
 
 	
@@ -52,6 +52,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	SceneNode* handle = sceneGraph->AddNode(&meshes[4], root);
 	handle->ApplyLocalTransform(Matrix4::translation(0.0f, 11.1f, 0.0f));
 
+	
 	// Dome
 	SceneNode* dome = sceneGraph->AddNode(&meshes[2], root);
 	dome->ApplyLocalTransform(Matrix4::rotationX(90, false));

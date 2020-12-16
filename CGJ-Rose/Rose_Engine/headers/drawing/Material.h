@@ -3,8 +3,13 @@
 #include "../matrices/Matrix4.h"
 #include "../vectors/Vector3.h"
 #include "../vectors/Vector4.h"
-#include "Texture.h"
+#include "stb_image.h"
+#include "Renderer.h"
 
+struct _Texture {
+	GLuint ID;
+	int width, height, bpp;
+};
 
 class Material
 {
@@ -12,13 +17,13 @@ public:
 
 	GLuint UBO_ID;
 	Shader shader;	
+	_Texture texture;
 
 	Vector3 ambient = Vector3();
 	Vector3 diffuse = Vector3();
 	Vector3 specular = Vector3();
 	float shininess = 32.0f;
 
-	Texture texture;
 
 	Vector4 colour = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	float textCoords[6] = 

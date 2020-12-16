@@ -398,7 +398,7 @@ void setupOpenGL(int winx, int winy)
 	glClearDepth(1.0);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 	glViewport(0, 0, winx, winy);
@@ -545,6 +545,7 @@ GLFWwindow* setup(int major, int minor,
 #endif
 
 	// SET MATERIALS ////////////////////////////////////////////
+
 	Shader basic1("resources/shaders/Rose.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
 
@@ -571,7 +572,7 @@ GLFWwindow* setup(int major, int minor,
 
 
 
-	rose.CreateMesh("resources/models/rose.obj", (Material*)b1, UBO_BP);
+	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
 
 	stem.CreateMesh("resources/models/stem.obj", (Material*)b2, UBO_BP);
 

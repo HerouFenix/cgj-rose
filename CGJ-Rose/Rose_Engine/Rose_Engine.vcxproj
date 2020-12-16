@@ -214,6 +214,10 @@
     <None Include="resources\shaders\Fragment.shader" />
     <None Include="resources\shaders\Vertex.shader" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\images\PaintedWood.jpg" />
+    <Image Include="resources\images\rose_texture.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -219,4 +219,8 @@
       <UniqueIdentifier>{9d178857-a125-4e45-beb5-ceabf94c6292}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\images\PaintedWood.jpg" />
+    <Image Include="resources\images\rose_texture.jpg" />
+  </ItemGroup>
 </Project>

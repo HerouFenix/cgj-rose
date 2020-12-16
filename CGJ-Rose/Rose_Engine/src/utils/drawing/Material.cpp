@@ -1,12 +1,14 @@
 #include "../../headers/drawing/Material.h"
 
 Material::Material() {
+
 }
 
 
 Material::Material(Shader sh)
 {
 	shader = sh;
+	texture = _Texture();
 }
 
 void Material::setUniforms(Matrix4 model)
@@ -40,3 +42,5 @@ void Material::setTextCoords(float coords[4]) {
 		textCoords[i] = coords[i];
 	}
 }
+
+

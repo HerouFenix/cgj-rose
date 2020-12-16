@@ -42,7 +42,7 @@ in vec4 ex_Color;
 in vec3 fNormal;
 in vec2 exTexcoord;
 
-out vec4 out_Color;
+out vec4 FragColor;
 
 uniform int isBack;
 
@@ -57,7 +57,7 @@ uniform sampler2D u_Texture;
 
 void main(void)
 {
-	float theta = time_U * 0.5f;
+	float theta = time_U * 0.8f;
 
 	vec3 dir1 = vec3(sin(theta), 0, cos(theta));
 	vec3 dir2 = vec3(cos(theta), 0, sin(theta));
@@ -67,7 +67,7 @@ void main(void)
 
 	vec3 col1 = diffuse1 * vec3(1, 0, 0);
 	vec3 col2 = diffuse2 * vec3(1, 0, 1);
-
-	out_Color = texture(u_Texture, exTexcoord);
+	vec4 col = vec4(col1 + col2, 1.0) * 8.0f;
+	FragColor = texture(u_Texture, exTexcoord) * col;
 	//out_Color = vec4(col1 + col2, 1.0);
 }

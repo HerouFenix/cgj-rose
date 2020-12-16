@@ -4,13 +4,34 @@
 
 Rose_Material::Rose_Material()
 {
+	
 }
 
 Rose_Material::Rose_Material(Shader sh)
 {
 	shader = sh;
 	initial_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-	texture = Texture("resources/images/rose_texture.png");
+	glGenTextures(1, &texture.ID);
+	glBindTexture(GL_TEXTURE_2D, texture.ID);
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// load and generate the texture
+	unsigned char* data = stbi_load("resources/images/rose5.jpg", &texture.width, &texture.height, &texture.bpp, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
+
 }
 
 void Rose_Material::setUniforms(Matrix4 model)
@@ -24,9 +45,12 @@ void Rose_Material::setUniforms(Matrix4 model)
 
 	std::chrono::milliseconds elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()) - initial_time;
 	shader.SetUniform1f("time_U", elapsed.count()/1000.0f);
+	
+	GLCall(glActiveTexture(GL_TEXTURE0 + texture.ID));
+	GLCall(glBindTexture(GL_TEXTURE_2D, texture.ID));
+	//texture.Bind();
 
-	texture.Bind();
-	shader.SetUniform1i("u_Texture", 0);
+	shader.SetUniform1i("u_Texture", texture.ID);
 
 	//MODEL////////////////////
 	float model_arr[16];
