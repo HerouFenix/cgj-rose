@@ -54,10 +54,24 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 
 	
 	// Dome
+	//SceneNode* dome = sceneGraph->AddNode(NULL, root);
+	//dome->ApplyLocalTransform(Matrix4::translation(0.0f, 1.65f, 0.0f));
+	//
+	//SceneNode* domeQuarter1 = sceneGraph->AddNode(&meshes[2], dome);
+	//
+	//SceneNode* domeQuarter2 = sceneGraph->AddNode(&meshes[2], dome);
+	//domeQuarter2->ApplyLocalTransform(Matrix4::rotationY(90, false));
+	//
+	//SceneNode* domeQuarter3 = sceneGraph->AddNode(&meshes[2], dome);
+	//domeQuarter3->ApplyLocalTransform(Matrix4::rotationY(180, false));
+	//
+	//SceneNode* domeQuarter4 = sceneGraph->AddNode(&meshes[2], dome);
+	//domeQuarter4->ApplyLocalTransform(Matrix4::rotationY(270, false));
+
 	SceneNode* dome = sceneGraph->AddNode(&meshes[2], root);
 	dome->ApplyLocalTransform(Matrix4::rotationX(90, false));
-	dome->ApplyLocalTransform(Matrix4::translation(0.0f, 20.0f, 0.0f));
-	//dome->ApplyLocalTransform(Matrix4::translation(0.0f, 8.25f, 0.0f));
+	dome->ApplyLocalTransform(Matrix4::translation(0.0f, 8.28f, 0.0f));
+
 
 }
 
