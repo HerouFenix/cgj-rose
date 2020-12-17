@@ -7,7 +7,7 @@ Wood_Material::Wood_Material()
 Wood_Material::Wood_Material(Shader sh)
 {
 	shader = sh;
-	setTexture("resources/images/wood.png");
+	setTexture("resources/images/wood.jpg");
 }
 
 void Wood_Material::setUniforms(Matrix4 model)
