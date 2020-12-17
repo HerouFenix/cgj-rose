@@ -418,6 +418,7 @@ void setupBufferObjects() {
 
 void setupSkybox() {
 	std::string faces[6] = { "resources/images/right.jpg","resources/images/left.jpg" ,"resources/images/top.jpg" ,"resources/images/bottom.jpg" ,"resources/images/front.jpg" ,"resources/images/back.jpg" };
+	//std::string faces[6] = { "resources/images/back.png","resources/images/bottom.png" ,"resources/images/front.png" ,"resources/images/left.png" ,"resources/images/right.png" ,"resources/images/top.png" };
 
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -564,7 +565,7 @@ GLFWwindow* setup(int major, int minor,
 	Shader basic5("resources/shaders/Glass.shader");
 	//Shader basic5("resources/shaders/Basic3D.shader");
 	Material* b5 = new Material(basic5);
-	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.2f));
+	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 
 	// SET MESHSES //////////////////////////////////////////////
 
@@ -580,7 +581,9 @@ GLFWwindow* setup(int major, int minor,
 
 	handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP);
 
-	dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
+	//dome.CreateMesh("resources/models/dome_quarter.obj", (Material*)b5, UBO_BP);
+	//dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
+	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP);
 
 	meshes[0] = rose;
 	meshes[1] = stem;
