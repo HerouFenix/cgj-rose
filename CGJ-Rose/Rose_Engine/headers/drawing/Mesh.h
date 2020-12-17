@@ -9,7 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../vertex/Vertex.h"
-#include "Material.h"
+#include "../materials/Material.h"
 
 #define VERTICES 0
 #define TEXCOORDS 1

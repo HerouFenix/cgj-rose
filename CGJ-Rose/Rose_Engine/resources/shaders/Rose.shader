@@ -19,8 +19,6 @@ uniform SharedMatrices
 	mat4 ProjectionMatrix;
 };
 
-uniform float time;
-
 
 void main(void)
 {

@@ -40,12 +40,12 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	
 	// Stem
 	SceneNode* stem = sceneGraph->AddNode(&meshes[1], root);
-	stem->ApplyLocalTransform(Matrix4::rotationX(90, false));
-	stem->ApplyLocalTransform(Matrix4::translation(0.3f, 5.2f, 0.0f));
+	//stem->ApplyLocalTransform(Matrix4::rotationX(90, false));
+	stem->ApplyLocalTransform(Matrix4::translation(0.36f, 7.0f, 0.0f));
 
 	// Base
 	SceneNode* base = sceneGraph->AddNode(&meshes[3], root);
-	base->ApplyLocalTransform(Matrix4::rotationX(90, false));
+	//base->ApplyLocalTransform(Matrix4::rotationX(90, false));
 	base->ApplyLocalTransform(Matrix4::translation(0.0f, 1.5f, 0.0f));
 
 	// Handle

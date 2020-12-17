@@ -25,12 +25,14 @@
 #include <ctime>
 #include <ratio>
 #include <chrono>
-#include "../headers/drawing/Basic_Material.h"
-#include "../headers/drawing/Rose_Material.h"
+#include "../headers/materials/Basic_Material.h"
+#include "../headers/materials/Rose_Material.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../headers/drawing/stb_image.h"
+#include "../headers/materials/stb_image.h"
+#include "../headers/materials/Wood_Material.h"
+#include "../headers/materials/Stem_Material.h"
 
 
 #define VERTICES 0
@@ -549,16 +551,16 @@ GLFWwindow* setup(int major, int minor,
 	Shader basic1("resources/shaders/Rose.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
 
-	Shader basic2("resources/shaders/Basic3D.shader");
-	Material* b2 = new Material(basic2);
+	Shader basic2("resources/shaders/Stem_Shader.shader");
+	Stem_Material* b2 = new Stem_Material(basic2);
 	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
 
-	Shader basic3("resources/shaders/Basic3D.shader");
-	Material* b3 = new Material(basic3);
+	Shader basic3("resources/shaders/Wood_Shader.shader");
+	Wood_Material* b3 = new Wood_Material(basic3);
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 
-	Shader basic4("resources/shaders/Basic3D.shader");
-	Material* b4 = new Material(basic4);
+	Shader basic4("resources/shaders/Wood_Shader.shader");
+	Wood_Material* b4 = new Wood_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 
 	Shader basic5("resources/shaders/Glass.shader");

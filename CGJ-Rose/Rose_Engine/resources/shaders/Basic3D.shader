@@ -31,6 +31,8 @@ void main(void)
 #version 330 core
 
 in vec4 ex_Color;
+in vec2 exTexcoord;
+
 out vec4 out_Color;
 
 uniform int isBack;
@@ -40,9 +42,13 @@ uniform vec3 Diffuse;
 uniform vec3 Specular;
 uniform float Shininess;
 
+uniform sampler2D u_Texture;
+
 uniform vec4 uniformColour;
+
 
 void main(void)
 {
-	out_Color = uniformColour;
+	vec4 color = uniformColour;
+	out_Color = color;
 }
