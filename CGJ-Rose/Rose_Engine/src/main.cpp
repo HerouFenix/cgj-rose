@@ -245,7 +245,8 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			moveRight = true;
 			break;
 		case GLFW_KEY_R:
-			scene.GetSceneGraphs()[0]->camera.resetCamera();
+			scene.GetSceneGraphs()[0]->camera.resetCamera(); // Reset camera
+			//scene.GetSceneGraphs()[0]->GetRoot()->ResetToDefaultPosition(); // Reset objects
 			cameraReset = true;
 			break;
 		case GLFW_KEY_G:

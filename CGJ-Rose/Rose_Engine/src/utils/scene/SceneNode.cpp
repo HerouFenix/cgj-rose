@@ -47,6 +47,7 @@ void SceneNode::SetLocalTransform(Matrix4 transform)
 
 void SceneNode::ResetToDefaultPosition() {
 	localTransform = Matrix4::identity();
+	Update();
 }
 
 Matrix4 SceneNode::GetLocalTransform()
@@ -123,7 +124,6 @@ void SceneNode::SetDrawFaceCulling(bool _cullFaces, bool _backCull) {
 
 void SceneNode::Draw()
 {
-
 	if (mesh != NULL) {
 			Matrix4 scaleM = Matrix4::scaling(scale.getX(), scale.getY(), scale.getZ());
 			float model[16];
