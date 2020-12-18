@@ -73,6 +73,7 @@
     <ClCompile Include="src\utils\materials\Basic_Material.cpp" />
     <ClCompile Include="src\utils\materials\Wood_Material.cpp" />
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
+    <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -150,6 +151,7 @@
     <ClInclude Include="headers\materials\stb_image.h" />
     <ClInclude Include="headers\materials\Wood_Material.h" />
     <ClInclude Include="headers\materials\Stem_Material.h" />
+    <ClInclude Include="headers\materials\Marble_Material.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic3D.shader">
@@ -160,6 +162,7 @@
     <None Include="resources\shaders\Rose.shader" />
     <None Include="resources\shaders\Wood_Shader.shader" />
     <None Include="resources\shaders\Stem_Shader.shader" />
+    <None Include="resources\shaders\Marble.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

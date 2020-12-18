@@ -27,12 +27,14 @@
 #include <chrono>
 #include "../headers/materials/Basic_Material.h"
 #include "../headers/materials/Rose_Material.h"
+#include "../headers/materials/Marble_Material.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../headers/materials/stb_image.h"
 #include "../headers/materials/Wood_Material.h"
 #include "../headers/materials/Stem_Material.h"
+
 
 
 #define VERTICES 0
@@ -556,8 +558,8 @@ GLFWwindow* setup(int major, int minor,
 	Stem_Material* b2 = new Stem_Material(basic2);
 	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
 
-	Shader basic3("resources/shaders/Wood_Shader.shader");
-	Wood_Material* b3 = new Wood_Material(basic3);
+	Shader basic3("resources/shaders/Marble.shader");
+	Marble_Material* b3 = new Marble_Material(basic3);
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 
 	Shader basic4("resources/shaders/Wood_Shader.shader");
