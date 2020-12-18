@@ -8,12 +8,16 @@ SceneNode::SceneNode(Mesh* m, SceneNode* parent_node, Vector3 sc) {
 
 	localTransform = Matrix4::identity();
 	worldTransform = localTransform;
+
+	Update();
 }
 
 SceneNode::SceneNode() {
 	scale = Vector3(1,1,1);
 	localTransform = Matrix4::identity();
 	worldTransform = localTransform;
+
+	Update();
 }
 
 
@@ -112,6 +116,11 @@ void SceneNode::Update()
 	}
 }
 
+void SceneNode::SetDrawFaceCulling(bool _cullFaces, bool _backCull) {
+	cullFaces = _cullFaces;
+	backCull = _backCull;
+}
+
 void SceneNode::Draw()
 {
 
@@ -120,7 +129,7 @@ void SceneNode::Draw()
 			float model[16];
 			Matrix4 modelM = worldTransform * scaleM;
 			mesh->setWorldTransform(modelM);
-			mesh->Draw();
+			mesh->Draw(cullFaces, backCull);
 	}	
 	// Cascade Draw children
 	for (SceneNode* child : children) {

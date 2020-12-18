@@ -28,6 +28,7 @@
 #include "../headers/materials/Basic_Material.h"
 #include "../headers/materials/Rose_Material.h"
 #include "../headers/materials/Marble_Material.h"
+#include "../headers/materials/Glass_Material.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -566,16 +567,12 @@ GLFWwindow* setup(int major, int minor,
 	Wood_Material* b4 = new Wood_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 
-	Shader basic5("resources/shaders/Glass.shader");
-	//Shader basic5("resources/shaders/Basic3D.shader");
-	Material* b5 = new Material(basic5);
-	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
+	Glass_Material* b5 = new Glass_Material();
+	//b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 
 	// SET MESHSES //////////////////////////////////////////////
 
 	Mesh rose, stem, dome, base, handle;
-
-
 
 	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
 

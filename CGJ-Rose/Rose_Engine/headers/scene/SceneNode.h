@@ -19,6 +19,8 @@ class SceneNode {
 public:
 	Vector3 pos;
 	Quaternion quat;
+	bool cullFaces = false; bool backCull = false;
+
 	SceneNode(Mesh* m, SceneNode* parent = NULL, Vector3 sc = Vector3(1,1,1));
 	SceneNode();
 	~SceneNode();
@@ -27,6 +29,7 @@ public:
 
 	void SetLocalTransform(Matrix4 transform);
 
+	void SetDrawFaceCulling(bool _cullFaces, bool _backCull);
 
 	void ResetToDefaultPosition();
 

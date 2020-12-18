@@ -68,11 +68,18 @@ void Mesh::setSharedMatrices(const std::string& name, GLuint UBO_BP)
 	material->shader.UnBind();
 }
 
-void Mesh::Draw()
+void Mesh::Draw(bool cullFaces, bool backCull)
 {
-	if (material->colour.getW() < 1.0f) {
+	if (cullFaces) {
 		//glDepthMask(GL_FALSE);
 		glEnable(GL_CULL_FACE);
+
+		if (backCull) {
+			glCullFace(GL_BACK);
+		}
+		else {
+			glCullFace(GL_FRONT);
+		}
 	}
 
 	glBindVertexArray(VaoID);
@@ -85,8 +92,10 @@ void Mesh::Draw()
 	glBindVertexArray(0);
 	material->shader.UnBind();
 
-	//glDepthMask(GL_TRUE);
-	glDisable(GL_CULL_FACE);
+	if (cullFaces) {
+		//glDepthMask(GL_TRUE);
+		glDisable(GL_CULL_FACE);
+	}
 }
 
 void Mesh::setWorldTransform(Matrix4 transform)

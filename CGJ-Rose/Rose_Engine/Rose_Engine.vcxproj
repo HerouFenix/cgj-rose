@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\utils\materials\Glass_Material.cpp" />
     <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
     <ClCompile Include="src\debug_Main.cpp" />
     <ClCompile Include="src\utils\materials\Basic_Material.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="headers\drawing\Mesh.h" />
     <ClInclude Include="headers\drawing\Obj_Loader.h" />
     <ClInclude Include="headers\drawing\Renderer.h" />
+    <ClInclude Include="headers\materials\Glass_Material.h" />
     <ClInclude Include="headers\materials\Rose_Material.h" />
     <ClInclude Include="headers\drawing\Shader.h" />
     <ClInclude Include="headers\materials\stb_image.h" />

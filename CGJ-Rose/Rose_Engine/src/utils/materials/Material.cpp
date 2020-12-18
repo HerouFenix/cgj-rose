@@ -21,7 +21,7 @@ void Material::setUniforms(Matrix4 model)
 	//shader.SetUniform1f("Shininess", shininess);
 
 	//COLOUR///////////////////
-	shader.SetUniform4fvec("uniformColour", new float[] {colour.getX(), colour.getY(), colour.getZ(), colour.getW()});
+	//shader.SetUniform4fvec("uniformColour", new float[] {colour.getX(), colour.getY(), colour.getZ(), colour.getW()});
 
 	//MODEL////////////////////
 	float model_arr[16];
@@ -30,12 +30,6 @@ void Material::setUniforms(Matrix4 model)
 
 }
 
-
-
-void Material::setColour(Vector4 colour_input)
-{
-	colour = colour_input;
-}
 
 void Material::setTextCoords(float coords[4]) {
 	for (int i = 0; i < 4; i++) {

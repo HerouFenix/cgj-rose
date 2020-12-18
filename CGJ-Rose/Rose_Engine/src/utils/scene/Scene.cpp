@@ -50,7 +50,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 
 	// Handle
 	SceneNode* handle = sceneGraph->AddNode(&meshes[4], root);
-	handle->ApplyLocalTransform(Matrix4::translation(0.0f, 11.1f, 0.0f));
+	handle->ApplyLocalTransform(Matrix4::translation(0.0f, 11.2f, 0.0f));
 
 	
 	// Dome
@@ -68,10 +68,18 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	//SceneNode* domeQuarter4 = sceneGraph->AddNode(&meshes[2], dome);
 	//domeQuarter4->ApplyLocalTransform(Matrix4::rotationY(270, false));
 
-	SceneNode* dome = sceneGraph->AddNode(&meshes[2], root);
-	dome->ApplyLocalTransform(Matrix4::rotationX(90, false));
-	dome->ApplyLocalTransform(Matrix4::translation(0.0f, 8.28f, 0.0f));
+	SceneNode* dome_root = sceneGraph->AddNode(NULL, root);
+	dome_root->ApplyLocalTransform(Matrix4::rotationX(90, false));
 
+	SceneNode* dome_back = sceneGraph->AddNode(&meshes[2], dome_root);
+	dome_back->ApplyLocalTransform(Matrix4::scaling(0.95,0.95,1.01));
+	dome_back->ApplyLocalTransform(Matrix4::translation(0.0f, 0.0f, -8.1f));
+	dome_back->SetDrawFaceCulling(true, false);
+
+	SceneNode* dome_front = sceneGraph->AddNode(&meshes[2], dome_root);
+	dome_front->ApplyLocalTransform(Matrix4::scaling(1.01, 1.01, 1.01));
+	dome_front->ApplyLocalTransform(Matrix4::translation(0.0f, 0.0f, -8.28f));
+	dome_front->SetDrawFaceCulling(true, true);
 
 }
 

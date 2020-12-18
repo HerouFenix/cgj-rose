@@ -74,6 +74,7 @@
     <ClCompile Include="src\utils\materials\Wood_Material.cpp" />
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
     <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
+    <ClCompile Include="src\utils\materials\Glass_Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -152,6 +153,7 @@
     <ClInclude Include="headers\materials\Wood_Material.h" />
     <ClInclude Include="headers\materials\Stem_Material.h" />
     <ClInclude Include="headers\materials\Marble_Material.h" />
+    <ClInclude Include="headers\materials\Glass_Material.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic3D.shader">

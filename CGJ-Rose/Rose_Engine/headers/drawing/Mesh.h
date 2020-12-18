@@ -38,7 +38,7 @@ public:
 	void setupShader(GLuint UBO_BP);
 	void setupBufferObjects();
 
-	void Draw();
+	void Draw(bool cullFaces = false, bool backCull = true);
 	void setWorldTransform(Matrix4 transform);
 	void setMaterial(Material* mat, GLuint UBO_BP);
 	
