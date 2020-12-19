@@ -34,7 +34,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	light->ApplyLocalTransform(Matrix4::translation(2.0f, 2.0f, 2.0f));
 
 	SceneNode* cube = sceneGraph->AddNode(&meshes[0], root);
-	cube->ApplyLocalTransform(Matrix4::scaling(0.3f, 0.3f, 0.3f));
+	cube->ApplyLocalTransform(Matrix4::scaling(1.0f, 0.05f, 1.0f));
 	cube->ApplyLocalTransform(Matrix4::translation(0.0f, -1.0f, 0.0f));
 
 	/*

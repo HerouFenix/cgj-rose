@@ -10,6 +10,7 @@ out vec2 exTexcoord;
 out vec3 exNormal;
 
 out vec3 exFragPos;
+out vec3 exCameraPos;
 
 uniform mat4 ModelMatrix;
 
@@ -24,6 +25,12 @@ void main(void)
 	exPosition = inPosition;
 	exTexcoord = inTexcoord;
 	exNormal = inNormal;
+	exNormal = mat3(transpose(inverse(ModelMatrix))) * inNormal;
+
+	vec4 cameraPos = vec4(1.0, 1.0, 1.0, 0.0) * ViewMatrix;
+	exCameraPos.x = cameraPos.x;
+	exCameraPos.y = cameraPos.y;
+	exCameraPos.z = cameraPos.z;
 
 	vec4 MCPosition = vec4(inPosition, 1.0);
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
@@ -53,27 +60,42 @@ uniform vec3 uniformLightPos;
 
 in vec3 exNormal;
 in vec3 exFragPos;
+in vec3 exCameraPos;
 
 void main(void)
 {
 	//vec4 color = uniformLightColour * uniformColour;
 	//out_Color = color;
 
+	// Ambient
 	float ambientStrength = 0.1;
 	vec4 ambient = uniformLightColour;
 	ambient.x = ambient.x * 0.1;
 	ambient.y = ambient.y * 0.1;
 	ambient.z = ambient.z * 0.1;
 
+	// Diffuse
 	vec3 norm = normalize(exNormal);
+
 	vec3 lightDir = normalize(uniformLightPos - exFragPos);
+	vec3 viewDir = normalize(exCameraPos - exFragPos);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
 
 	float diff = max(dot(norm, lightDir), 0.0);
 	vec4 diffuse = diff * uniformLightColour;
 
-	vec4 color = (ambient + diffuse) * uniformColour;
+	// Specular
+	//float specularStrength = 0.5;
+	vec3 reflectDir = reflect(-lightDir, norm);
+
+	int shininess = 32;
+	//float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+	//vec4 specular = specularStrength * spec * uniformLightColour;
+
+	float spec = pow(max(dot(norm, halfwayDir), 0.0), shininess);
+	vec4 specular = uniformLightColour * spec;
+
+
+	vec4 color = (ambient + diffuse + specular) * uniformColour;
 	out_Color = color;
-
-
-
 }
