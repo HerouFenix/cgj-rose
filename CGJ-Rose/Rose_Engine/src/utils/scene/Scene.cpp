@@ -32,8 +32,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	SceneNode* root = sceneGraph->AddNode();
 	root->ApplyLocalTransform(Matrix4::scaling(0.3f, 0.3f, 0.3f)); 
 	root->ApplyLocalTransform(Matrix4::translation(0.0f, -1.8f, 0.0f));
-
-	/*
+	
 	// FLOWER ////////////////////////////////////////////////////
 	SceneNode* rose_base = sceneGraph->AddNode(NULL, root);
 	rose_base->ApplyLocalTransform(Matrix4::translation(0.0f, 7.5f, 0.0f));
@@ -74,7 +73,11 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	dome_front->ApplyLocalTransform(Matrix4::translation(0.0f, 0.0f, -8.28f));
 	dome_front->SetDrawFaceCulling(true, true);
 	//////////////////////////////////////////////////////////////\
-	*/
+
+	SceneNode* light = sceneGraph->AddNode(&meshes[5], root, Vector3(0.5,0.5,0.5));
+	light->ApplyLocalTransform(Matrix4::translation(0.0f, 1.8f, 0.0f));
+	light->ApplyLocalTransform(Matrix4::translation(-4.0f, 13.0f, 3.5f));
+	
 }
 
 void Scene::ClearScene()

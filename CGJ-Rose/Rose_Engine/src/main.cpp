@@ -51,7 +51,7 @@ unsigned int textureID;
 GLuint skyboxVAO;
 Shader skyboxShader("resources/shaders/Skybox.shader");
 
-Mesh meshes[5];
+Mesh meshes[6];
 
 int window_width;
 int window_height;
@@ -412,14 +412,14 @@ void setupOpenGL(int winx, int winy)
 
 void setupShaderProgram() {
 	// TODO - CHANGE THIS TO NUMBER OF MESHES BEING DRAWN
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 6; i++) {
 		meshes[i].setupShader(UBO_BP);
 	}
 }
 
 void setupBufferObjects() {
 	// TODO - CHANGE THIS TO NUMBER OF MESHES BEING DRAWN
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 6; i++) {
 		meshes[i].setupBufferObjects();
 	}
 }
@@ -573,9 +573,12 @@ GLFWwindow* setup(int major, int minor,
 	Glass_Material* b5 = new Glass_Material();
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 
+	Shader basic5("resources/shaders/Basic3D.shader"); // Light Source
+	Basic_Material* b6 = new Basic_Material(basic5);
+
 	// SET MESHSES //////////////////////////////////////////////
 
-	Mesh rose, stem, dome, base, handle;
+	Mesh rose, stem, dome, base, handle, light;
 	
 	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
 	
@@ -588,12 +591,15 @@ GLFWwindow* setup(int major, int minor,
 	//dome.CreateMesh("resources/models/dome_quarter.obj", (Material*)b5, UBO_BP);
 	//dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
 	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP);
+
+	light.CreateMesh("resources/models/cube.obj", (Material*)b6, UBO_BP);
 	
 	meshes[0] = rose;
 	meshes[1] = stem;
 	meshes[2] = dome;
 	meshes[3] = base;
 	meshes[4] = handle;
+	meshes[5] = light;
 
 	setupSkybox();
 	setupBufferObjects();

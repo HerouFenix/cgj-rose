@@ -90,7 +90,7 @@ void Mesh::Draw(bool cullFaces, bool backCull)
 	material->shader.SetUniform4fvec("uniformLightColour", new float[] {1.0f, 1.0f, 1.0f, 1.0f});
 
 	//LIGHT_POS/////////////
-	material->shader.SetUniform3fvec("uniformLightPos", new float[] {2.0f, 2.0f, 2.0f});
+	material->shader.SetUniform3fvec("uniformLightPos", new float[] {-4.0f, 13.0f, 3.5f});
 
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Vertices.size());
 
