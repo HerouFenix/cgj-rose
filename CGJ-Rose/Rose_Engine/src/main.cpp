@@ -411,13 +411,13 @@ void setupOpenGL(int winx, int winy)
 }
 
 void setupShaderProgram() {
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 2; i++) {
 		meshes[i].setupShader(UBO_BP);
 	}
 }
 
 void setupBufferObjects() {
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 2; i++) {
 		meshes[i].setupBufferObjects();
 	}
 }
@@ -553,45 +553,62 @@ GLFWwindow* setup(int major, int minor,
 
 	// SET MATERIALS ////////////////////////////////////////////
 
-	Shader basic1("resources/shaders/Rose.shader");
-	Rose_Material* b1 = new Rose_Material(basic1);
-
-	Shader basic2("resources/shaders/Stem_Shader.shader");
-	Stem_Material* b2 = new Stem_Material(basic2);
-	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
-
-	Shader basic3("resources/shaders/Marble.shader");
-	Marble_Material* b3 = new Marble_Material(basic3);
-	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
-
-	Shader basic4("resources/shaders/Wood_Shader.shader");
-	Wood_Material* b4 = new Wood_Material(basic4);
-	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
-
-	Glass_Material* b5 = new Glass_Material();
+	//Shader basic1("resources/shaders/Rose.shader");
+	//Rose_Material* b1 = new Rose_Material(basic1);
+	//
+	//Shader basic2("resources/shaders/Stem_Shader.shader");
+	//Stem_Material* b2 = new Stem_Material(basic2);
+	//b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
+	//
+	//Shader basic3("resources/shaders/Marble.shader");
+	//Marble_Material* b3 = new Marble_Material(basic3);
+	//b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
+	//
+	//Shader basic4("resources/shaders/Wood_Shader.shader");
+	//Wood_Material* b4 = new Wood_Material(basic4);
+	//b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
+	//
+	//Glass_Material* b5 = new Glass_Material();
 	//b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
+
+	Shader basic1("resources/shaders/Basic3D.shader"); // Cube
+	Basic_Material* b1 = new Basic_Material(basic1);
+	b1->setColour(Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+	Shader basic2("resources/shaders/Basic3D.shader"); // Light Source
+	Basic_Material* b2 = new Basic_Material(basic2);
 
 	// SET MESHSES //////////////////////////////////////////////
 
-	Mesh rose, stem, dome, base, handle;
+	//Mesh rose, stem, dome, base, handle;
+	//
+	//rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
+	//
+	//stem.CreateMesh("resources/models/stem.obj", (Material*)b2, UBO_BP);
+	//
+	//base.CreateMesh("resources/models/base.obj", (Material*)b3, UBO_BP);
+	//
+	//handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP);
+	//
+	////dome.CreateMesh("resources/models/dome_quarter.obj", (Material*)b5, UBO_BP);
+	////dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
+	//dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP);
+	//
+	//meshes[0] = rose;
+	//meshes[1] = stem;
+	//meshes[2] = dome;
+	//meshes[3] = base;
+	//meshes[4] = handle;
 
-	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
+	// TODO: SET LIGHT COLOUR AND POSITION TO ASSIGN TO ALL SHADERS (see how it was done with the sharedmatrices
 
-	stem.CreateMesh("resources/models/stem.obj", (Material*)b2, UBO_BP);
+	Mesh cube,light;
 
-	base.CreateMesh("resources/models/base.obj", (Material*)b3, UBO_BP);
+	cube.CreateMesh("resources/models/cube.obj", (Material*)b1, UBO_BP);
+	light.CreateMesh("resources/models/cube.obj", (Material*)b2, UBO_BP);
 
-	handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP);
-
-	//dome.CreateMesh("resources/models/dome_quarter.obj", (Material*)b5, UBO_BP);
-	//dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
-	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP);
-
-	meshes[0] = rose;
-	meshes[1] = stem;
-	meshes[2] = dome;
-	meshes[3] = base;
-	meshes[4] = handle;
+	meshes[0] = cube;
+	meshes[1] = light;
 
 	setupSkybox();
 	setupBufferObjects();

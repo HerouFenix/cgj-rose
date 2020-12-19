@@ -29,6 +29,16 @@ std::vector<SceneGraph*> Scene::GetSceneGraphs()
 void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 {
 	SceneNode* root = sceneGraph->AddNode();
+
+	SceneNode* light = sceneGraph->AddNode(&meshes[1], root, Vector3(0.1,0.1,0.1));
+	light->ApplyLocalTransform(Matrix4::translation(2.0f, 2.0f, 2.0f));
+
+	SceneNode* cube = sceneGraph->AddNode(&meshes[0], root);
+	cube->ApplyLocalTransform(Matrix4::scaling(0.3f, 0.3f, 0.3f));
+	cube->ApplyLocalTransform(Matrix4::translation(0.0f, -1.0f, 0.0f));
+
+	/*
+	SceneNode* root = sceneGraph->AddNode();
 	root->ApplyLocalTransform(Matrix4::scaling(0.3f, 0.3f, 0.3f)); 
 	root->ApplyLocalTransform(Matrix4::translation(0.0f, -1.8f, 0.0f));
 
@@ -72,7 +82,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	dome_front->ApplyLocalTransform(Matrix4::translation(0.0f, 0.0f, -8.28f));
 	dome_front->SetDrawFaceCulling(true, true);
 	//////////////////////////////////////////////////////////////\
-
+	*/
 }
 
 void Scene::ClearScene()
