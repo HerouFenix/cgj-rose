@@ -62,6 +62,7 @@ in vec3 exNormal;
 in vec3 exFragPos;
 in vec3 exCameraPos;
 
+
 void main(void)
 {
 	//vec4 color = uniformLightColour * uniformColour;
