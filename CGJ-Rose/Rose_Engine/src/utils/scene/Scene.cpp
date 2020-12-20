@@ -76,7 +76,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 
 	SceneNode* light = sceneGraph->AddNode(&meshes[5], root, Vector3(0.5,0.5,0.5));
 	light->ApplyLocalTransform(Matrix4::translation(0.0f, 1.8f, 0.0f));
-	light->ApplyLocalTransform(Matrix4::translation(-4.0f, 13.0f, 3.5f));
+	light->ApplyLocalTransform(Matrix4::translation( -4.0f, 13.0f, 3.5f));
 	
 }
 

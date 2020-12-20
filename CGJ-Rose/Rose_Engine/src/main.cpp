@@ -573,7 +573,7 @@ GLFWwindow* setup(int major, int minor,
 	Glass_Material* b5 = new Glass_Material();
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 
-	Shader basic5("resources/shaders/Basic3D.shader"); // Light Source
+	Shader basic5("resources/shaders/lightSource.shader"); // Light Source
 	Basic_Material* b6 = new Basic_Material(basic5);
 
 	// SET MESHSES //////////////////////////////////////////////

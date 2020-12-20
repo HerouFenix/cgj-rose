@@ -209,6 +209,7 @@
     <ClInclude Include="headers\materials\Marble_Material.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\Marble.shader" />
     <None Include="resources\shaders\Rose.shader" />
     <None Include="resources\shaders\Skybox.shader" />
