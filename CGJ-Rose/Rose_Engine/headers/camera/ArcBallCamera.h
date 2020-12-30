@@ -21,9 +21,10 @@ private:
 	Matrix4 perspProj;
 
 	GLuint vbo_id;
-	GLuint UBO_BP;
 
 public:
+	GLuint UBO_BP;
+
 	// FUNCTION DECLARATIONS
 
 	ArcBallCamera(float radius);

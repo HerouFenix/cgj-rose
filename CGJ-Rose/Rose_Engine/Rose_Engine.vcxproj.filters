@@ -75,6 +75,9 @@
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
     <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
     <ClCompile Include="src\utils\materials\Glass_Material.cpp" />
+    <ClCompile Include="src\utils\particlesystem\ParticleSystem.cpp" />
+    <ClCompile Include="src\utils\particlesystem\Random.cpp" />
+    <ClCompile Include="src\utils\materials\Particle_Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -154,6 +157,9 @@
     <ClInclude Include="headers\materials\Stem_Material.h" />
     <ClInclude Include="headers\materials\Marble_Material.h" />
     <ClInclude Include="headers\materials\Glass_Material.h" />
+    <ClInclude Include="headers\particlesystem\ParticleSystem.h" />
+    <ClInclude Include="headers\particlesystem\Random.h" />
+    <ClInclude Include="headers\materials\Particle_Material.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic3D.shader">
@@ -166,6 +172,7 @@
     <None Include="resources\shaders\Stem_Shader.shader" />
     <None Include="resources\shaders\Marble.shader" />
     <None Include="resources\shaders\lightSource.shader" />
+    <None Include="resources\shaders\particle.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

@@ -22,6 +22,8 @@
 #include "../headers/scene/SceneGraph.h"
 #include "../headers/scene/Scene.h"
 
+#include "../headers/particlesystem/ParticleSystem.h"
+
 #include <ctime>
 #include <ratio>
 #include <chrono>
@@ -94,6 +96,8 @@ bool goToInitial = false;
 std::chrono::high_resolution_clock::time_point timeStartedLerping;
 float animation_total = 3000.0f; //Animation speed in milliseconds
 
+ParticleProps m_Particle;
+ParticleSystem m_ParticleSystem;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -161,6 +165,7 @@ void drawScene()
 		moveFloor();
 	}
 
+
 	// Draw skybox
 	glDepthMask(GL_FALSE);
 	glBindVertexArray(skyboxVAO);
@@ -174,6 +179,14 @@ void drawScene()
 	skyboxShader.UnBind();
 	glDepthMask(GL_TRUE);
 
+	// Emit Particles
+	for (int i = 0; i < 5; i++)
+		m_ParticleSystem.Emit(m_Particle);
+
+
+	m_ParticleSystem.OnUpdate(0.01f);
+	m_ParticleSystem.OnRender();
+	
 	scene.DrawSceneGraphs(ortho);
 }
 
@@ -462,35 +475,35 @@ void setupSkybox() {
 		 10.0f, -10.0f, -10.0f,
 		 10.0f,  10.0f, -10.0f,
 		-10.0f,  10.0f, -10.0f,
-				  		  
+
 		-10.0f, -10.0f,  10.0f,
 		-10.0f, -10.0f, -10.0f,
 		-10.0f,  10.0f, -10.0f,
 		-10.0f,  10.0f, -10.0f,
 		-10.0f,  10.0f,  10.0f,
 		-10.0f, -10.0f,  10.0f,
-		  		  		  
+
 		 10.0f, -10.0f, -10.0f,
 		 10.0f, -10.0f,  10.0f,
 		 10.0f,  10.0f,  10.0f,
 		 10.0f,  10.0f,  10.0f,
 		 10.0f,  10.0f, -10.0f,
 		 10.0f, -10.0f, -10.0f,
-		  		  		  
+
 		-10.0f, -10.0f,  10.0f,
 		-10.0f,  10.0f,  10.0f,
 		 10.0f,  10.0f,  10.0f,
 		 10.0f,  10.0f,  10.0f,
 		 10.0f, -10.0f,  10.0f,
 		-10.0f, -10.0f,  10.0f,
-		  		  		  
+
 		-10.0f,  10.0f, -10.0f,
 		 10.0f,  10.0f, -10.0f,
 		 10.0f,  10.0f,  10.0f,
 		 10.0f,  10.0f,  10.0f,
 		-10.0f,  10.0f,  10.0f,
 		-10.0f,  10.0f, -10.0f,
-		  		  		  
+
 		-10.0f, -10.0f, -10.0f,
 		-10.0f, -10.0f,  10.0f,
 		 10.0f, -10.0f, -10.0f,
@@ -517,6 +530,19 @@ void setupSkybox() {
 
 	skyboxShader.SetupShader(false, false);
 	skyboxShader.SetUniformBlock("SharedMatrices", UBO_BP);
+}
+
+void setupParticleSystem() {
+	// Init here
+	m_Particle.ColorBegin = { 255 / 255.0f, 0 / 255.0f, 0 / 255.0f, 1.0f };
+	m_Particle.ColorEnd = { 0 / 255.0f, 0 / 255.0f, 255 / 255.0f, 1.0f };
+	m_Particle.SizeBegin = 0.5f, m_Particle.SizeVariation = 0.3f, m_Particle.SizeEnd = 0.0f;
+	m_Particle.LifeTime = 1.0f;
+	m_Particle.Velocity = Vector3();
+	m_Particle.VelocityVariation = Vector3(3.0f, 1.0f, 1.0f);
+	m_Particle.Position = Vector3();
+
+	m_ParticleSystem.SetupParticleMesh(scene.GetSceneGraphs()[0]->camera);
 }
 
 void setupCamera() {
@@ -553,23 +579,27 @@ GLFWwindow* setup(int major, int minor,
 	setupErrorCallback();
 #endif
 
+	setupSkybox();
+	setupCamera();
+	setupParticleSystem();
+
 	// SET MATERIALS ////////////////////////////////////////////
 
 	Shader basic1("resources/shaders/Rose.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
-	
+
 	Shader basic2("resources/shaders/Stem_Shader.shader");
 	Stem_Material* b2 = new Stem_Material(basic2);
 	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
-	
+
 	Shader basic3("resources/shaders/Marble.shader");
 	Marble_Material* b3 = new Marble_Material(basic3);
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
-	
+
 	Shader basic4("resources/shaders/Wood_Shader.shader");
 	Wood_Material* b4 = new Wood_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
-	
+
 	Glass_Material* b5 = new Glass_Material();
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 
@@ -579,21 +609,21 @@ GLFWwindow* setup(int major, int minor,
 	// SET MESHSES //////////////////////////////////////////////
 
 	Mesh rose, stem, dome, base, handle, light;
-	
+
 	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
-	
+
 	stem.CreateMesh("resources/models/stem.obj", (Material*)b2, UBO_BP);
-	
+
 	base.CreateMesh("resources/models/base.obj", (Material*)b3, UBO_BP);
-	
+
 	handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP);
-	
+
 	//dome.CreateMesh("resources/models/dome_quarter.obj", (Material*)b5, UBO_BP);
 	//dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
 	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP);
 
 	light.CreateMesh("resources/models/cube.obj", (Material*)b6, UBO_BP);
-	
+
 	meshes[0] = rose;
 	meshes[1] = stem;
 	meshes[2] = dome;
@@ -601,10 +631,8 @@ GLFWwindow* setup(int major, int minor,
 	meshes[4] = handle;
 	meshes[5] = light;
 
-	setupSkybox();
 	setupBufferObjects();
 	setupShaderProgram();
-	setupCamera();
 	setupScene();
 	return win;
 }

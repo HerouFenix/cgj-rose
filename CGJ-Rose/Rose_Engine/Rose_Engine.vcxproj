@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(ProjectDir)src/vender;$(SolutionDir)Dependencies\glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(ProjectDir)src/vender;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(ProjectDir)src/vender;$(SolutionDir)Dependencies\glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw\include;$(ProjectDir)src/vender;$(SolutionDir)Dependencies\glew\include;$(SolutionDir)Dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,9 +149,12 @@
     <ClCompile Include="src\debug_Main.cpp" />
     <ClCompile Include="src\utils\materials\Basic_Material.cpp" />
     <ClCompile Include="src\utils\materials\Material.cpp" />
+    <ClCompile Include="src\utils\materials\Particle_Material.cpp" />
     <ClCompile Include="src\utils\materials\Rose_Material.cpp" />
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
     <ClCompile Include="src\utils\materials\Wood_Material.cpp" />
+    <ClCompile Include="src\utils\particlesystem\ParticleSystem.cpp" />
+    <ClCompile Include="src\utils\particlesystem\Random.cpp" />
     <ClCompile Include="src\utils\scene\Scene.cpp" />
     <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -184,6 +187,7 @@
     <ClInclude Include="headers\drawing\Obj_Loader.h" />
     <ClInclude Include="headers\drawing\Renderer.h" />
     <ClInclude Include="headers\materials\Glass_Material.h" />
+    <ClInclude Include="headers\materials\Particle_Material.h" />
     <ClInclude Include="headers\materials\Rose_Material.h" />
     <ClInclude Include="headers\drawing\Shader.h" />
     <ClInclude Include="headers\materials\stb_image.h" />
@@ -196,6 +200,8 @@
     <ClInclude Include="headers\matrices\Matrix2.h" />
     <ClInclude Include="headers\matrices\Matrix3.h" />
     <ClInclude Include="headers\matrices\Matrix4.h" />
+    <ClInclude Include="headers\particlesystem\ParticleSystem.h" />
+    <ClInclude Include="headers\particlesystem\Random.h" />
     <ClInclude Include="headers\quaternions\Quaternion.h" />
     <ClInclude Include="headers\scene\Scene.h" />
     <ClInclude Include="headers\scene\SceneGraph.h" />
@@ -217,6 +223,7 @@
     <None Include="resources\shaders\Basic3D.shader" />
     <None Include="resources\shaders\Stem_Shader.shader" />
     <None Include="resources\shaders\Wood_Shader.shader" />
+    <None Include="resources\shaders\particle.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
