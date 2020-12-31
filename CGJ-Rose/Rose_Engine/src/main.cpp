@@ -22,7 +22,7 @@
 #include "../headers/scene/SceneGraph.h"
 #include "../headers/scene/Scene.h"
 
-#include "../headers/particlesystem/ParticleSystem.h"
+#include "../headers/particles/ParticleSystem.h"
 
 #include <ctime>
 #include <ratio>
@@ -96,8 +96,9 @@ bool goToInitial = false;
 std::chrono::high_resolution_clock::time_point timeStartedLerping;
 float animation_total = 3000.0f; //Animation speed in milliseconds
 
-ParticleProps m_Particle;
-ParticleSystem m_ParticleSystem;
+ParticleProps particle;
+ParticleSystem particleSystem(1000);
+int spawnCounter = 25;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -180,13 +181,22 @@ void drawScene()
 	glDepthMask(GL_TRUE);
 
 	// Emit Particles
-	for (int i = 0; i < 5; i++)
-		m_ParticleSystem.Emit(m_Particle);
+	if (spawnCounter < 25) {
+		particleSystem.Emit(particle);
+	}
+
+	if (spawnCounter <= 0) {
+		spawnCounter = 100;
+	}
+	else {
+		spawnCounter--;
+	}
 
 
-	m_ParticleSystem.OnUpdate(0.01f);
-	m_ParticleSystem.OnRender();
-	
+
+	particleSystem.OnUpdate(0.005f);
+	particleSystem.OnRender();
+
 	scene.DrawSceneGraphs(ortho);
 }
 
@@ -534,15 +544,15 @@ void setupSkybox() {
 
 void setupParticleSystem() {
 	// Init here
-	m_Particle.ColorBegin = { 255 / 255.0f, 0 / 255.0f, 0 / 255.0f, 1.0f };
-	m_Particle.ColorEnd = { 0 / 255.0f, 0 / 255.0f, 255 / 255.0f, 1.0f };
-	m_Particle.SizeBegin = 0.5f, m_Particle.SizeVariation = 0.3f, m_Particle.SizeEnd = 0.0f;
-	m_Particle.LifeTime = 1.0f;
-	m_Particle.Velocity = Vector3();
-	m_Particle.VelocityVariation = Vector3(3.0f, 1.0f, 1.0f);
-	m_Particle.Position = Vector3();
+	particle.ColorBegin = { 202.0f / 255.0f, 44.0f / 255.0f, 146.0f / 255.0f, 1.0f };
+	particle.ColorEnd = { 242.0f / 255.0f, 198.0f / 255.0f, 226.0f / 255.0f, 1.0f };
+	particle.SizeBegin = 0.5f, particle.SizeVariation = 0.3f, particle.SizeEnd = 0.0f;
+	particle.LifeTime = 1.25f;
+	particle.Velocity = Vector3();
+	particle.VelocityVariation = Vector3(1.0f, 1.2f, 1.0f);
+	particle.Position = Vector3(0.05f, 0.6f, 0.0f);
 
-	m_ParticleSystem.SetupParticleMesh(scene.GetSceneGraphs()[0]->camera);
+	particleSystem.SetupParticleMesh("resources/models/rose12.obj", 0.1f, scene.GetSceneGraphs()[0]->camera);
 }
 
 void setupCamera() {

@@ -8,6 +8,8 @@
 #include "../camera/ArcBallCamera.h"
 #include "../drawing/Shader.h"
 
+#include "../../headers/materials/Particle_Material.h"
+
 #include <chrono>
 #include <vector>
 
@@ -25,10 +27,10 @@ struct ParticleProps
 class ParticleSystem
 {
 public:
-	ParticleSystem();
+	ParticleSystem(int _numberOfParticles);
 
 	void OnUpdate(float time_per_frame);
-	void SetupParticleMesh(ArcBallCamera& camera);
+	void SetupParticleMesh(const std::string& path, float _meshScale, ArcBallCamera& camera);
 	void OnRender();
 
 	void Emit(ParticleProps& particleProps);
@@ -49,13 +51,12 @@ private:
 		bool Active = false;
 	};
 	std::vector<Particle> m_ParticlePool;
-	uint32_t m_PoolIndex = 9;
+	uint32_t m_PoolIndex = 0;
 
-	//GLuint m_QuadVA = 0;
-
-	//std::unique_ptr<Shader> m_ParticleShader;
-	//GLint m_ParticleShaderViewProj, m_ParticleShaderTransform, m_ParticleShaderColor;
 	Shader shader;
+	Particle_Material* particleMaterial;
 
 	float size;
+	int numberOfParticles;
+	float meshScale;
 };

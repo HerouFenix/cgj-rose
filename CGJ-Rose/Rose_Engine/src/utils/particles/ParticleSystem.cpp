@@ -1,8 +1,7 @@
-#include "../../headers/particlesystem/ParticleSystem.h"
+#include "../../headers/particles/ParticleSystem.h"
 
-#include "../../headers/particlesystem/Random.h"
+#include "../../headers/particles/Random.h"
 #include "../../headers/matrices/Matrix4.h"
-#include "../../headers/materials/Particle_Material.h"
 
 #include <glm/glm.hpp>
 #include <glm/vec4.hpp>
@@ -10,9 +9,12 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
-ParticleSystem::ParticleSystem()
+ParticleSystem::ParticleSystem(int _numberOfParticles)
 {
-	m_ParticlePool.resize(10);
+	size = 0;
+	numberOfParticles = _numberOfParticles;
+	m_ParticlePool.resize(numberOfParticles);
+	m_PoolIndex = numberOfParticles - 1;
 }
 
 void ParticleSystem::OnUpdate(float time_per_frame)
@@ -34,52 +36,35 @@ void ParticleSystem::OnUpdate(float time_per_frame)
 	}
 }
 
-void ParticleSystem::SetupParticleMesh(ArcBallCamera& camera) {
+void ParticleSystem::SetupParticleMesh(const std::string& path, float _meshScale, ArcBallCamera& camera) {
 	Shader basic1("resources/shaders/particle.shader");
-	Particle_Material* b1 = new Particle_Material(basic1);
+	particleMaterial = new Particle_Material(basic1);
 
-	particleMesh.CreateMesh("resources/models/cube.obj", (Material*)b1, camera.UBO_BP);
+	particleMesh.CreateMesh(path, (Material*)particleMaterial, camera.UBO_BP);
+	meshScale = _meshScale;
 }
 
 void ParticleSystem::OnRender()
 {
-	/*if (!particleMesh.VaoID)
-	{
-		
-
-		//m_ParticleShader = std::unique_ptr<Shader>(new Shader("resources/shaders/particle.shader"));
-		//shader = Shader("resources/shaders/particle.shader");
-		//shader.SetupShader(false, false);
-		//shader.SetUniformBlock("SharedMatrices", camera.UBO_BP);
-	}*/
-
-	//shader.Bind();
-	//glUniformMatrix4fv(m_ParticleShaderViewProj, 1, GL_FALSE, glm::value_ptr(camera.GetViewProjectionMatrix()));
-	//shader.SetUniformBlock("SharedMatrices", camera.UBO_BP);
-
 	for (auto& particle : m_ParticlePool)
 	{
 		if (!particle.Active)
 			continue;
 
-		// Fade away particles
+		// Fade away particles using GLM lerp
 		float life = particle.LifeRemaining / particle.LifeTime;
 		glm::vec4 colorBegin(particle.ColorBegin.getX(), particle.ColorBegin.getY(), particle.ColorBegin.getZ(), particle.ColorBegin.getW());
 		glm::vec4 colorEnd(particle.ColorEnd.getX(), particle.ColorEnd.getY(), particle.ColorEnd.getZ(), particle.ColorEnd.getW());
 		glm::vec4 color = glm::lerp(colorEnd, colorBegin, life);
 
+		particleMaterial->setColour(Vector4(color.x, color.y, color.z, color.w));
 
-		Particle_Material* old_child = dynamic_cast<Particle_Material*>(particleMesh.material);
-		old_child->setColour(Vector4(color.x, color.y, color.z, color.w));
-
-		//color.a = color.a * life;
-
+		// Resize particles so they get smaller overtime
 		size = glm::lerp(particle.SizeEnd, particle.SizeBegin, life);
 
-		// Render
-		
+		// New particle position
 		Matrix4 transform = Matrix4::translation(particle.Position) * Matrix4::rotationZ(particle.Rotation) *
-			Matrix4::scaling(size, size, size) * Matrix4::scaling(0.25f,0.25f,0.25f);
+			Matrix4::scaling(size, size, size) * Matrix4::scaling(meshScale, meshScale, meshScale);
 
 		particleMesh.setWorldTransform(transform);
 
@@ -91,13 +76,20 @@ void ParticleSystem::Emit(ParticleProps& particleProps)
 {
 	Particle& particle = m_ParticlePool[m_PoolIndex];
 	particle.Active = true;
-	particle.Position = particleProps.Position;
-	particle.Rotation = Random::Float() * 2.0f * glm::pi<float>();
+	particle.Position = particleProps.Position; // Initial Postion
+	particle.Rotation = Random::Float() * 2.0f * glm::pi<float>(); // Random initial rotation
 
 	// Velocity
 	particle.Velocity = particleProps.Velocity;
 	particle.Velocity.setX(particle.Velocity.getX() + particleProps.VelocityVariation.getX() * (Random::Float() - 0.5f));
-	particle.Velocity.setY(particle.Velocity.getY() + particleProps.VelocityVariation.getY() * (Random::Float() - 0.5f));
+
+	float randY = Random::Float();
+	if (randY > 0.7) {
+		particle.Velocity.setY(particle.Velocity.getY() + particleProps.VelocityVariation.getY() * (-randY));
+	}
+	else {
+		particle.Velocity.setY(particle.Velocity.getY() + particleProps.VelocityVariation.getY() * (randY-0.5f));
+	}
 	particle.Velocity.setZ(particle.Velocity.getZ() + particleProps.VelocityVariation.getZ() * (Random::Float() - 0.5f));
 
 	// Color
@@ -106,7 +98,7 @@ void ParticleSystem::Emit(ParticleProps& particleProps)
 
 	particle.LifeTime = particleProps.LifeTime;
 	particle.LifeRemaining = particleProps.LifeTime;
-	particle.SizeBegin = particleProps.SizeBegin + particleProps.SizeVariation * (Random::Float() - 0.5f);
+	particle.SizeBegin = particleProps.SizeBegin + particleProps.SizeVariation * (Random::Float() - 0.5f); // Random initial size
 	particle.SizeEnd = particleProps.SizeEnd;
 
 	m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();

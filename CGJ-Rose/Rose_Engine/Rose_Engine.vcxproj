@@ -153,8 +153,8 @@
     <ClCompile Include="src\utils\materials\Rose_Material.cpp" />
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
     <ClCompile Include="src\utils\materials\Wood_Material.cpp" />
-    <ClCompile Include="src\utils\particlesystem\ParticleSystem.cpp" />
-    <ClCompile Include="src\utils\particlesystem\Random.cpp" />
+    <ClCompile Include="src\utils\particles\ParticleSystem.cpp" />
+    <ClCompile Include="src\utils\particles\Random.cpp" />
     <ClCompile Include="src\utils\scene\Scene.cpp" />
     <ClCompile Include="src\utils\scene\SceneGraph.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -200,8 +200,8 @@
     <ClInclude Include="headers\matrices\Matrix2.h" />
     <ClInclude Include="headers\matrices\Matrix3.h" />
     <ClInclude Include="headers\matrices\Matrix4.h" />
-    <ClInclude Include="headers\particlesystem\ParticleSystem.h" />
-    <ClInclude Include="headers\particlesystem\Random.h" />
+    <ClInclude Include="headers\particles\ParticleSystem.h" />
+    <ClInclude Include="headers\particles\Random.h" />
     <ClInclude Include="headers\quaternions\Quaternion.h" />
     <ClInclude Include="headers\scene\Scene.h" />
     <ClInclude Include="headers\scene\SceneGraph.h" />

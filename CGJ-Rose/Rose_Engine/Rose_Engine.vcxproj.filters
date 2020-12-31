@@ -75,9 +75,9 @@
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
     <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
     <ClCompile Include="src\utils\materials\Glass_Material.cpp" />
-    <ClCompile Include="src\utils\particlesystem\ParticleSystem.cpp" />
-    <ClCompile Include="src\utils\particlesystem\Random.cpp" />
     <ClCompile Include="src\utils\materials\Particle_Material.cpp" />
+    <ClCompile Include="src\utils\particles\ParticleSystem.cpp" />
+    <ClCompile Include="src\utils\particles\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -157,9 +157,9 @@
     <ClInclude Include="headers\materials\Stem_Material.h" />
     <ClInclude Include="headers\materials\Marble_Material.h" />
     <ClInclude Include="headers\materials\Glass_Material.h" />
-    <ClInclude Include="headers\particlesystem\ParticleSystem.h" />
-    <ClInclude Include="headers\particlesystem\Random.h" />
     <ClInclude Include="headers\materials\Particle_Material.h" />
+    <ClInclude Include="headers\particles\ParticleSystem.h" />
+    <ClInclude Include="headers\particles\Random.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic3D.shader">
