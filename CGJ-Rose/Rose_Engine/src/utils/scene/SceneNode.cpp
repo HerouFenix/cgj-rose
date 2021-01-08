@@ -1,23 +1,17 @@
 #include "../../headers/scene/SceneNode.h"
 
-
-SceneNode::SceneNode(Mesh* m, SceneNode* parent_node, Vector3 sc) {
+SceneNode::SceneNode(Mesh* m, SceneNode* parent_node) {
 	mesh = m;
 	parent = parent_node;
-	scale = sc;
-
-	localTransform = Matrix4::identity();
-	worldTransform = localTransform;
-
-	Update();
+	scale = Vector3(1, 1, 1);
+	position = Vector3(0, 0, 0);
+	rotation = Quaternion();
 }
 
 SceneNode::SceneNode() {
-	scale = Vector3(1,1,1);
-	localTransform = Matrix4::identity();
-	worldTransform = localTransform;
-
-	Update();
+	scale = Vector3(1, 1, 1);
+	position = Vector3(0, 0, 0);
+	rotation = Quaternion();
 }
 
 
@@ -28,36 +22,27 @@ SceneNode::~SceneNode()
 	}
 }
 
-void SceneNode::ApplyLocalTransform(Matrix4 transform)
-{
-	localTransform = transform * localTransform;
-	quat = Quaternion(transform.getRotation());
-	Vector4 pos4_i(pos.getX(), pos.getY(), pos.getZ(), 1.0f);
-	Vector4 pos4_f = pos4_i.transform(transform);
-	pos = Vector3(pos4_f.getX(), pos4_f.getY(), pos4_f.getZ());
 
-	Update();
-}
-
-void SceneNode::SetLocalTransform(Matrix4 transform)
-{
-	localTransform = transform;
-	Update();
-}
-
-void SceneNode::ResetToDefaultPosition() {
-	localTransform = Matrix4::identity();
-	Update();
+void SceneNode::ResetToDefault() {
+	scale = Vector3(1, 1, 1);
+	position = Vector3(0, 0, 0);
+	rotation = Quaternion();
 }
 
 Matrix4 SceneNode::GetLocalTransform()
 {
-	return localTransform;
+	Matrix4 transform = Matrix4::identity();
+	transform = transform.translation(position) * rotation.GLRotationMatrix() * transform.scaling(scale);
+	return transform;
 }
 
 Matrix4 SceneNode::GetWorldTransform()
 {
-	return worldTransform;
+	if (parent != NULL) { // If we have a parent
+		return parent->GetWorldTransform() * GetLocalTransform();
+	}
+
+	return GetLocalTransform();
 }
 
 Mesh* SceneNode::GetMesh()
@@ -79,22 +64,27 @@ void SceneNode::SetMesh(Mesh* m)
 	mesh = m;
 }
 
-Vector3 SceneNode::GetScale()
-{
-	return scale;
-}
 
 void SceneNode::SetScale(Vector3 sc)
 {
 	scale = sc;
 }
 
+void SceneNode::SetPosition(Vector3 pos)
+{
+	position = pos;
+}
+
+
+void SceneNode::SetRotation(Quaternion rot)
+{
+	rotation = rot;
+}
+
 void SceneNode::AddChildNode(SceneNode* s)
 {
 	children.push_back(s);
 	s->parent = this;
-	s->SetScale(s->GetScale() * scale);
-	Update();
 }
 
 std::vector<SceneNode*> SceneNode::GetChildNodes()
@@ -102,35 +92,44 @@ std::vector<SceneNode*> SceneNode::GetChildNodes()
 	return children;
 }
 
-void SceneNode::Update()
-{
-	if (parent != NULL) { // If we have a parent
-		worldTransform = parent->worldTransform * localTransform;
-	}
-	else { // If we are the root node
-		worldTransform = localTransform;
-	}
+void SceneNode::SetBackCull(bool cull) {
+	backCull = cull;
+}
 
-	// Cascade Update children
-	for (SceneNode* child : children) {
-		child->Update();
+void SceneNode::SetFrontCull(bool cull) {
+	frontCull = cull;
+}
+
+
+void SceneNode::PreDraw() {
+	if (frontCull) {
+		glCullFace(GL_FRONT);
+	}
+	else if (backCull) {
+		glCullFace(GL_BACK);
+	}else { //If neither front nor face culling, disable culling
+		glDisable(GL_CULL_FACE);
+		cullDisabled = true;
 	}
 }
 
-void SceneNode::SetDrawFaceCulling(bool _cullFaces, bool _backCull) {
-	cullFaces = _cullFaces;
-	backCull = _backCull;
+void SceneNode::PostDraw() {
+	if (cullDisabled) { //Reenable culling
+		glEnable(GL_CULL_FACE);
+		cullDisabled = false;
+	}
 }
 
 void SceneNode::Draw()
 {
 	if (mesh != NULL) {
-			Matrix4 scaleM = Matrix4::scaling(scale.getX(), scale.getY(), scale.getZ());
-			float model[16];
-			Matrix4 modelM = worldTransform * scaleM;
-			mesh->setWorldTransform(modelM);
-			mesh->Draw(cullFaces, backCull);
-	}	
+		Matrix4 modelM = GetWorldTransform();
+		mesh->setWorldTransform(modelM);
+
+		PreDraw();
+		mesh->Draw();
+		PostDraw();
+	}
 	// Cascade Draw children
 	for (SceneNode* child : children) {
 		child->Draw();

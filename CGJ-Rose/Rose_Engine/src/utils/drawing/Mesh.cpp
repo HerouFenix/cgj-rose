@@ -68,39 +68,17 @@ void Mesh::setSharedMatrices(const std::string& name, GLuint UBO_BP)
 	material->shader.UnBind();
 }
 
-void Mesh::Draw(bool cullFaces, bool backCull)
+void Mesh::Draw()
 {
-	if (cullFaces) {
-		//glDepthMask(GL_FALSE);
-		glEnable(GL_CULL_FACE);
-
-		if (backCull) {
-			glCullFace(GL_BACK);
-		}
-		else {
-			glCullFace(GL_FRONT);
-		}
-	}
-
 	glBindVertexArray(VaoID);
 	material->shader.Bind();
 
 	material->setUniforms(WorldTransform);
-	////LIGHT_COLOUR/////////////
-	//material->shader.SetUniform4fvec("uniformLightColour", new float[] {1.0f, 1.0f, 1.0f, 1.0f});
-
-	////LIGHT_POS/////////////
-	//material->shader.SetUniform3fvec("uniformLightPos", new float[] {0.0f, 13.0f, 0.0f});
 
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Vertices.size());
 
 	glBindVertexArray(0);
 	material->shader.UnBind();
-
-	if (cullFaces) {
-		//glDepthMask(GL_TRUE);
-		glDisable(GL_CULL_FACE);
-	}
 }
 
 void Mesh::setWorldTransform(Matrix4 transform)

@@ -74,7 +74,7 @@ bool quaternionRotation = true;
 // KEY PRESSED FLAGS
 bool forwardKeyPressed = false;
 bool backwardKeyPressed = false;
-bool lockMouse = true;
+bool lockMouse = false;
 bool firstMouse = true;
 bool mouseMoved = false;
 
@@ -87,7 +87,7 @@ bool mouseRotating = true;
 bool downMoved, upMoved = false;
 
 bool cameraReset = false;
-bool stopRotating = false;
+bool mouseHeld = false;
 bool automaticRotating = false;
 
 bool animate = false;
@@ -111,24 +111,16 @@ void moveCamera() {
 		scene.GetSceneGraphs()[0]->camera.incrementRadius(0.05f);
 	}
 
-	if (!stopRotating) {
-		if (!quaternionRotation) {
-			//std::cout << "EULER ROTATION \n";
-			if (mouseMoved) {
-				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundHorizontal(-xOffset);
-				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundVertical(yOffset);
-				mouseMoved = false;
-			}
+	if (mouseMoved) {
+		if (mouseHeld) {
+			scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionHorizontal(xOffset);
+			scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionVertical(-yOffset);
+			mouseMoved = false;
 		}
-
-		else {
-			//std::cout << "QUATERNION ROTATION \n";
-
-			if (mouseMoved) {
-				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionHorizontal(-xOffset);
-				scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionVertical(yOffset);
-				mouseMoved = false;
-			}
+		else if (lockMouse) {
+			scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionHorizontal(-xOffset);
+			scene.GetSceneGraphs()[0]->camera.rotateCameraAroundQuaternionVertical(yOffset);
+			mouseMoved = false;
 		}
 	}
 
@@ -141,16 +133,16 @@ void moveCamera() {
 
 void moveFloor() {
 	if (moveForward) {
-		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, 0.05));
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0, 0, -0.05);
 	}
 	if (moveBackward) {
-		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0, 0, -0.05));
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0, 0, 0.05);
 	}
 	if (moveLeft) {
-		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(0.05, 0, 0));
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(-0.05, 0, 0);
 	}
 	if (moveRight) {
-		scene.GetSceneGraphs()[0]->GetRoot()->ApplyLocalTransform(Matrix4::translation(-0.05, 0, 0));
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.05, 0, 0);
 	}
 }
 
@@ -272,24 +264,12 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			//scene.GetSceneGraphs()[0]->GetRoot()->ResetToDefaultPosition(); // Reset objects
 			cameraReset = true;
 			break;
-		case GLFW_KEY_G:
-			quaternionRotation = !quaternionRotation;
-			break;
 		case GLFW_KEY_F:
 			lockMouse = !lockMouse;
 			if (lockMouse) {
 				firstMouse = true;
 			}
 			break;
-		case GLFW_KEY_SPACE:
-			stopRotating = !stopRotating;
-			break;
-		case GLFW_KEY_C: {
-			animate = !animate;
-			timeStartedLerping = std::chrono::high_resolution_clock::now();
-			break;
-		}
-
 		}
 	}
 	else if (action == GLFW_RELEASE) {
@@ -317,6 +297,7 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 
 }
 
+
 void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 	if (firstMouse) // initially set to true
 	{
@@ -334,10 +315,22 @@ void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 	mouseMoved = true;
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+		if (action == GLFW_PRESS)
+			mouseHeld = true;
+		else
+			mouseHeld = false;
+	}
+}
+
+
 void setupCallbacks(GLFWwindow* win)
 {
 	glfwSetKeyCallback(win, key_callback);
 	glfwSetCursorPosCallback(win, mouse_callback);
+	glfwSetMouseButtonCallback(win, mouse_button_callback);
 	glfwSetWindowCloseCallback(win, window_close_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 }
@@ -427,7 +420,7 @@ void setupOpenGL(int winx, int winy)
 	glClearDepth(1.0);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 	glViewport(0, 0, winx, winy);

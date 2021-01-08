@@ -30,53 +30,58 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 {
 	
 	SceneNode* root = sceneGraph->AddNode();
-	root->ApplyLocalTransform(Matrix4::scaling(0.3f, 0.3f, 0.3f)); 
-	root->ApplyLocalTransform(Matrix4::translation(0.0f, -1.8f, 0.0f));
 
+	root->SetScale(Vector3(0.3, 0.3, 0.3));
+	root->SetPosition(Vector3(0.0f, -0.25f, 0.0f));
+	root->SetRotation(Quaternion(45, Vector4(0, 1, 0, 1)));
+
+	
 	// FLOWER ////////////////////////////////////////////////////
 	SceneNode* rose_base = sceneGraph->AddNode(NULL, root);
-	rose_base->ApplyLocalTransform(Matrix4::translation(0.0f, 7.5f, 0.0f));
-	rose_base->ApplyLocalTransform(Matrix4::rotationY(45, false));
-	rose_base->ApplyLocalTransform(Matrix4::translation(0.08f, 0.0f, 0.18f));
+	rose_base->SetPosition(Vector3(0.0f, 2.25f, 0.0f));
 
 	// Rose
 	SceneNode* rose_flower = sceneGraph->AddNode(&meshes[0], rose_base);
-	rose_flower->ApplyLocalTransform(Matrix4::translation(0.0f, 0.20f, 0.0f));
+	rose_flower->SetFrontCull(false);
+	rose_flower->SetBackCull(false);
 
-	
 	// Stem
 	SceneNode* rose_stem = sceneGraph->AddNode(&meshes[1], rose_base);
-	rose_stem->ApplyLocalTransform(Matrix4::translation(0.36f, 0.0f, 0.0f));
 	//////////////////////////////////////////////////////////////
-
+	
 	// BASE //////////////////////////////////////////////////////
 	SceneNode* base = sceneGraph->AddNode(&meshes[3], root);
-	base->ApplyLocalTransform(Matrix4::translation(0.0f, 1.5f, 0.0f));
+	base->SetPosition(Vector3(0.0f, -3.5f, 0.0f));
 	//////////////////////////////////////////////////////////////
 
 	// HANDLE ////////////////////////////////////////////////////
 	SceneNode* handle = sceneGraph->AddNode(&meshes[4], root);
-	handle->ApplyLocalTransform(Matrix4::translation(0.0f, 11.2f, 0.0f));
+	handle->SetPosition(Vector3(0.0f, 6.0f, 0.0f));
+	handle->SetFrontCull(false);
+	handle->SetBackCull(false);
 	//////////////////////////////////////////////////////////////
 	
 	// DOME //////////////////////////////////////////////////////
+	
 	SceneNode* dome_root = sceneGraph->AddNode(NULL, root);
-	dome_root->ApplyLocalTransform(Matrix4::rotationX(90, false));
+	dome_root->SetRotation(Quaternion(90,Vector4(1,0,0,1)));
+	dome_root->SetPosition(Vector3(0.0f, 3.0f, 0.0f));
 
 	SceneNode* dome_back = sceneGraph->AddNode(&meshes[2], dome_root);
-	dome_back->ApplyLocalTransform(Matrix4::scaling(0.95,0.95,1.01));
-	dome_back->ApplyLocalTransform(Matrix4::translation(0.0f, 0.0f, -8.1f));
-	dome_back->SetDrawFaceCulling(true, false);
+	dome_back->SetScale(Vector3(0.95,0.95,1.01));
+	dome_back->SetBackCull(false);
+	dome_back->SetFrontCull(true);
 
 	SceneNode* dome_front = sceneGraph->AddNode(&meshes[2], dome_root);
-	dome_front->ApplyLocalTransform(Matrix4::scaling(1.01, 1.01, 1.01));
-	dome_front->ApplyLocalTransform(Matrix4::translation(0.0f, 0.0f, -8.28f));
-	dome_front->SetDrawFaceCulling(true, true);
-	//////////////////////////////////////////////////////////////\
+	dome_front->SetScale(Vector3(1.01, 1.01, 1.01));
+	dome_front->SetPosition(Vector3(0.0f, 0.0f, -0.2f));
 
-	SceneNode* light = sceneGraph->AddNode(&meshes[5], root, Vector3(0.5,0.5,0.5));
-	light->ApplyLocalTransform(Matrix4::translation(0.0f, 1.8f, 0.0f));
-	light->ApplyLocalTransform(Matrix4::translation( -4.0f, 13.0f, 3.5f));
+	//////////////////////////////////////////////////////////////\
+	
+
+	SceneNode* light = sceneGraph->AddNode(&meshes[5], root);
+	light->SetScale(Vector3(0.5, 0.5, 0.5));
+	light->SetPosition(Vector3(-4.0f, 14.8f, 3.5f));
 
 }
 

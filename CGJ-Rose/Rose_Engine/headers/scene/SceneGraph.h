@@ -17,7 +17,7 @@ public:
 	SceneNode* GetRoot();
 
 	SceneNode* AddNode();
-	SceneNode* AddNode(Mesh* m, SceneNode* parent, Vector3 sc = Vector3(1, 1, 1));
+	SceneNode* AddNode(Mesh* m, SceneNode* parent);
 
 	void DrawSceneGraph(bool ortho = false);
 };

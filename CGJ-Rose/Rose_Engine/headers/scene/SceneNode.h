@@ -17,21 +17,24 @@
 
 class SceneNode {
 public:
-	Vector3 pos;
-	Quaternion quat;
-	bool cullFaces = false; bool backCull = false;
+	Vector3 position;
+	Vector3 scale;
+	Quaternion rotation;
 
-	SceneNode(Mesh* m, SceneNode* parent = NULL, Vector3 sc = Vector3(1,1,1));
+	bool backCull = true; bool frontCull = false; bool cullDisabled = false;
+
+	SceneNode(Mesh* m, SceneNode* parent = NULL);
 	SceneNode();
 	~SceneNode();
 
-	void ApplyLocalTransform(Matrix4 transform);
+	void SetPosition(Vector3 pos);
+	void SetRotation(Quaternion rt);
+	void SetScale(Vector3 sc);
 
-	void SetLocalTransform(Matrix4 transform);
+	void SetBackCull(bool cull);
+	void SetFrontCull(bool cull);
 
-	void SetDrawFaceCulling(bool _cullFaces, bool _backCull);
-
-	void ResetToDefaultPosition();
+	void ResetToDefault();
 
 	Matrix4 GetLocalTransform();
 
@@ -40,25 +43,16 @@ public:
 	Mesh* GetMesh();
 	void SetMesh(Mesh* m);
 
-
-
-	Vector3 GetScale();
-	void SetScale(Vector3 sc);
-
 	void AddChildNode(SceneNode* s);
 
 	std::vector<SceneNode*> GetChildNodes();
 
-	void Update();
-
+	void PreDraw();
 	virtual void Draw();
+	void PostDraw();
 
 protected:
 	SceneNode* parent;
 	Mesh* mesh;
-	Matrix4 worldTransform;
-	Matrix4 localTransform;
-	Vector3 scale;
-	float colour[4];
 	std::vector<SceneNode*> children;
 };

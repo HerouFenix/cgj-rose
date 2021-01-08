@@ -68,7 +68,7 @@ void ParticleSystem::OnRender()
 
 		particleMesh.setWorldTransform(transform);
 
-		particleMesh.Draw(false, false);
+		particleMesh.Draw();
 	}
 }
 
