@@ -175,6 +175,7 @@
     <None Include="resources\shaders\Marble.shader" />
     <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\particle.shader" />
+    <None Include="resources\shaders\LightDepth.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

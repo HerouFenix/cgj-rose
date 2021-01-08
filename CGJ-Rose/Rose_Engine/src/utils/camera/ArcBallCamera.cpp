@@ -89,6 +89,26 @@ const Matrix4 ArcBallCamera::getViewMatrix() {
 	return translation * rotation;
 }
 
+Matrix4 ArcBallCamera::getTranslation()
+{
+	return translation;
+}
+
+Matrix4 ArcBallCamera::getRotation()
+{
+	return rotation;
+}
+
+void ArcBallCamera::setTranslation(Matrix4 trans)
+{
+	translation = trans;
+}
+
+void ArcBallCamera::setRotation(Matrix4 rot)
+{
+	rotation = rot;
+}
+
 void ArcBallCamera::incrementRadius(float inc)
 {
 	radius += inc;

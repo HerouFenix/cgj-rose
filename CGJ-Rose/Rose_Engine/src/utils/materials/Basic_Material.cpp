@@ -26,7 +26,7 @@ void Basic_Material::setUniforms(Matrix4 model)
 	shader.SetUniform4fvec("uniformLightColour", new float[] {1.0f, 1.0f, 1.0f, 1.0f});
 
 	//LIGHT_POS/////////////
-	shader.SetUniform3fvec("uniformLightPos", new float[] {0.0f, -13.0f, 0.0f});
+	shader.SetUniform3fvec("uniformLightPos", new float[] {-4.0f, 0.0f, 0.0f});
 
 	GLCall(glActiveTexture(GL_TEXTURE0 + texture.ID));
 	GLCall(glBindTexture(GL_TEXTURE_2D, texture.ID));

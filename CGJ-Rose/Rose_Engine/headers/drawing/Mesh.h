@@ -39,6 +39,7 @@ public:
 	void setupBufferObjects();
 
 	void Draw();
+	void DrawDepth(Shader* shader);
 	void setWorldTransform(Matrix4 transform);
 	void setMaterial(Material* mat, GLuint UBO_BP);
 	

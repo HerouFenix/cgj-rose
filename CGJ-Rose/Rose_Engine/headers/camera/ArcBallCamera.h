@@ -79,6 +79,14 @@ public:
 	 ***********************************************/
 	const Matrix4 getViewMatrix();
 
+	Matrix4 getTranslation();
+
+	Matrix4 getRotation();
+
+	void setTranslation(Matrix4 trans);
+
+	void setRotation(Matrix4 rot);
+
 	/********************************************/ /**
 	 * Change the camera radius
 	 ***********************************************/

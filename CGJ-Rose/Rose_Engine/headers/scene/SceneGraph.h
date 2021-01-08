@@ -20,4 +20,5 @@ public:
 	SceneNode* AddNode(Mesh* m, SceneNode* parent);
 
 	void DrawSceneGraph(bool ortho = false);
+	void DrawSceneGraphDepth(Shader* depthShader, Vector3 lightPosition);
 };

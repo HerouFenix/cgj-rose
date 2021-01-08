@@ -32,10 +32,10 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	SceneNode* root = sceneGraph->AddNode();
 
 	root->SetScale(Vector3(0.3, 0.3, 0.3));
-	root->SetPosition(Vector3(0.0f, -0.25f, 0.0f));
-	root->SetRotation(Quaternion(45, Vector4(0, 1, 0, 1)));
+	//root->SetPosition(Vector3(0.0f, -0.25f, 0.0f));
+	//root->SetRotation(Quaternion(45, Vector4(0, 1, 0, 1)));
 
-	
+	/*
 	// FLOWER ////////////////////////////////////////////////////
 	SceneNode* rose_base = sceneGraph->AddNode(NULL, root);
 	rose_base->SetPosition(Vector3(0.0f, 2.25f, 0.0f));
@@ -77,11 +77,16 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	dome_front->SetPosition(Vector3(0.0f, 0.0f, -0.2f));
 
 	//////////////////////////////////////////////////////////////\
-	
+	*/
 
 	SceneNode* light = sceneGraph->AddNode(&meshes[5], root);
 	light->SetScale(Vector3(0.5, 0.5, 0.5));
-	light->SetPosition(Vector3(-4.0f, 14.8f, 3.5f));
+	light->SetPosition(Vector3(-4.0f, 0.0f,0.0f));
+
+	SceneNode* cube1 = sceneGraph->AddNode(&meshes[4], root);
+	
+	SceneNode* cube2 = sceneGraph->AddNode(&meshes[4], root);
+	cube2->SetPosition(Vector3(4.0f, 0.0f, 0.0f));
 
 }
 
@@ -94,5 +99,12 @@ void Scene::DrawSceneGraphs(bool ortho)
 {
 	for (SceneGraph* sceneGraph : sceneGraphs) {
 		sceneGraph->DrawSceneGraph(ortho);
+	}
+}
+
+void Scene::DrawSceneGraphsDepth(Shader* depthShader, Vector3 lightPosition)
+{
+	for (SceneGraph* sceneGraph : sceneGraphs) {
+		sceneGraph->DrawSceneGraphDepth(depthShader, lightPosition);
 	}
 }

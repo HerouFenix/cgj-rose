@@ -81,6 +81,20 @@ void Mesh::Draw()
 	material->shader.UnBind();
 }
 
+void Mesh::DrawDepth(Shader* depthShader)
+{
+	glBindVertexArray(VaoID);
+
+	//MODEL////////////////////
+	float model_arr[16];
+	WorldTransform.getRowMajor(model_arr);
+	depthShader->SetUniform4fv("ModelMatrix", model_arr);
+
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Vertices.size());
+
+	glBindVertexArray(0);
+}
+
 void Mesh::setWorldTransform(Matrix4 transform)
 {
 	WorldTransform = transform;

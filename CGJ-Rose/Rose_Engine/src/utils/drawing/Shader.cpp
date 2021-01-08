@@ -17,7 +17,7 @@ Shader::Shader(const std::string& path)
 
 Shader::~Shader()
 {
-	GLCall(glDeleteProgram(m_RendererID));
+	//GLCall(glDeleteProgram(m_RendererID));
 }
 
 void Shader::SetupShader(bool TexcoordsLoaded, bool NormalsLoaded)

@@ -49,6 +49,7 @@ public:
 
 	void PreDraw();
 	virtual void Draw();
+	virtual void DrawDepth(Shader* depthShader);
 	void PostDraw();
 
 protected:

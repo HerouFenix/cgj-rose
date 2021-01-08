@@ -24,4 +24,5 @@ public:
 
 	void ClearScene();
 	void DrawSceneGraphs(bool ortho);
+	void DrawSceneGraphsDepth(Shader* depthShader, Vector3 lightPosition);
 };

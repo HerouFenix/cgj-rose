@@ -38,7 +38,7 @@
 #include "../headers/materials/Wood_Material.h"
 #include "../headers/materials/Stem_Material.h"
 
-// TODO - Integrate particles into scenenodegraph ; Shadows ; Better Marble
+// TODO - Shadows ; Better Marble ; Make light correspond to actual position and equal to all materials instead of hardcoded...
 
 #define VERTICES 0
 #define TEXCOORDS 1
@@ -89,6 +89,16 @@ bool automaticRotating = false;
 ParticleProps particle;
 ParticleSystem particleSystem(1000);
 int spawnCounter = 25;
+
+
+unsigned int depthMapFBO;
+unsigned int depthMap;
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+const unsigned int WIN_HEIGHT = 920, WIN_WIDTH = 920;
+
+
+Shader lightDepthShader;
+Vector3 lightPosition(-4.0f, 0.0f, 0.0f);
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -150,11 +160,24 @@ void drawScene()
 	}
 	////////////////
 
+	// Render to Depth Map
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
 
-	// Draw skybox
-	skybox.Draw();
+	scene.DrawSceneGraphsDepth(&lightDepthShader, lightPosition);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	// Render as normal with shadow mapping (using depth map)
+	glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+
 
 	// Emit Particles
+	/*
 	if (spawnCounter < 25) {
 		particleSystem.Emit(particle);
 	}
@@ -168,8 +191,12 @@ void drawScene()
 
 	particleSystem.OnUpdate(0.005f);
 	particleSystem.OnRender();
+	*/
 
 	scene.DrawSceneGraphs(ortho);
+
+	// Draw skybox
+	skybox.Draw();
 }
 
 
@@ -410,6 +437,7 @@ void setupShaderProgram() {
 	for (int i = 0; i < 6; i++) {
 		meshes[i].setupShader(UBO_BP);
 	}
+	lightDepthShader.SetupShader(false, false);
 }
 
 void setupBufferObjects() {
@@ -463,6 +491,29 @@ void setupScene() {
 	scene.SetupSceneGraph(scene.GetSceneGraphs()[0], meshes);
 }
 
+void setupDepthMap() {
+	lightDepthShader = Shader("resources/shaders/LightDepth.shader");
+
+	glGenFramebuffers(1, &depthMapFBO);
+
+	// Generate Depth Texture
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Attach it as the framebuffer's depth buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 GLFWwindow* setup(int major, int minor,
 	int winx, int winy, const char* title, int is_fullscreen, int is_vsync)
 {
@@ -478,9 +529,9 @@ GLFWwindow* setup(int major, int minor,
 	setupSkybox();
 	setupCamera();
 	setupParticleSystem();
+	setupDepthMap();
 
 	// SET MATERIALS ////////////////////////////////////////////
-
 	Shader basic1("resources/shaders/Rose.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
 
@@ -502,9 +553,13 @@ GLFWwindow* setup(int major, int minor,
 	Shader basic5("resources/shaders/lightSource.shader"); // Light Source
 	Basic_Material* b6 = new Basic_Material(basic5);
 
+	Shader basic7("resources/shaders/Basic3D.shader");
+	Basic_Material* b7 = new Basic_Material(basic7);
+	b7->setColour(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
 	// SET MESHSES //////////////////////////////////////////////
 
-	Mesh rose, stem, dome, base, handle, light;
+	Mesh rose, stem, dome, base, handle, light, cube;
 
 	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
 
@@ -519,12 +574,14 @@ GLFWwindow* setup(int major, int minor,
 	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP);
 
 	light.CreateMesh("resources/models/cube.obj", (Material*)b6, UBO_BP);
+	cube.CreateMesh("resources/models/cube.obj", (Material*)b7, UBO_BP);
 
 	meshes[0] = rose;
 	meshes[1] = stem;
 	meshes[2] = dome;
 	meshes[3] = base;
-	meshes[4] = handle;
+	//meshes[4] = handle;
+	meshes[4] = cube;
 	meshes[5] = light;
 
 	setupBufferObjects();
@@ -576,7 +633,7 @@ int main(int argc, char* argv[])
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		920, 920, "The Enchanted Rose", is_fullscreen, is_vsync);
+		WIN_WIDTH, WIN_HEIGHT, "The Enchanted Rose", is_fullscreen, is_vsync);
 	run(win);
 
 	exit(EXIT_SUCCESS);
