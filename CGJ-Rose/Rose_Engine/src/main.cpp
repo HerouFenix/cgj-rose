@@ -17,7 +17,7 @@
 #include "../headers/drawing/Shader.h"
 #include "../headers/drawing/Mesh.h"
 
-#include "../headers/drawing/Renderer.h"
+#include "../headers/drawing/Skybox.h"
 
 #include "../headers/scene/SceneGraph.h"
 #include "../headers/scene/Scene.h"
@@ -38,7 +38,7 @@
 #include "../headers/materials/Wood_Material.h"
 #include "../headers/materials/Stem_Material.h"
 
-
+// TODO - Integrate particles into scenenodegraph ; Shadows ; Better Marble
 
 #define VERTICES 0
 #define TEXCOORDS 1
@@ -49,9 +49,7 @@ std::vector <Vertex> Vertices;
 std::vector <Texcoord> Texcoords;
 std::vector <Normal> Normals;
 
-unsigned int textureID;
-GLuint skyboxVAO;
-Shader skyboxShader("resources/shaders/Skybox.shader");
+Skybox skybox;
 
 Mesh meshes[6];
 
@@ -68,8 +66,6 @@ const GLuint UBO_BP = 0;
 
 bool ortho = false;
 bool projChanged;
-
-bool quaternionRotation = true;
 
 // KEY PRESSED FLAGS
 bool forwardKeyPressed = false;
@@ -89,12 +85,6 @@ bool downMoved, upMoved = false;
 bool cameraReset = false;
 bool mouseHeld = false;
 bool automaticRotating = false;
-
-bool animate = false;
-bool goToInitial = false;
-
-std::chrono::high_resolution_clock::time_point timeStartedLerping;
-float animation_total = 3000.0f; //Animation speed in milliseconds
 
 ParticleProps particle;
 ParticleSystem particleSystem(1000);
@@ -148,6 +138,7 @@ void moveFloor() {
 
 void drawScene()
 {
+	// Movements
 	bool cameraMoved = (mouseMoved || projChanged || cameraReset || forwardKeyPressed || backwardKeyPressed);
 
 	if (cameraMoved)
@@ -157,20 +148,11 @@ void drawScene()
 	if (floorMoved) {
 		moveFloor();
 	}
+	////////////////
 
 
 	// Draw skybox
-	glDepthMask(GL_FALSE);
-	glBindVertexArray(skyboxVAO);
-	skyboxShader.Bind();
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	glBindVertexArray(0);
-	skyboxShader.UnBind();
-	glDepthMask(GL_TRUE);
+	skybox.Draw();
 
 	// Emit Particles
 	if (spawnCounter < 25) {
@@ -183,8 +165,6 @@ void drawScene()
 	else {
 		spawnCounter--;
 	}
-
-
 
 	particleSystem.OnUpdate(0.005f);
 	particleSystem.OnRender();
@@ -221,8 +201,7 @@ void destroyBufferObjects()
 
 void window_close_callback(GLFWwindow* win)
 {
-	//shader.~Shader();
-	//destroyBufferObjects();
+	destroyBufferObjects();
 	std::cout << "Bye bye!" << std::endl;
 }
 
@@ -444,95 +423,9 @@ void setupSkybox() {
 	std::string faces[6] = { "resources/images/right.jpg","resources/images/left.jpg" ,"resources/images/top.jpg" ,"resources/images/bottom.jpg" ,"resources/images/front.jpg" ,"resources/images/back.jpg" };
 	//std::string faces[6] = { "resources/images/back.png","resources/images/bottom.png" ,"resources/images/front.png" ,"resources/images/left.png" ,"resources/images/right.png" ,"resources/images/top.png" };
 
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-	int width, height, nrChannels;
-	for (unsigned int i = 0; i < 6; i++)
-	{
-		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-			);
-			stbi_image_free(data);
-		}
-		else
-		{
-			std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
-			stbi_image_free(data);
-		}
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	float skyboxVertices[] = {
-		// positions          
-		-10.0f,  10.0f, -10.0f,
-		-10.0f, -10.0f, -10.0f,
-		 10.0f, -10.0f, -10.0f,
-		 10.0f, -10.0f, -10.0f,
-		 10.0f,  10.0f, -10.0f,
-		-10.0f,  10.0f, -10.0f,
-
-		-10.0f, -10.0f,  10.0f,
-		-10.0f, -10.0f, -10.0f,
-		-10.0f,  10.0f, -10.0f,
-		-10.0f,  10.0f, -10.0f,
-		-10.0f,  10.0f,  10.0f,
-		-10.0f, -10.0f,  10.0f,
-
-		 10.0f, -10.0f, -10.0f,
-		 10.0f, -10.0f,  10.0f,
-		 10.0f,  10.0f,  10.0f,
-		 10.0f,  10.0f,  10.0f,
-		 10.0f,  10.0f, -10.0f,
-		 10.0f, -10.0f, -10.0f,
-
-		-10.0f, -10.0f,  10.0f,
-		-10.0f,  10.0f,  10.0f,
-		 10.0f,  10.0f,  10.0f,
-		 10.0f,  10.0f,  10.0f,
-		 10.0f, -10.0f,  10.0f,
-		-10.0f, -10.0f,  10.0f,
-
-		-10.0f,  10.0f, -10.0f,
-		 10.0f,  10.0f, -10.0f,
-		 10.0f,  10.0f,  10.0f,
-		 10.0f,  10.0f,  10.0f,
-		-10.0f,  10.0f,  10.0f,
-		-10.0f,  10.0f, -10.0f,
-
-		-10.0f, -10.0f, -10.0f,
-		-10.0f, -10.0f,  10.0f,
-		 10.0f, -10.0f, -10.0f,
-		 10.0f, -10.0f, -10.0f,
-		-10.0f, -10.0f,  10.0f,
-		 10.0f, -10.0f,  10.0f
-	};
-
-	// Setup cube vao
-
-	GLuint skyboxVBO;
-
-	glGenVertexArrays(1, &skyboxVAO);
-	glBindVertexArray(skyboxVAO);
-	{
-		glGenBuffers(1, &skyboxVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices[0], GL_STATIC_DRAW);
-		glEnableVertexAttribArray(VERTICES);
-		glVertexAttribPointer(VERTICES, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	skyboxShader.SetupShader(false, false);
-	skyboxShader.SetUniformBlock("SharedMatrices", UBO_BP);
+	skybox.SetTextures(faces);
+	skybox.SetShader(Shader("resources/shaders/Skybox.shader"));
+	skybox.SetupSkybox(10.0f);
 }
 
 void setupParticleSystem() {

@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\utils\drawing\Skybox.cpp" />
     <ClCompile Include="src\utils\materials\Glass_Material.cpp" />
     <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
     <ClCompile Include="src\debug_Main.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="src\utils\vectors\Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\drawing\Skybox.h" />
     <ClInclude Include="headers\materials\Basic_Material.h" />
     <ClInclude Include="headers\camera\ArcBallCamera.h" />
     <ClInclude Include="headers\camera\Camera.h" />
