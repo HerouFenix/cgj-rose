@@ -16,6 +16,7 @@
 
 #include "../headers/drawing/Shader.h"
 #include "../headers/drawing/Mesh.h"
+#include "../headers/drawing/Light.h"
 
 #include "../headers/drawing/Skybox.h"
 
@@ -37,6 +38,8 @@
 #include "../headers/materials/stb_image.h"
 #include "../headers/materials/Wood_Material.h"
 #include "../headers/materials/Stem_Material.h"
+#include <glm\ext\matrix_clip_space.hpp>
+#include <glm\ext\matrix_transform.hpp>
 
 // TODO - Shadows ; Better Marble ; Make light correspond to actual position and equal to all materials instead of hardcoded...
 
@@ -48,6 +51,8 @@ GLuint ProgramId;
 std::vector <Vertex> Vertices;
 std::vector <Texcoord> Texcoords;
 std::vector <Normal> Normals;
+
+const unsigned int WIN_HEIGHT = 920, WIN_WIDTH = 920;
 
 Skybox skybox;
 
@@ -62,7 +67,7 @@ const float Threshold = (float)1.0e-5;
 
 Scene scene;
 
-const GLuint UBO_BP = 0;
+const GLuint UBO_BP = 0, UBO_BP_L = 1;
 
 bool ortho = false;
 bool projChanged;
@@ -94,11 +99,10 @@ int spawnCounter = 25;
 unsigned int depthMapFBO;
 unsigned int depthMap;
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-const unsigned int WIN_HEIGHT = 920, WIN_WIDTH = 920;
 
 
 Shader lightDepthShader;
-Vector3 lightPosition(-4.0f, 0.0f, 0.0f);
+Shader lightDepthDebugShader;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -146,6 +150,36 @@ void moveFloor() {
 	}
 }
 
+// TODO: DELETE THIS
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void renderQuad()
+{
+	if (quadVAO == 0)
+	{
+		float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	}
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+}
+
 void drawScene()
 {
 	// Movements
@@ -160,20 +194,18 @@ void drawScene()
 	}
 	////////////////
 
-	// Render to Depth Map
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// 1. render depth of scene to texture (from light's perspective)
+	// --------------------------------------------------------------
+
+	// render scene from light's point of view
+
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	scene.DrawSceneGraphsDepth(&lightDepthShader, lightPosition);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-	// Render as normal with shadow mapping (using depth map)
-	glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
+	scene.DrawSceneGraphsDepth(&lightDepthShader);
 
 
 	// Emit Particles
@@ -193,10 +225,64 @@ void drawScene()
 	particleSystem.OnRender();
 	*/
 
-	scene.DrawSceneGraphs(ortho);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, window_width, window_height);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Draw skybox
-	skybox.Draw();
+	scene.DrawSceneGraphs(ortho);
+	//
+	//// Draw skybox
+	//skybox.Draw();
+
+
+	// render Depth map to quad for visual debugging
+		// ---------------------------------------------
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glViewport(0, 0, window_width, window_height);
+	//glClearColor(0.0, 0.0, 0.0, 1.0);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//
+	//
+	//lightDepthDebugShader.Bind();
+	//
+	///*
+	//GLuint textureID;
+	//int textureWidth, textureHeight, textureBPP;
+	//glGenTextures(1, &textureID);
+	//glBindTexture(GL_TEXTURE_2D, textureID);
+	//// set the texture wrapping/filtering options (on the currently bound texture object)
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//
+	//// load and generate the texture
+	//unsigned char* data = stbi_load("resources/images/wood.jpg", &textureWidth, &textureHeight, &textureBPP, 3);
+	//if (data)
+	//{
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	//
+	//	//glGenerateMipmap(GL_TEXTURE_2D);
+	//}
+	//else
+	//{
+	//	std::cout << "Failed to load texture" << std::endl;
+	//}
+	//stbi_image_free(data);
+	//
+	//GLCall(glActiveTexture(GL_TEXTURE0 + textureID));
+	//GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
+	//*/
+	//
+	//GLCall(glActiveTexture(GL_TEXTURE0 + depthMap));
+	//GLCall(glBindTexture(GL_TEXTURE_2D, depthMap));
+	//lightDepthDebugShader.SetUniform1i("u_Texture", depthMap);
+	//
+	//renderQuad();
+	//
+	//lightDepthDebugShader.UnBind();
+
 }
 
 
@@ -435,9 +521,13 @@ void setupOpenGL(int winx, int winy)
 void setupShaderProgram() {
 	// TODO - CHANGE THIS TO NUMBER OF MESHES BEING DRAWN
 	for (int i = 0; i < 6; i++) {
-		meshes[i].setupShader(UBO_BP);
+		meshes[i].setupShader(UBO_BP, UBO_BP_L);
 	}
 	lightDepthShader.SetupShader(false, false);
+
+	lightDepthShader.SetUniformBlock("LightInfo", UBO_BP_L);
+
+	lightDepthDebugShader.SetupShader(false, false);
 }
 
 void setupBufferObjects() {
@@ -487,12 +577,24 @@ void setupCamera() {
 	projChanged = false;
 }
 
+void setupLight() {
+	//Light l(Vector3(-4.0f, 13.0f, 3.5f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	Light l(Vector3(-4.0f, 0.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	l.setProjectionMatrix(scene.GetSceneGraphs()[0]->camera.getOrthProj());
+
+	scene.GetSceneGraphs()[0]->SetLight(l);
+	scene.GetSceneGraphs()[0]->light.SetupLight(UBO_BP_L);
+	scene.GetSceneGraphs()[0]->light.RenderLight();
+
+}
+
 void setupScene() {
 	scene.SetupSceneGraph(scene.GetSceneGraphs()[0], meshes);
 }
 
 void setupDepthMap() {
 	lightDepthShader = Shader("resources/shaders/LightDepth.shader");
+	lightDepthDebugShader = Shader("resources/shaders/DepthDebug.shader");
 
 	glGenFramebuffers(1, &depthMapFBO);
 
@@ -528,53 +630,61 @@ GLFWwindow* setup(int major, int minor,
 
 	setupSkybox();
 	setupCamera();
+	setupLight();
 	setupParticleSystem();
 	setupDepthMap();
 
 	// SET MATERIALS ////////////////////////////////////////////
 	Shader basic1("resources/shaders/Rose.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
+	b1->setDepthMap(depthMap);
 
 	Shader basic2("resources/shaders/Stem_Shader.shader");
 	Stem_Material* b2 = new Stem_Material(basic2);
 	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
+	b2->setDepthMap(depthMap);
 
 	Shader basic3("resources/shaders/Marble.shader");
 	Marble_Material* b3 = new Marble_Material(basic3);
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
+	b3->setDepthMap(depthMap);
 
 	Shader basic4("resources/shaders/Wood_Shader.shader");
 	Wood_Material* b4 = new Wood_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
+	b4->setDepthMap(depthMap);
 
 	Glass_Material* b5 = new Glass_Material();
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
+	b5->setDepthMap(depthMap);
 
 	Shader basic5("resources/shaders/lightSource.shader"); // Light Source
 	Basic_Material* b6 = new Basic_Material(basic5);
+	b6->setDepthMap(depthMap);
 
 	Shader basic7("resources/shaders/Basic3D.shader");
 	Basic_Material* b7 = new Basic_Material(basic7);
 	b7->setColour(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	b7->setDepthMap(depthMap);
 
 	// SET MESHSES //////////////////////////////////////////////
 
 	Mesh rose, stem, dome, base, handle, light, cube;
 
-	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP);
+	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP, UBO_BP_L);
 
-	stem.CreateMesh("resources/models/stem.obj", (Material*)b2, UBO_BP);
+	stem.CreateMesh("resources/models/stem.obj", (Material*)b2, UBO_BP, UBO_BP_L);
 
-	base.CreateMesh("resources/models/base.obj", (Material*)b3, UBO_BP);
+	base.CreateMesh("resources/models/base.obj", (Material*)b3, UBO_BP, UBO_BP_L);
 
-	handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP);
+	handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP, UBO_BP_L);
 
 	//dome.CreateMesh("resources/models/dome_quarter.obj", (Material*)b5, UBO_BP);
 	//dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
-	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP);
+	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP, UBO_BP_L);
 
-	light.CreateMesh("resources/models/cube.obj", (Material*)b6, UBO_BP);
-	cube.CreateMesh("resources/models/cube.obj", (Material*)b7, UBO_BP);
+	light.CreateMesh("resources/models/cube.obj", (Material*)b6, UBO_BP, UBO_BP_L);
+	cube.CreateMesh("resources/models/cube.obj", (Material*)b7, UBO_BP, UBO_BP_L);
 
 	meshes[0] = rose;
 	meshes[1] = stem;

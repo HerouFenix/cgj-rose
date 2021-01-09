@@ -2,17 +2,20 @@
 #include "../camera/ArcBallCamera.h"
 #include "../vectors/Vector3.h"
 #include "SceneNode.h"
+#include "../drawing/Light.h"
 
 class SceneGraph {
 private:
 	SceneNode* root;
 public:
 	ArcBallCamera camera;
+	Light light;
 
-	SceneGraph(ArcBallCamera c = NULL);
+	SceneGraph();
 	~SceneGraph();
 
 	void SetCamera(ArcBallCamera c);
+	void SetLight(Light l);
 
 	SceneNode* GetRoot();
 
@@ -20,5 +23,5 @@ public:
 	SceneNode* AddNode(Mesh* m, SceneNode* parent);
 
 	void DrawSceneGraph(bool ortho = false);
-	void DrawSceneGraphDepth(Shader* depthShader, Vector3 lightPosition);
+	void DrawSceneGraphDepth(Shader* depthShader);
 };

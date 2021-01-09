@@ -11,6 +11,14 @@ uniform SharedMatrices
 	mat4 ProjectionMatrix;
 };
 
+uniform LightInfo
+{
+	vec4 uniformLightColour;
+	vec3 uniformLightPos;
+	mat4 uniformLightViewMatrix;
+	mat4 uniformLightProjMatrix;
+};
+
 void main(void)
 {
 

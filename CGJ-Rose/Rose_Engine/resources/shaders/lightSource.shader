@@ -20,6 +20,14 @@ uniform SharedMatrices
 	mat4 ProjectionMatrix;
 };
 
+uniform LightInfo
+{
+	vec4 uniformLightColour;
+	vec3 uniformLightPos;
+	mat4 uniformLightViewMatrix;
+	mat4 uniformLightProjMatrix;
+};
+
 void main(void)
 {
 	exPosition = inPosition;
@@ -47,10 +55,6 @@ uniform vec3 Specular;
 uniform float Shininess;
 
 uniform sampler2D u_Texture;
-
-uniform vec4 uniformColour;
-uniform vec4 uniformLightColour;
-uniform vec3 uniformLightPos;
 
 in vec3 exNormal;
 in vec3 exFragPos;

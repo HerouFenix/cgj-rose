@@ -8,6 +8,25 @@ Mesh::Mesh()
 	VaoID = -1;
 }
 
+const void Mesh::CreateMesh(std::string filename, Material* mat, GLuint UBO_BP, GLuint UBO_BP_L)
+{
+	NormalsLoaded = false;
+	TexcoordsLoaded = false;
+
+	material = mat;
+
+	loadMeshData(filename);
+	processMeshData();
+	setupBufferObjects();
+
+	material->shader.SetupShader();
+
+	material->shader.SetUniformBlock("SharedMatrices", UBO_BP);
+	material->shader.SetUniformBlock("LightInfo", UBO_BP_L);
+
+	freeMeshData();
+}
+
 const void Mesh::CreateMesh(std::string filename, Material* mat, GLuint UBO_BP)
 {
 	NormalsLoaded = false;
@@ -22,7 +41,6 @@ const void Mesh::CreateMesh(std::string filename, Material* mat, GLuint UBO_BP)
 	material->shader.SetupShader();
 
 	material->shader.SetUniformBlock("SharedMatrices", UBO_BP);
-
 	freeMeshData();
 }
 
@@ -61,12 +79,12 @@ bool Mesh::getTexcoordsLoaded() {
 	return TexcoordsLoaded;
 }
 
-void Mesh::setSharedMatrices(const std::string& name, GLuint UBO_BP)
-{
-	material->shader.Bind();
-	material->shader.SetUniformBlock(name, UBO_BP);
-	material->shader.UnBind();
-}
+//void Mesh::setSharedMatrices(const std::string& name, GLuint UBO_BP)
+//{
+//	material->shader.Bind();
+//	material->shader.SetUniformBlock(name, UBO_BP);
+//	material->shader.UnBind();
+//}
 
 void Mesh::Draw()
 {
@@ -100,7 +118,7 @@ void Mesh::setWorldTransform(Matrix4 transform)
 	WorldTransform = transform;
 }
 
-void Mesh::setMaterial(Material* mat, GLuint UBO_BP)
+void Mesh::setMaterial(Material* mat)
 {
 	material = mat;
 }
@@ -205,10 +223,11 @@ void Mesh::freeMeshData()
 	normalIdx.clear();
 }
 
-void Mesh::setupShader(GLuint UBO_BP)
+void Mesh::setupShader(GLuint UBO_BP, GLuint UBO_BP_L)
 {
 	material->shader.SetupShader(getTexcoordsLoaded(), getNormalsLoaded());
 	material->shader.SetUniformBlock("SharedMatrices", UBO_BP);
+	material->shader.SetUniformBlock("LightInfo", UBO_BP_L);
 }
 
 void Mesh::setupBufferObjects() {

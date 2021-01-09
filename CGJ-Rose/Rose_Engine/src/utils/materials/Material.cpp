@@ -20,16 +20,19 @@ void Material::setUniforms(Matrix4 model)
 	//shader.SetUniform3fvec("Specular", new float[] {specular.getX(), specular.getY(), specular.getZ()});
 	//shader.SetUniform1f("Shininess", shininess);
 
-	//COLOUR///////////////////
-	//shader.SetUniform4fvec("uniformColour", new float[] {colour.getX(), colour.getY(), colour.getZ(), colour.getW()});
-
 	//MODEL////////////////////
 	float model_arr[16];
 	model.getRowMajor(model_arr);
 	shader.SetUniform4fv("ModelMatrix", model_arr);
 
+	shader.SetUniform1i("shadowMap", depthMap);
 }
 
+
+void Material::setDepthMap(unsigned int _depthMap)
+{
+	depthMap = _depthMap;
+}
 
 void Material::setTextCoords(float coords[4]) {
 	for (int i = 0; i < 4; i++) {

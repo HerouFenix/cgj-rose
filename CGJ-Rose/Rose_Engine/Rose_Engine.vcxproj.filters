@@ -67,7 +67,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\debug_Main.cpp" />
     <ClCompile Include="src\utils\materials\Material.cpp" />
     <ClCompile Include="src\utils\materials\Rose_Material.cpp" />
     <ClCompile Include="src\utils\materials\Basic_Material.cpp" />
@@ -79,6 +78,7 @@
     <ClCompile Include="src\utils\particles\ParticleSystem.cpp" />
     <ClCompile Include="src\utils\particles\Random.cpp" />
     <ClCompile Include="src\utils\drawing\Skybox.cpp" />
+    <ClCompile Include="src\utils\drawing\Light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -162,6 +162,7 @@
     <ClInclude Include="headers\particles\ParticleSystem.h" />
     <ClInclude Include="headers\particles\Random.h" />
     <ClInclude Include="headers\drawing\Skybox.h" />
+    <ClInclude Include="headers\drawing\Light.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic3D.shader">
@@ -176,6 +177,7 @@
     <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
+    <None Include="resources\shaders\DepthDebug.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

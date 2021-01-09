@@ -9,8 +9,14 @@ out vec3 exPosition;
 out vec2 exTexcoord;
 out vec3 exNormal;
 
+out mat4 exLightViewMatrix;
+out mat4 exLightProjMatrix;
+out vec3 exLightPos;
+out vec4 exLightColour;
+
 out vec3 exFragPos;
 out vec3 exCameraPos;
+out vec4 exFragPosLightSpace;
 
 uniform mat4 ModelMatrix;
 
@@ -20,12 +26,25 @@ uniform SharedMatrices
 	mat4 ProjectionMatrix;
 };
 
+uniform LightInfo
+{
+	vec4 uniformLightColour;
+	vec3 uniformLightPos;
+	mat4 uniformLightViewMatrix;
+	mat4 uniformLightProjMatrix;
+};
+
 void main(void)
 {
 	exPosition = inPosition;
 	exTexcoord = inTexcoord;
 	exNormal = inNormal;
 	exNormal = mat3(transpose(inverse(ModelMatrix))) * inNormal;
+
+	exLightViewMatrix = uniformLightViewMatrix;
+	exLightProjMatrix = uniformLightProjMatrix;
+	exLightPos = uniformLightPos;
+	exLightColour = uniformLightColour;
 
 	vec4 cameraPos = vec4(1.0, 1.0, 1.0, 0.0) * ViewMatrix;
 	exCameraPos.x = cameraPos.x;
@@ -36,6 +55,7 @@ void main(void)
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 
 	exFragPos = vec3(ModelMatrix * MCPosition);
+	exFragPosLightSpace = uniformLightProjMatrix * uniformLightViewMatrix * vec4(exFragPos, 1.0);
 }
 
 #shader fragment
@@ -53,24 +73,45 @@ uniform vec3 Specular;
 uniform float Shininess;
 
 uniform sampler2D u_Texture;
+uniform sampler2D shadowMap;
 
 uniform vec4 uniformColour;
-uniform vec4 uniformLightColour;
-uniform vec3 uniformLightPos;
 
 in vec3 exNormal;
 in vec3 exFragPos;
 in vec3 exCameraPos;
 
+in mat4 exLightViewMatrix;
+in mat4 exLightProjMatrix;
+in vec3 exLightPos;
+in vec4 exLightColour;
+in vec4 exFragPosLightSpace;
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+	// perform perspective divide
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	// transform to [0,1] range
+	projCoords = projCoords * 0.5 + 0.5;
+	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	// get depth of current fragment from light's perspective
+	float currentDepth = projCoords.z;
+	// check whether current frag pos is in shadow
+	float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+	return shadow;
+}
+
 
 void main(void)
 {
-	//vec4 color = uniformLightColour * uniformColour;
+	//vec4 color = exLightColour * uniformColour;
 	//out_Color = color;
 
 	// Ambient
 	float ambientStrength = 0.1;
-	vec4 ambient = uniformLightColour;
+	vec4 ambient = exLightColour;
 	ambient.x = ambient.x * 0.1;
 	ambient.y = ambient.y * 0.1;
 	ambient.z = ambient.z * 0.1;
@@ -78,12 +119,12 @@ void main(void)
 	// Diffuse
 	vec3 norm = normalize(exNormal);
 
-	vec3 lightDir = normalize(uniformLightPos - exFragPos);
+	vec3 lightDir = normalize(exLightPos - exFragPos);
 	vec3 viewDir = normalize(exCameraPos - exFragPos);
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec4 diffuse = diff * uniformLightColour;
+	vec4 diffuse = diff * exLightColour;
 
 	// Specular
 	//float specularStrength = 0.5;
@@ -91,12 +132,15 @@ void main(void)
 
 	int shininess = 32;
 	//float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-	//vec4 specular = specularStrength * spec * uniformLightColour;
+	//vec4 specular = specularStrength * spec * exLightColour;
 
 	float spec = pow(max(dot(norm, halfwayDir), 0.0), shininess);
-	vec4 specular = uniformLightColour * spec;
+	vec4 specular = exLightColour * spec;
 
+	// calculate shadow
+	float shadow = ShadowCalculation(exFragPosLightSpace);
+	//shadow = 0;
+	vec4 color = (ambient + (1.0 - shadow) * (diffuse + specular)) * uniformColour;
 
-	vec4 color = (ambient + diffuse + specular) * uniformColour;
 	out_Color = color;
 }

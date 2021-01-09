@@ -24,6 +24,7 @@ public:
 	Material *material;
 	Matrix4 WorldTransform;
 
+	const void CreateMesh(std::string filename, Material* mat, GLuint UBO_BP, GLuint UBO_BP_L);
 	const void CreateMesh(std::string filename, Material* mat, GLuint UBO_BP);
 	const void CreateMesh(std::string filename, Material* mat);
 
@@ -33,15 +34,15 @@ public:
 
 	bool getNormalsLoaded();
 	bool getTexcoordsLoaded();
-	void setSharedMatrices(const std::string& name, GLuint UBO_BP);
+	//void setSharedMatrices(const std::string& name, GLuint UBO_BP);
 
-	void setupShader(GLuint UBO_BP);
+	void setupShader(GLuint UBO_BP, GLuint UBO_BP_L);
 	void setupBufferObjects();
 
 	void Draw();
 	void DrawDepth(Shader* shader);
 	void setWorldTransform(Matrix4 transform);
-	void setMaterial(Material* mat, GLuint UBO_BP);
+	void setMaterial(Material* mat);
 	
 private:
 	std::vector <Vertex> Vertices, vertexData;

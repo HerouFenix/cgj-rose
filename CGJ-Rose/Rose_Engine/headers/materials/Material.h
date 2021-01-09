@@ -18,6 +18,7 @@ public:
 	GLuint UBO_ID;
 	Shader shader;	
 	_Texture texture;
+	unsigned int depthMap;
 
 	Vector3 ambient = Vector3();
 	Vector3 diffuse = Vector3();
@@ -35,6 +36,7 @@ public:
 	Material();
 	Material(Shader sh);
 	void virtual setUniforms(Matrix4 model);
+	void setDepthMap(unsigned int _depthMap);
 
 	void setTextCoords(float coords[4]);
 

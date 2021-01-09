@@ -16,7 +16,6 @@ private:
 public:
 	Scene();
 	SceneGraph* CreateSceneGraph();
-	SceneGraph* CreateSceneGraph(ArcBallCamera c);
 
 	std::vector<SceneGraph*> GetSceneGraphs();
 
@@ -24,5 +23,5 @@ public:
 
 	void ClearScene();
 	void DrawSceneGraphs(bool ortho);
-	void DrawSceneGraphsDepth(Shader* depthShader, Vector3 lightPosition);
+	void DrawSceneGraphsDepth(Shader* depthShader);
 };

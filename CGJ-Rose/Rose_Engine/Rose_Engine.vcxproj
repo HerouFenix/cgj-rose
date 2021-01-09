@@ -144,10 +144,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\utils\drawing\Light.cpp" />
     <ClCompile Include="src\utils\drawing\Skybox.cpp" />
     <ClCompile Include="src\utils\materials\Glass_Material.cpp" />
     <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
-    <ClCompile Include="src\debug_Main.cpp" />
     <ClCompile Include="src\utils\materials\Basic_Material.cpp" />
     <ClCompile Include="src\utils\materials\Material.cpp" />
     <ClCompile Include="src\utils\materials\Particle_Material.cpp" />
@@ -180,6 +180,7 @@
     <ClCompile Include="src\utils\vectors\Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\drawing\Light.h" />
     <ClInclude Include="headers\drawing\Skybox.h" />
     <ClInclude Include="headers\materials\Basic_Material.h" />
     <ClInclude Include="headers\camera\ArcBallCamera.h" />
@@ -227,6 +228,7 @@
     <None Include="resources\shaders\Wood_Shader.shader" />
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
+    <None Include="resources\shaders\DepthDebug.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

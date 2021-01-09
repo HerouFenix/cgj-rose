@@ -31,12 +31,6 @@ void Rose_Material::setUniforms(Matrix4 model)
 
 	shader.SetUniform1i("u_Texture", texture.ID);
 
-	//LIGHT_COLOUR/////////////
-	shader.SetUniform4fvec("uniformLightColour", new float[] {1.0f, 1.0f, 1.0f, 1.0f});
-
-	//LIGHT_POS/////////////
-	shader.SetUniform3fvec("uniformLightPos", new float[] {-4.0f, 13.0f, 3.5f});
-
 	//MODEL////////////////////
 	float model_arr[16];
 	model.getRowMajor(model_arr);

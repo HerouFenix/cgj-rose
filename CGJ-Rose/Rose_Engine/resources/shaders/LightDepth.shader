@@ -5,23 +5,24 @@ in vec3 inPosition;
 
 uniform mat4 ModelMatrix;
 
-uniform mat4 viewMatrix;
-uniform mat4 projMatrix;
-
+uniform LightInfo
+{
+	vec4 uniformLightColour;
+	vec3 uniformLightPos;
+	mat4 uniformLightViewMatrix;
+	mat4 uniformLightProjMatrix;
+};
 
 void main(void)
 {
 	vec4 MCPosition = vec4(inPosition, 1.0);
-	gl_Position = projMatrix * viewMatrix * ModelMatrix * MCPosition;
+	gl_Position = (uniformLightProjMatrix * uniformLightViewMatrix) * ModelMatrix * MCPosition;
 }
 
 
 #shader fragment
 #version 330 core
 
-uniform vec4 uniformColour;
-uniform vec4 uniformLightColour;
-uniform vec3 uniformLightPos;
 void main(void)
 {
 }

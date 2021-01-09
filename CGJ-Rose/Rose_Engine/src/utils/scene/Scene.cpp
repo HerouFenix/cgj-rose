@@ -13,14 +13,6 @@ SceneGraph* Scene::CreateSceneGraph()
 	return newSceneGraph;
 }
 
-SceneGraph* Scene::CreateSceneGraph(ArcBallCamera c)
-{
-	SceneGraph* newSceneGraph = new SceneGraph(c);
-	sceneGraphs.push_back(newSceneGraph);
-
-	return newSceneGraph;
-}
-
 std::vector<SceneGraph*> Scene::GetSceneGraphs()
 {
 	return sceneGraphs;
@@ -79,9 +71,9 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	//////////////////////////////////////////////////////////////\
 	*/
 
-	SceneNode* light = sceneGraph->AddNode(&meshes[5], root);
-	light->SetScale(Vector3(0.5, 0.5, 0.5));
-	light->SetPosition(Vector3(-4.0f, 0.0f,0.0f));
+	//SceneNode* light = sceneGraph->AddNode(&meshes[5], root);
+	//light->SetScale(Vector3(0.5, 0.5, 0.5));
+	//light->SetPosition(Vector3(-4.0f, 0.0f, 0.0f));
 
 	SceneNode* cube1 = sceneGraph->AddNode(&meshes[4], root);
 	
@@ -102,9 +94,9 @@ void Scene::DrawSceneGraphs(bool ortho)
 	}
 }
 
-void Scene::DrawSceneGraphsDepth(Shader* depthShader, Vector3 lightPosition)
+void Scene::DrawSceneGraphsDepth(Shader* depthShader)
 {
 	for (SceneGraph* sceneGraph : sceneGraphs) {
-		sceneGraph->DrawSceneGraphDepth(depthShader, lightPosition);
+		sceneGraph->DrawSceneGraphDepth(depthShader);
 	}
 }
