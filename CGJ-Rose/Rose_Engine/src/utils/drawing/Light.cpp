@@ -74,22 +74,17 @@ void Light::SetupLight(GLuint UBO_BP_)
 }
 
 void Light::RenderLight() {
-	glm::mat4 lightProjection, lightView;
-	glm::mat4 lightSpaceMatrix;
-	float near_plane = 1.0f, far_plane = 7.5f;
-	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-	lightView = glm::lookAt(glm::vec3(-4.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-	lightSpaceMatrix = lightProjection * lightView;
-
-	//glUniformMatrix4fv(glGetUniformLocation(depthShader->m_RendererID, "lightSpaceMatrix"), 1, GL_FALSE, &lightSpaceMatrix[0][0]);
-
-
-
 	float space[16];
 	float col[4];
 	float pos[3];
 
-	Matrix4 lightSpaceProj = viewMatrix * projMatrix;
+	//glm::mat4 lightProjection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
+	//glm::mat4 lightView = glm::lookAt(glm::vec3(0.01f, 4.0f, 0.0f),
+	//	glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(0.0f, 1.0f, 0.0f));
+	//glm::mat4 lightSpace = lightProjection * lightView;
+
+	Matrix4 lightSpaceProj = projMatrix * viewMatrix;
 	lightSpaceProj.getColMajor(space);
 
 	col[0] = colour.getX();
@@ -104,27 +99,11 @@ void Light::RenderLight() {
 
 	glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);
 	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float[16]), &lightSpaceMatrix[0][0]);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float[16]), space);
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[16]), sizeof(float[4]), col);
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[16]) + sizeof(float[4]), sizeof(float[3]), pos);
 	}
 
-	/*
-	float data[4];
-	glGetBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float[4]), data);
-
-
-	float data2[3];
-	glGetBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[4]), sizeof(float[3]), data2);
-
-
-	float data3[16];
-	glGetBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[4]) + sizeof(float[3]), sizeof(float[16]), data3);
-
-
-	float data4[16];
-	glGetBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[4]) + sizeof(float[3]) + sizeof(float[16]), sizeof(float[16]), data4);
-	*/
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

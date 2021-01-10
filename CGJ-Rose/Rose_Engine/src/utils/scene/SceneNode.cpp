@@ -138,7 +138,7 @@ void SceneNode::Draw()
 
 void SceneNode::DrawDepth(Shader* depthShader)
 {
-	if (mesh != NULL) {
+	if (mesh != NULL && !mesh->material->transparent) {
 		Matrix4 modelM = GetWorldTransform();
 		mesh->setWorldTransform(modelM);
 

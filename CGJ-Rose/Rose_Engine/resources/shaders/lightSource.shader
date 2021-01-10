@@ -22,10 +22,9 @@ uniform SharedMatrices
 
 uniform LightInfo
 {
+	mat4 uniformLightSpace;
 	vec4 uniformLightColour;
 	vec3 uniformLightPos;
-	mat4 uniformLightViewMatrix;
-	mat4 uniformLightProjMatrix;
 };
 
 void main(void)

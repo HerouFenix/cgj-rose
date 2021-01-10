@@ -11,10 +11,10 @@ out vec3 exNormal;
 
 out vec3 exLightPos;
 out vec4 exLightColour;
+out vec4 exFragPosLightSpace;
 
 out vec3 exFragPos;
 out vec3 exCameraPos;
-out vec4 exFragPosLightSpace;
 
 uniform mat4 ModelMatrix;
 
@@ -30,8 +30,6 @@ uniform LightInfo
 	vec4 uniformLightColour;
 	vec3 uniformLightPos;
 };
-
-out mat4 lightSpaceThingy;
 
 void main(void)
 {
@@ -53,7 +51,6 @@ void main(void)
 
 	exFragPos = vec3(ModelMatrix * MCPosition);
 	exFragPosLightSpace = uniformLightSpace * vec4(exFragPos, 1.0);
-	lightSpaceThingy = uniformLightSpace;
 }
 
 #shader fragment
@@ -83,8 +80,6 @@ in vec3 exLightPos;
 in vec4 exLightColour;
 in vec4 exFragPosLightSpace;
 
-in mat4 lightSpaceThingy;
-
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
 	// perform perspective divide
@@ -100,7 +95,6 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 	return shadow;
 }
-
 
 void main(void)
 {
@@ -137,14 +131,7 @@ void main(void)
 
 	// calculate shadow
 	float shadow = ShadowCalculation(exFragPosLightSpace);
-	//shadow = 0;
 	vec4 color = (ambient + (1.0 - shadow) * (diffuse + specular)) * uniformColour;
 
-	//if (lightSpaceThingy == 0) {
-	//	out_Color = vec4(1.0, 0.0, 0.0, 1.0);
-	//}
-	//else {
-	//	out_Color = vec4(1.0, 1.0, 0.0, 1.0);
-	//}
 	out_Color = color;
 }

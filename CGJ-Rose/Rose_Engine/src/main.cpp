@@ -194,9 +194,7 @@ void drawScene()
 	}
 	////////////////
 
-	// 1. first render to depth map
-	scene.GetSceneGraphs()[0]->camera.setDebugViewMat(scene.GetSceneGraphs()[0]->light.getViewMatrix());
-
+	// Render Depth Map (NOTE: THIS PROBABLY DOESN'T NEED TO BE CALLED EVERY FRAME)
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -224,15 +222,15 @@ void drawScene()
 
 	glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	scene.DrawSceneGraphs(ortho);
-	
+
 	// Draw skybox
 	skybox.Draw();
 
 
-	// render Depth map to quad for visual debugging
-	
+	// Render Depth map to quad (Visual debugging)
+
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//glViewport(0, 0, window_width, window_height);
 	//glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -544,8 +542,8 @@ void setupCamera() {
 
 void setupLight() {
 	//Light l(Vector3(-4.0f, 13.0f, 3.5f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-	Light l(Vector3(-6.0f, 1.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-	l.setProjectionMatrix(scene.GetSceneGraphs()[0]->camera.getOrthProj());
+	Light l(Vector3(-3.0f, 4.0f, -1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	l.setProjectionMatrix(scene.GetSceneGraphs()[0]->camera.getPerspProj());
 
 	scene.GetSceneGraphs()[0]->SetLight(l);
 	scene.GetSceneGraphs()[0]->light.SetupLight(UBO_BP_L);
@@ -600,13 +598,11 @@ GLFWwindow* setup(int major, int minor,
 	setupDepthMap();
 
 	// SET MATERIALS ////////////////////////////////////////////
-	//Shader basic1("resources/shaders/Rose.shader");
-	Shader basic1("resources/shaders/Basic3D.shader");
+	Shader basic1("resources/shaders/Rose.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
 	b1->setDepthMap(depthMap);
 
-	//Shader basic2("resources/shaders/Stem_Shader.shader");
-	Shader basic2("resources/shaders/Basic3D.shader");
+	Shader basic2("resources/shaders/Stem_Shader.shader");
 	Stem_Material* b2 = new Stem_Material(basic2);
 	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
 	b2->setDepthMap(depthMap);
@@ -616,8 +612,7 @@ GLFWwindow* setup(int major, int minor,
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b3->setDepthMap(depthMap);
 
-	//Shader basic4("resources/shaders/Wood_Shader.shader");
-	Shader basic4("resources/shaders/Basic3D.shader");
+	Shader basic4("resources/shaders/Wood_Shader.shader");
 	Wood_Material* b4 = new Wood_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b4->setDepthMap(depthMap);
@@ -626,8 +621,7 @@ GLFWwindow* setup(int major, int minor,
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 	b5->setDepthMap(depthMap);
 
-	//Shader basic5("resources/shaders/lightSource.shader"); // Light Source
-	Shader basic5("resources/shaders/Basic3D.shader");
+	Shader basic5("resources/shaders/lightSource.shader"); // Light Source
 	Basic_Material* b6 = new Basic_Material(basic5);
 	b6->setDepthMap(depthMap);
 
@@ -648,8 +642,6 @@ GLFWwindow* setup(int major, int minor,
 
 	handle.CreateMesh("resources/models/handle.obj", (Material*)b4, UBO_BP, UBO_BP_L);
 
-	//dome.CreateMesh("resources/models/dome_quarter.obj", (Material*)b5, UBO_BP);
-	//dome.CreateMesh("resources/models/dome.obj", (Material*)b5, UBO_BP);
 	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP, UBO_BP_L);
 
 	light.CreateMesh("resources/models/cube.obj", (Material*)b6, UBO_BP, UBO_BP_L);
@@ -659,9 +651,9 @@ GLFWwindow* setup(int major, int minor,
 	meshes[1] = stem;
 	meshes[2] = dome;
 	meshes[3] = base;
-	//meshes[4] = handle;
-	meshes[4] = cube;
+	meshes[4] = handle;
 	meshes[5] = light;
+	//meshes[6] = cube;
 
 	setupBufferObjects();
 	setupShaderProgram();

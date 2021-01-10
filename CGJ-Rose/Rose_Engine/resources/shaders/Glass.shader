@@ -22,10 +22,9 @@ out vec3 exNormal;
 out vec3 exFragPos;
 out vec3 exCameraPos;
 
-out mat4 exLightViewMatrix;
-out mat4 exLightProjMatrix;
 out vec3 exLightPos;
 out vec4 exLightColour;
+out vec4 exFragPosLightSpace;
 
 out vec3 v_reflection;
 out vec3 v_refraction;
@@ -41,10 +40,9 @@ uniform SharedMatrices
 
 uniform LightInfo
 {
+	mat4 uniformLightSpace;
 	vec4 uniformLightColour;
 	vec3 uniformLightPos;
-	mat4 uniformLightViewMatrix;
-	mat4 uniformLightProjMatrix;
 };
 
 void main(void)
@@ -53,8 +51,6 @@ void main(void)
 	exTexcoord = inTexcoord;
 	exNormal = inNormal;
 
-	exLightViewMatrix = uniformLightViewMatrix;
-	exLightProjMatrix = uniformLightProjMatrix;
 	exLightPos = uniformLightPos;
 	exLightColour = uniformLightColour;
 
@@ -75,6 +71,7 @@ void main(void)
 
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 	exFragPos = vec3(ModelMatrix * MCPosition);
+	exFragPosLightSpace = uniformLightSpace * vec4(exFragPos, 1.0);
 }
 
 #shader fragment
@@ -97,22 +94,38 @@ in float v_fresnel;
 uniform samplerCube skybox;
 uniform vec4 uniformColour;
 
-in mat4 exLightViewMatrix;
-in mat4 exLightProjMatrix;
 in vec3 exLightPos;
 in vec4 exLightColour;
+in vec4 exFragPosLightSpace;
 
+uniform sampler2D shadowMap;
 
 in vec3 exNormal;
 in vec3 exFragPos;
 in vec3 exCameraPos;
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+	// perform perspective divide
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	// transform to [0,1] range
+	projCoords = projCoords * 0.5 + 0.5;
+	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	// get depth of current fragment from light's perspective
+	float currentDepth = projCoords.z;
+	// check whether current frag pos is in shadow
+	float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+	return shadow;
+}
 
 void main(void)
 {
 
 
 	// Ambient
-	float ambientStrength = 0.01;
+	float ambientStrength = 0.4;
 	vec4 ambient = exLightColour;
 	ambient.x = ambient.x * ambientStrength;
 	ambient.y = ambient.y * ambientStrength;
@@ -137,7 +150,11 @@ void main(void)
 	vec4 specular = exLightColour * spec;
 
 
-	vec4 color = (ambient + diffuse + specular) * uniformColour;
+	// calculate shadow
+	float shadow = ShadowCalculation(exFragPosLightSpace);
+	shadow = 0;
+	vec4 color = (ambient + (1.0 - shadow) * (diffuse + specular)) * uniformColour;
+
 
 	float antiRefractionValue = 0.6;
 	vec4 refractionColor = texture(skybox, normalize(v_refraction));
@@ -149,6 +166,8 @@ void main(void)
 	vec4 reflectionColor = texture(skybox, normalize(v_reflection));
 	//reflectionColor = (reflectionColor+uniformColour)/2;
 	reflectionColor = color * antiReflectionValue + reflectionColor * (1 - antiReflectionValue);
+
+
 
 	out_Color = mix(refractionColor, reflectionColor, v_fresnel);
 }

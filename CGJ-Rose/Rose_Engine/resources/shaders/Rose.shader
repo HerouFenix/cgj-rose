@@ -10,10 +10,9 @@ out vec2 exTexcoord;
 out vec3 exNormal;
 out vec3 fNormal;
 
-out mat4 exLightViewMatrix;
-out mat4 exLightProjMatrix;
 out vec3 exLightPos;
 out vec4 exLightColour;
+out vec4 exFragPosLightSpace;
 
 out vec3 exFragPos;
 out vec3 exCameraPos;
@@ -29,10 +28,9 @@ uniform SharedMatrices
 
 uniform LightInfo
 {
+	mat4 uniformLightSpace;
 	vec4 uniformLightColour;
 	vec3 uniformLightPos;
-	mat4 uniformLightViewMatrix;
-	mat4 uniformLightProjMatrix;
 };
 
 void main(void)
@@ -42,8 +40,6 @@ void main(void)
 	exNormal = inNormal;
 	exNormal = mat3(transpose(inverse(ModelMatrix))) * inNormal;
 
-	exLightViewMatrix = uniformLightViewMatrix;
-	exLightProjMatrix = uniformLightProjMatrix;
 	exLightPos = uniformLightPos;
 	exLightColour = uniformLightColour;
 
@@ -60,6 +56,7 @@ void main(void)
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 
 	exFragPos = vec3(ModelMatrix * MCPosition);
+	exFragPosLightSpace = uniformLightSpace * vec4(exFragPos, 1.0);
 }
 
 #shader fragment
@@ -81,16 +78,32 @@ uniform float Shininess;
 uniform float time_U;
 uniform sampler2D u_Texture;
 
-in mat4 exLightViewMatrix;
-in mat4 exLightProjMatrix;
 in vec3 exLightPos;
 in vec4 exLightColour;
+in vec4 exFragPosLightSpace;
+
+uniform sampler2D shadowMap;
 
 
 in vec3 exNormal;
 in vec3 exFragPos;
 in vec3 exCameraPos;
 
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+	// perform perspective divide
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	// transform to [0,1] range
+	projCoords = projCoords * 0.5 + 0.5;
+	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	// get depth of current fragment from light's perspective
+	float currentDepth = projCoords.z;
+	// check whether current frag pos is in shadow
+	float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+	return shadow;
+}
 
 
 void main(void)
@@ -109,7 +122,7 @@ void main(void)
 
 
 	// Ambient
-	float ambientStrength = 0.1;
+	float ambientStrength = 0.4;
 	vec4 ambient = exLightColour;
 	ambient.x = ambient.x * 0.1;
 	ambient.y = ambient.y * 0.1;
@@ -133,6 +146,9 @@ void main(void)
 	float spec = pow(max(dot(norm, halfwayDir), 0.0), shininess);
 	vec4 specular = exLightColour * spec;
 
-	FragColor = texture(u_Texture, exTexcoord) * col * (ambient + diffuse + specular);
+	// calculate shadow
+	float shadow = ShadowCalculation(exFragPosLightSpace);
+
+	FragColor = texture(u_Texture, exTexcoord) * col * (ambient + (1.0 - shadow) * (diffuse + specular));
 	//out_Color = vec4(col1 + col2, 1.0);
 }
