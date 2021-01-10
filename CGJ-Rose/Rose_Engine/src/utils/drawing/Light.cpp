@@ -1,4 +1,7 @@
 #include "..\..\..\headers\drawing\Light.h"
+#include <glm\fwd.hpp>
+#include <glm\ext\matrix_clip_space.hpp>
+#include <glm\ext\matrix_transform.hpp>
 
 Light::~Light()
 {
@@ -71,6 +74,17 @@ void Light::SetupLight(GLuint UBO_BP_)
 }
 
 void Light::RenderLight() {
+	glm::mat4 lightProjection, lightView;
+	glm::mat4 lightSpaceMatrix;
+	float near_plane = 1.0f, far_plane = 7.5f;
+	lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	lightView = glm::lookAt(glm::vec3(-4.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	lightSpaceMatrix = lightProjection * lightView;
+
+	//glUniformMatrix4fv(glGetUniformLocation(depthShader->m_RendererID, "lightSpaceMatrix"), 1, GL_FALSE, &lightSpaceMatrix[0][0]);
+
+
+
 	float space[16];
 	float col[4];
 	float pos[3];
@@ -90,7 +104,7 @@ void Light::RenderLight() {
 
 	glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);
 	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float[16]), space);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float[16]), &lightSpaceMatrix[0][0]);
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[16]), sizeof(float[4]), col);
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[16]) + sizeof(float[4]), sizeof(float[3]), pos);
 	}

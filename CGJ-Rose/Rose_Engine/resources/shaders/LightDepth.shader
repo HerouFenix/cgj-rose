@@ -12,7 +12,7 @@ uniform LightInfo
 	vec3 uniformLightPos;
 };
 
-//uniform mat4 lightSpace;
+//uniform mat4 lightSpaceMatrix;
 
 void main(void)
 {

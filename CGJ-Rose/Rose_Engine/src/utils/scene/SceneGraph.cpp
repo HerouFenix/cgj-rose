@@ -1,6 +1,7 @@
 #include "../../headers/scene/SceneGraph.h"
 #include <glm\fwd.hpp>
 #include <glm\ext\matrix_transform.hpp>
+#include <glm\ext\matrix_clip_space.hpp>
 
 SceneGraph::SceneGraph()
 {
@@ -71,7 +72,8 @@ void SceneGraph::DrawSceneGraphDepth(Shader* depthShader)
 	//Matrix4 lightSpace = light.getViewMatrix() * light.getOrthProj();
 	//
 	//lightSpace.getColMajor(space);
-	//depthShader->SetUniform4fv("lightSpace",space);
+	//depthShader->SetUniform4fv("lightSpaceMatrix",space);
+
 
 	if (root != NULL) {
 		root->DrawDepth(depthShader);
@@ -79,3 +81,5 @@ void SceneGraph::DrawSceneGraphDepth(Shader* depthShader)
 
 	depthShader->UnBind();
 }
+
+

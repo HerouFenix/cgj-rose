@@ -224,7 +224,7 @@ void drawScene()
 
 	glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 	scene.DrawSceneGraphs(ortho);
 	
 	// Draw skybox
@@ -248,7 +248,6 @@ void drawScene()
 	//renderQuad();
 	//
 	//lightDepthDebugShader.UnBind();
-	std::cout << "done";
 }
 
 
