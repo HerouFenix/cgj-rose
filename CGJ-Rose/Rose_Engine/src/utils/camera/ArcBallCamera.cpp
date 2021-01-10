@@ -50,6 +50,7 @@ void ArcBallCamera::RenderCamera(bool ortho)
 	projM.getColMajor(proj);
 
 	Matrix4 viewM = getViewMatrix();
+	//viewM = getDebugViewMat();
 	viewM.getColMajor(view);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);
@@ -119,6 +120,16 @@ void ArcBallCamera::incrementRadius(float inc)
 
 const Matrix4 ArcBallCamera::getOrthProj() {
 	return orthoProj;
+}
+
+void ArcBallCamera::setDebugViewMat(Matrix4 mat)
+{
+	debugViewMat = mat;
+}
+
+Matrix4 ArcBallCamera::getDebugViewMat()
+{
+	return debugViewMat;
 }
 
 const Matrix4 ArcBallCamera::getPerspProj() {

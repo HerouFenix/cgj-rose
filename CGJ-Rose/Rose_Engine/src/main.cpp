@@ -194,18 +194,14 @@ void drawScene()
 	}
 	////////////////
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// 1. render depth of scene to texture (from light's perspective)
-	// --------------------------------------------------------------
-
-	// render scene from light's point of view
+	// 1. first render to depth map
+	scene.GetSceneGraphs()[0]->camera.setDebugViewMat(scene.GetSceneGraphs()[0]->light.getViewMatrix());
 
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
-
 	scene.DrawSceneGraphsDepth(&lightDepthShader);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	// Emit Particles
@@ -225,19 +221,18 @@ void drawScene()
 	particleSystem.OnRender();
 	*/
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, window_width, window_height);
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+
+	glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	scene.DrawSceneGraphs(ortho);
-	//
-	//// Draw skybox
-	//skybox.Draw();
+	
+	// Draw skybox
+	skybox.Draw();
 
 
 	// render Depth map to quad for visual debugging
-		// ---------------------------------------------
+	
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//glViewport(0, 0, window_width, window_height);
 	//glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -246,35 +241,6 @@ void drawScene()
 	//
 	//lightDepthDebugShader.Bind();
 	//
-	///*
-	//GLuint textureID;
-	//int textureWidth, textureHeight, textureBPP;
-	//glGenTextures(1, &textureID);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
-	//// set the texture wrapping/filtering options (on the currently bound texture object)
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//
-	//// load and generate the texture
-	//unsigned char* data = stbi_load("resources/images/wood.jpg", &textureWidth, &textureHeight, &textureBPP, 3);
-	//if (data)
-	//{
-	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	//
-	//	//glGenerateMipmap(GL_TEXTURE_2D);
-	//}
-	//else
-	//{
-	//	std::cout << "Failed to load texture" << std::endl;
-	//}
-	//stbi_image_free(data);
-	//
-	//GLCall(glActiveTexture(GL_TEXTURE0 + textureID));
-	//GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
-	//*/
-	//
 	//GLCall(glActiveTexture(GL_TEXTURE0 + depthMap));
 	//GLCall(glBindTexture(GL_TEXTURE_2D, depthMap));
 	//lightDepthDebugShader.SetUniform1i("u_Texture", depthMap);
@@ -282,7 +248,7 @@ void drawScene()
 	//renderQuad();
 	//
 	//lightDepthDebugShader.UnBind();
-
+	std::cout << "done";
 }
 
 
@@ -579,7 +545,7 @@ void setupCamera() {
 
 void setupLight() {
 	//Light l(Vector3(-4.0f, 13.0f, 3.5f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-	Light l(Vector3(-4.0f, 0.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	Light l(Vector3(-6.0f, 1.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 	l.setProjectionMatrix(scene.GetSceneGraphs()[0]->camera.getOrthProj());
 
 	scene.GetSceneGraphs()[0]->SetLight(l);
@@ -635,11 +601,13 @@ GLFWwindow* setup(int major, int minor,
 	setupDepthMap();
 
 	// SET MATERIALS ////////////////////////////////////////////
-	Shader basic1("resources/shaders/Rose.shader");
+	//Shader basic1("resources/shaders/Rose.shader");
+	Shader basic1("resources/shaders/Basic3D.shader");
 	Rose_Material* b1 = new Rose_Material(basic1);
 	b1->setDepthMap(depthMap);
 
-	Shader basic2("resources/shaders/Stem_Shader.shader");
+	//Shader basic2("resources/shaders/Stem_Shader.shader");
+	Shader basic2("resources/shaders/Basic3D.shader");
 	Stem_Material* b2 = new Stem_Material(basic2);
 	b2->setColour(Vector4(0.4f, 0.6f, 0.2f, 1.0f));
 	b2->setDepthMap(depthMap);
@@ -649,7 +617,8 @@ GLFWwindow* setup(int major, int minor,
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b3->setDepthMap(depthMap);
 
-	Shader basic4("resources/shaders/Wood_Shader.shader");
+	//Shader basic4("resources/shaders/Wood_Shader.shader");
+	Shader basic4("resources/shaders/Basic3D.shader");
 	Wood_Material* b4 = new Wood_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b4->setDepthMap(depthMap);
@@ -658,7 +627,8 @@ GLFWwindow* setup(int major, int minor,
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 	b5->setDepthMap(depthMap);
 
-	Shader basic5("resources/shaders/lightSource.shader"); // Light Source
+	//Shader basic5("resources/shaders/lightSource.shader"); // Light Source
+	Shader basic5("resources/shaders/Basic3D.shader");
 	Basic_Material* b6 = new Basic_Material(basic5);
 	b6->setDepthMap(depthMap);
 

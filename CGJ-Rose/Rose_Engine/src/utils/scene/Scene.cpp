@@ -73,11 +73,12 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 
 	//SceneNode* light = sceneGraph->AddNode(&meshes[5], root);
 	//light->SetScale(Vector3(0.5, 0.5, 0.5));
-	//light->SetPosition(Vector3(-4.0f, 0.0f, 0.0f));
+	//light->SetPosition(Vector3(-6.0f, -2.0f, 4.0f));
 
 	SceneNode* cube1 = sceneGraph->AddNode(&meshes[4], root);
 	
 	SceneNode* cube2 = sceneGraph->AddNode(&meshes[4], root);
+	cube2->SetScale(Vector3(0.25f, 4.0f, 8.0f));
 	cube2->SetPosition(Vector3(4.0f, 0.0f, 0.0f));
 
 }

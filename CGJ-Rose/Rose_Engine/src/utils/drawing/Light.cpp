@@ -62,7 +62,7 @@ void Light::SetupLight(GLuint UBO_BP_)
 
 		glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);
 		{
-			glBufferData(GL_UNIFORM_BUFFER, sizeof(float[4]) + sizeof(float[3]) + sizeof(float[16]) * 2, 0, GL_STREAM_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, sizeof(float[4]) + sizeof(float[3]) + sizeof(float[16]), 0, GL_STREAM_DRAW);
 			glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, vbo_id);
 		}
 
@@ -71,31 +71,28 @@ void Light::SetupLight(GLuint UBO_BP_)
 }
 
 void Light::RenderLight() {
-	float proj[16];
-	float view[16];
-	float pos[3];
+	float space[16];
 	float col[4];
+	float pos[3];
 
-	projMatrix.getColMajor(proj);
-
-	viewMatrix.getColMajor(view);
-
-	pos[0] = position.getX();
-	pos[1] = position.getY();
-	pos[2] = position.getZ();
+	Matrix4 lightSpaceProj = viewMatrix * projMatrix;
+	lightSpaceProj.getColMajor(space);
 
 	col[0] = colour.getX();
 	col[1] = colour.getY();
 	col[2] = colour.getZ();
 	col[3] = colour.getW();
-	int oof = sizeof(col);
-	int oof2 = sizeof(float[4]);
+
+	pos[0] = position.getX();
+	pos[1] = position.getY();
+	pos[2] = position.getZ();
+
+
 	glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);
 	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float[4]), col);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[4]), sizeof(float[3]), pos);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[3]) + sizeof(float[4]), sizeof(float[16]), view);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[3]) + sizeof(float[4]) + sizeof(float[16]), sizeof(float[16]), proj);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float[16]), space);
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[16]), sizeof(float[4]), col);
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float[16]) + sizeof(float[4]), sizeof(float[3]), pos);
 	}
 
 	/*

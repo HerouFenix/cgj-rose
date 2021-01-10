@@ -92,7 +92,7 @@ void Mesh::Draw()
 	material->shader.Bind();
 
 	material->setUniforms(WorldTransform);
-
+	
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)Vertices.size());
 
 	glBindVertexArray(0);

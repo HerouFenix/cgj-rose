@@ -7,16 +7,17 @@ uniform mat4 ModelMatrix;
 
 uniform LightInfo
 {
+	mat4 uniformLightSpace;
 	vec4 uniformLightColour;
 	vec3 uniformLightPos;
-	mat4 uniformLightViewMatrix;
-	mat4 uniformLightProjMatrix;
 };
+
+//uniform mat4 lightSpace;
 
 void main(void)
 {
 	vec4 MCPosition = vec4(inPosition, 1.0);
-	gl_Position = (uniformLightProjMatrix * uniformLightViewMatrix) * ModelMatrix * MCPosition;
+	gl_Position = uniformLightSpace * ModelMatrix * MCPosition;
 }
 
 

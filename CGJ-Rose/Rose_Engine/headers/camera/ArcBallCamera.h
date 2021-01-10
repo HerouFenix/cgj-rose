@@ -20,6 +20,8 @@ private:
 	Matrix4 orthoProj;
 	Matrix4 perspProj;
 
+	Matrix4 debugViewMat;
+
 	GLuint vbo_id;
 
 public:
@@ -66,6 +68,9 @@ public:
 	 * @return The currently set orthogonal projection matrix
 	 ***********************************************/
 	const Matrix4 getOrthProj();
+
+	void setDebugViewMat(Matrix4 mat);
+	Matrix4 getDebugViewMat();
 
 	/********************************************/ /**
 	 * Returns the Perspective Projection Matrix

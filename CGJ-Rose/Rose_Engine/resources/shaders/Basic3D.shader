@@ -9,8 +9,6 @@ out vec3 exPosition;
 out vec2 exTexcoord;
 out vec3 exNormal;
 
-out mat4 exLightViewMatrix;
-out mat4 exLightProjMatrix;
 out vec3 exLightPos;
 out vec4 exLightColour;
 
@@ -28,11 +26,12 @@ uniform SharedMatrices
 
 uniform LightInfo
 {
+	mat4 uniformLightSpace;
 	vec4 uniformLightColour;
 	vec3 uniformLightPos;
-	mat4 uniformLightViewMatrix;
-	mat4 uniformLightProjMatrix;
 };
+
+out mat4 lightSpaceThingy;
 
 void main(void)
 {
@@ -41,8 +40,6 @@ void main(void)
 	exNormal = inNormal;
 	exNormal = mat3(transpose(inverse(ModelMatrix))) * inNormal;
 
-	exLightViewMatrix = uniformLightViewMatrix;
-	exLightProjMatrix = uniformLightProjMatrix;
 	exLightPos = uniformLightPos;
 	exLightColour = uniformLightColour;
 
@@ -55,7 +52,8 @@ void main(void)
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 
 	exFragPos = vec3(ModelMatrix * MCPosition);
-	exFragPosLightSpace = uniformLightProjMatrix * uniformLightViewMatrix * vec4(exFragPos, 1.0);
+	exFragPosLightSpace = uniformLightSpace * vec4(exFragPos, 1.0);
+	lightSpaceThingy = uniformLightSpace;
 }
 
 #shader fragment
@@ -81,11 +79,11 @@ in vec3 exNormal;
 in vec3 exFragPos;
 in vec3 exCameraPos;
 
-in mat4 exLightViewMatrix;
-in mat4 exLightProjMatrix;
 in vec3 exLightPos;
 in vec4 exLightColour;
 in vec4 exFragPosLightSpace;
+
+in mat4 lightSpaceThingy;
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
@@ -142,5 +140,11 @@ void main(void)
 	//shadow = 0;
 	vec4 color = (ambient + (1.0 - shadow) * (diffuse + specular)) * uniformColour;
 
+	//if (lightSpaceThingy == 0) {
+	//	out_Color = vec4(1.0, 0.0, 0.0, 1.0);
+	//}
+	//else {
+	//	out_Color = vec4(1.0, 1.0, 0.0, 1.0);
+	//}
 	out_Color = color;
 }

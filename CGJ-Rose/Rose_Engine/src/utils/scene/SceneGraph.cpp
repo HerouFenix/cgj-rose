@@ -53,6 +53,9 @@ void SceneGraph::DrawSceneGraph(bool ortho)
 {
 	camera.RenderCamera(ortho);
 	light.RenderLight();
+
+	//Matrix4 lightSpace = light.getViewMatrix() * light.getOrthProj();
+
 	if (root != NULL) {
 		root->Draw();
 	}
@@ -63,6 +66,12 @@ void SceneGraph::DrawSceneGraphDepth(Shader* depthShader)
 	light.RenderLight();
 
 	depthShader->Bind();
+
+	//float space[16];
+	//Matrix4 lightSpace = light.getViewMatrix() * light.getOrthProj();
+	//
+	//lightSpace.getColMajor(space);
+	//depthShader->SetUniform4fv("lightSpace",space);
 
 	if (root != NULL) {
 		root->DrawDepth(depthShader);
