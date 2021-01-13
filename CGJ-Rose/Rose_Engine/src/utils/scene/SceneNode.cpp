@@ -142,9 +142,9 @@ void SceneNode::DrawDepth(Shader* depthShader)
 		Matrix4 modelM = GetWorldTransform();
 		mesh->setWorldTransform(modelM);
 
-		PreDraw();
+		//PreDraw();
 		mesh->DrawDepth(depthShader);
-		PostDraw();
+		//PostDraw();
 	}
 	// Cascade Draw children
 	for (SceneNode* child : children) {

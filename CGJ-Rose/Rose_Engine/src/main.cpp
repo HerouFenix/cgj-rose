@@ -270,7 +270,9 @@ void drawScene()
 
 	// Render Depth Map (If light or scene changed)
 	if (shouldRenderShadowMap) {
+		glCullFace(GL_FRONT);
 		renderShadowMap();
+		glCullFace(GL_BACK);
 		shouldRenderShadowMap = false;
 	}
 
@@ -280,8 +282,12 @@ void drawScene()
 	}
 	else { // Normal render scene
 
+
+		glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		// Emit Particles
-		/*
+
 		if (spawnCounter < 25) {
 			particleSystem.Emit(particle);
 		}
@@ -295,13 +301,9 @@ void drawScene()
 
 		particleSystem.OnUpdate(0.005f);
 		particleSystem.OnRender();
-		*/
 
 
-		glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		scene.DrawSceneGraphs(ortho, true);
+		scene.DrawSceneGraphs(ortho, drawLight);
 
 		// Draw skybox
 		skybox.Draw();
@@ -682,8 +684,10 @@ void setupDepthMap() {
 		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	// Attach it as the framebuffer's depth buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
