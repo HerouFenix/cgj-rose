@@ -88,10 +88,10 @@ void Scene::ClearScene()
 	sceneGraphs.clear();
 }
 
-void Scene::DrawSceneGraphs(bool ortho)
+void Scene::DrawSceneGraphs(bool ortho, bool drawLight)
 {
 	for (SceneGraph* sceneGraph : sceneGraphs) {
-		sceneGraph->DrawSceneGraph(ortho);
+		sceneGraph->DrawSceneGraph(ortho, drawLight);
 	}
 }
 

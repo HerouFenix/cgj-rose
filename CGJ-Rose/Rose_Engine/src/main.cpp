@@ -83,6 +83,20 @@ bool moveForward = false;
 bool moveBackward = false;
 bool moveLeft = false;
 bool moveRight = false;
+bool moveUp = false;
+bool moveDown = false;
+
+
+bool moveForwardLight = false;
+bool moveBackwardLight = false;
+bool moveLeftLight = false;
+bool moveRightLight = false;
+bool moveUpLight = false;
+bool moveDownLight = false;
+
+bool drawLight = false;
+bool shouldDrawShadowMap = false;
+bool shouldRenderShadowMap = true;
 
 bool mouseRotating = true;
 bool downMoved, upMoved = false;
@@ -103,6 +117,8 @@ const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
 Shader lightDepthShader;
 Shader lightDepthDebugShader;
+
+unsigned int shadowMapVAO = 0;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -148,15 +164,58 @@ void moveFloor() {
 	if (moveRight) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.05, 0, 0);
 	}
+	if (moveUp) {
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, 0.05, 0);
+	}
+	if (moveDown) {
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, -0.05, 0);
+	}
+
+
+	shouldRenderShadowMap = true;
 }
 
-// TODO: DELETE THIS
-unsigned int quadVAO = 0;
-unsigned int quadVBO;
-void renderQuad()
+void moveLight() {
+	if (moveForwardLight) {
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0, 0, -0.05));
+	}
+	if (moveBackwardLight) {
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0, 0, 0.05));
+	}
+	if (moveLeftLight) {
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(-0.05, 0, 0));
+	}
+	if (moveRightLight) {
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.05, 0, 0));
+	}
+	if (moveUpLight) {
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0, 0.05, 0));
+	}
+	if (moveDownLight) {
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0, -0.05, 0));
+	}
+
+	shouldRenderShadowMap = true;
+}
+
+void drawShadowMap()
 {
-	if (quadVAO == 0)
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, window_width, window_height);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	
+	lightDepthDebugShader.Bind();
+	
+	GLCall(glActiveTexture(GL_TEXTURE0 + depthMap));
+	GLCall(glBindTexture(GL_TEXTURE_2D, depthMap));
+	lightDepthDebugShader.SetUniform1i("u_Texture", depthMap);
+		
+	if (shadowMapVAO == 0)
 	{
+		unsigned int shadowMapVBO;
+
 		float quadVertices[] = {
 			// positions        // texture Coords
 			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
@@ -165,19 +224,29 @@ void renderQuad()
 			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 		};
 		// setup plane VAO
-		glGenVertexArrays(1, &quadVAO);
-		glGenBuffers(1, &quadVBO);
-		glBindVertexArray(quadVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glGenVertexArrays(1, &shadowMapVAO);
+		glGenBuffers(1, &shadowMapVBO);
+		glBindVertexArray(shadowMapVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, shadowMapVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	}
-	glBindVertexArray(quadVAO);
+	glBindVertexArray(shadowMapVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
+
+	lightDepthDebugShader.UnBind();
+}
+
+void renderShadowMap() {
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	scene.DrawSceneGraphsDepth(&lightDepthShader);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void drawScene()
@@ -188,64 +257,55 @@ void drawScene()
 	if (cameraMoved)
 		moveCamera();
 
-	bool floorMoved = (moveForward || moveBackward || moveLeft || moveRight);
+	bool floorMoved = (moveForward || moveBackward || moveLeft || moveRight || moveUp || moveDown);
 	if (floorMoved) {
 		moveFloor();
 	}
+
+	bool lightMoved = (moveForwardLight || moveBackwardLight || moveLeftLight || moveRightLight || moveUpLight || moveDownLight);
+	if (lightMoved) {
+		moveLight();
+	}
 	////////////////
 
-	// Render Depth Map (NOTE: THIS PROBABLY DOESN'T NEED TO BE CALLED EVERY FRAME)
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
-	scene.DrawSceneGraphsDepth(&lightDepthShader);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-	// Emit Particles
-	/*
-	if (spawnCounter < 25) {
-		particleSystem.Emit(particle);
+	// Render Depth Map (If light or scene changed)
+	if (shouldRenderShadowMap) {
+		renderShadowMap();
+		shouldRenderShadowMap = false;
 	}
-
-	if (spawnCounter <= 0) {
-		spawnCounter = 100;
-	}
-	else {
-		spawnCounter--;
-	}
-
-	particleSystem.OnUpdate(0.005f);
-	particleSystem.OnRender();
-	*/
-
-
-	glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	scene.DrawSceneGraphs(ortho);
-
-	// Draw skybox
-	skybox.Draw();
-
 
 	// Render Depth map to quad (Visual debugging)
+	if (shouldDrawShadowMap) {
+		drawShadowMap();
+	}
+	else { // Normal render scene
 
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glViewport(0, 0, window_width, window_height);
-	//glClearColor(0.0, 0.0, 0.0, 1.0);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//
-	//
-	//lightDepthDebugShader.Bind();
-	//
-	//GLCall(glActiveTexture(GL_TEXTURE0 + depthMap));
-	//GLCall(glBindTexture(GL_TEXTURE_2D, depthMap));
-	//lightDepthDebugShader.SetUniform1i("u_Texture", depthMap);
-	//
-	//renderQuad();
-	//
-	//lightDepthDebugShader.UnBind();
+		// Emit Particles
+		/*
+		if (spawnCounter < 25) {
+			particleSystem.Emit(particle);
+		}
+
+		if (spawnCounter <= 0) {
+			spawnCounter = 100;
+		}
+		else {
+			spawnCounter--;
+		}
+
+		particleSystem.OnUpdate(0.005f);
+		particleSystem.OnRender();
+		*/
+
+
+		glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		scene.DrawSceneGraphs(ortho, true);
+
+		// Draw skybox
+		skybox.Draw();
+	}
 }
 
 
@@ -292,14 +352,20 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			ortho = !ortho;
 			projChanged = true;
 			break;
+		case GLFW_KEY_L:
+			drawLight = !drawLight;
+			break;
+		case GLFW_KEY_M:
+			shouldDrawShadowMap = !shouldDrawShadowMap;
+			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, GLFW_TRUE);
 			window_close_callback(win);
 			break;
-		case GLFW_KEY_UP:
+		case GLFW_KEY_KP_ADD:
 			forwardKeyPressed = true;
 			break;
-		case GLFW_KEY_DOWN:
+		case GLFW_KEY_KP_SUBTRACT:
 			backwardKeyPressed = true;
 			break;
 		case GLFW_KEY_W:
@@ -313,6 +379,30 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_D:
 			moveRight = true;
+			break;
+		case GLFW_KEY_LEFT_SHIFT:
+			moveUp = true;
+			break;
+		case GLFW_KEY_LEFT_CONTROL:
+			moveDown = true;
+			break;
+		case GLFW_KEY_UP:
+			moveForwardLight = true;
+			break;
+		case GLFW_KEY_DOWN:
+			moveBackwardLight = true;
+			break;
+		case GLFW_KEY_LEFT:
+			moveLeftLight = true;
+			break;
+		case GLFW_KEY_RIGHT:
+			moveRightLight = true;
+			break;
+		case GLFW_KEY_RIGHT_SHIFT:
+			moveUpLight = true;
+			break;
+		case GLFW_KEY_RIGHT_ALT:
+			moveDownLight = true;
 			break;
 		case GLFW_KEY_R:
 			scene.GetSceneGraphs()[0]->camera.resetCamera(); // Reset camera
@@ -329,10 +419,10 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 	}
 	else if (action == GLFW_RELEASE) {
 		switch (key) {
-		case GLFW_KEY_UP:
+		case GLFW_KEY_KP_ADD:
 			forwardKeyPressed = false;
 			break;
-		case GLFW_KEY_DOWN:
+		case GLFW_KEY_KP_SUBTRACT:
 			backwardKeyPressed = false;
 			break;
 		case GLFW_KEY_W:
@@ -346,6 +436,30 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_D:
 			moveRight = false;
+			break;
+		case GLFW_KEY_LEFT_SHIFT:
+			moveUp = false;
+			break;
+		case GLFW_KEY_LEFT_CONTROL:
+			moveDown = false;
+			break;
+		case GLFW_KEY_UP:
+			moveForwardLight = false;
+			break;
+		case GLFW_KEY_DOWN:
+			moveBackwardLight = false;
+			break;
+		case GLFW_KEY_LEFT:
+			moveLeftLight = false;
+			break;
+		case GLFW_KEY_RIGHT:
+			moveRightLight = false;
+			break;
+		case GLFW_KEY_RIGHT_SHIFT:
+			moveUpLight = false;
+			break;
+		case GLFW_KEY_RIGHT_ALT:
+			moveDownLight = false;
 			break;
 		}
 	}
@@ -542,11 +656,11 @@ void setupCamera() {
 
 void setupLight() {
 	//Light l(Vector3(-4.0f, 13.0f, 3.5f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-	Light l(Vector3(-3.0f, 4.0f, -1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	Light l(Vector3(-2.0f, 3.0f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 	l.setProjectionMatrix(scene.GetSceneGraphs()[0]->camera.getPerspProj());
 
 	scene.GetSceneGraphs()[0]->SetLight(l);
-	scene.GetSceneGraphs()[0]->light.SetupLight(UBO_BP_L);
+	scene.GetSceneGraphs()[0]->light.SetupLight(UBO_BP, UBO_BP_L);
 	scene.GetSceneGraphs()[0]->light.RenderLight();
 
 }
@@ -621,10 +735,7 @@ GLFWwindow* setup(int major, int minor,
 	b5->setColour(Vector4(0.776f, 0.886f, 0.890f, 0.15f));
 	b5->setDepthMap(depthMap);
 
-	Shader basic5("resources/shaders/lightSource.shader"); // Light Source
-	Basic_Material* b6 = new Basic_Material(basic5);
-	b6->setDepthMap(depthMap);
-
+	
 	Shader basic7("resources/shaders/Basic3D.shader");
 	Basic_Material* b7 = new Basic_Material(basic7);
 	b7->setColour(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -632,7 +743,7 @@ GLFWwindow* setup(int major, int minor,
 
 	// SET MESHSES //////////////////////////////////////////////
 
-	Mesh rose, stem, dome, base, handle, light, cube;
+	Mesh rose, stem, dome, base, handle, cube;
 
 	rose.CreateMesh("resources/models/rose12.obj", (Material*)b1, UBO_BP, UBO_BP_L);
 
@@ -644,7 +755,6 @@ GLFWwindow* setup(int major, int minor,
 
 	dome.CreateMesh("resources/models/dome_2.obj", (Material*)b5, UBO_BP, UBO_BP_L);
 
-	light.CreateMesh("resources/models/cube.obj", (Material*)b6, UBO_BP, UBO_BP_L);
 	cube.CreateMesh("resources/models/cube.obj", (Material*)b7, UBO_BP, UBO_BP_L);
 
 	meshes[0] = rose;
@@ -652,8 +762,7 @@ GLFWwindow* setup(int major, int minor,
 	meshes[2] = dome;
 	meshes[3] = base;
 	meshes[4] = handle;
-	meshes[5] = light;
-	//meshes[6] = cube;
+	meshes[5] = cube;
 
 	setupBufferObjects();
 	setupShaderProgram();

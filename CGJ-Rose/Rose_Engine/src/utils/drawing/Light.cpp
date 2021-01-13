@@ -2,6 +2,8 @@
 #include <glm\fwd.hpp>
 #include <glm\ext\matrix_clip_space.hpp>
 #include <glm\ext\matrix_transform.hpp>
+#include "../../../headers/drawing/Shader.h"
+#include "../../../headers/materials/Basic_Material.h"
 
 Light::~Light()
 {
@@ -57,7 +59,7 @@ Vector4 Light::getColour()
 	return colour;
 }
 
-void Light::SetupLight(GLuint UBO_BP_)
+void Light::SetupLight(GLuint UBO_BP_Cam, GLuint UBO_BP_)
 {
 	{
 		UBO_BP = UBO_BP_;
@@ -71,6 +73,19 @@ void Light::SetupLight(GLuint UBO_BP_)
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
+
+	Shader basic("resources/shaders/lightSource.shader"); // Light Source
+	Basic_Material* b = new Basic_Material(basic);
+	lightMesh.CreateMesh("resources/models/cube.obj", (Material*)b, UBO_BP_Cam, UBO_BP_);
+	lightMesh.setupBufferObjects();
+	lightMesh.setupShader(UBO_BP_Cam, UBO_BP_);
+}
+
+void Light::DrawLight() {
+	Matrix4 transform = Matrix4::translation(position) * Matrix4::scaling(0.1f, 0.1f, 0.1f);
+	lightMesh.setWorldTransform(transform);
+
+	lightMesh.Draw();
 }
 
 void Light::RenderLight() {

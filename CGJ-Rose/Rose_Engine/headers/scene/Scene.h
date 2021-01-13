@@ -22,6 +22,6 @@ public:
 	void SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[]);
 
 	void ClearScene();
-	void DrawSceneGraphs(bool ortho);
+	void DrawSceneGraphs(bool ortho, bool drawLight = false);
 	void DrawSceneGraphsDepth(Shader* depthShader);
 };

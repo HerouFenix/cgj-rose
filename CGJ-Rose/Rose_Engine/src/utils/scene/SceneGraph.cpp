@@ -50,12 +50,14 @@ SceneNode* SceneGraph::AddNode(Mesh* m, SceneNode* parent)
 	return newNode;
 }
 
-void SceneGraph::DrawSceneGraph(bool ortho)
+void SceneGraph::DrawSceneGraph(bool ortho, bool drawLight)
 {
 	camera.RenderCamera(ortho);
 	light.RenderLight();
 
-	//Matrix4 lightSpace = light.getViewMatrix() * light.getOrthProj();
+	if (drawLight)
+		light.DrawLight();
+
 
 	if (root != NULL) {
 		root->Draw();

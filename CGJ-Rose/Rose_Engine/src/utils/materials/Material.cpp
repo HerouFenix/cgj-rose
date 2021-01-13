@@ -13,21 +13,10 @@ Material::Material(Shader sh)
 
 void Material::setUniforms(Matrix4 model)
 {
-
-	//LIGHT////////////////////
-	//shader.SetUniform3fvec("Ambient", new float[] {ambient.getX(), ambient.getY(), ambient.getZ()});
-	//shader.SetUniform3fvec("Diffuse", new float[] {diffuse.getX(), diffuse.getY(), diffuse.getZ()});
-	//shader.SetUniform3fvec("Specular", new float[] {specular.getX(), specular.getY(), specular.getZ()});
-	//shader.SetUniform1f("Shininess", shininess);
-
 	//MODEL////////////////////
 	float model_arr[16];
 	model.getRowMajor(model_arr);
 	shader.SetUniform4fv("ModelMatrix", model_arr);
-
-	GLCall(glActiveTexture(GL_TEXTURE0 + depthMap));
-	GLCall(glBindTexture(GL_TEXTURE_2D, depthMap));
-	shader.SetUniform1i("shadowMap", depthMap);
 }
 
 
