@@ -83,7 +83,7 @@ in vec3 exNormal;
 in vec3 exFragPos;
 in vec3 exCameraPos;
 
-float ShadowCalculation(vec4 fragPosLightSpace)
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 exNormal, vec3 exLightPos)
 {
 	// perform perspective divide
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -93,8 +93,10 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 	float closestDepth = texture(shadowMap, projCoords.xy).r;
 	// get depth of current fragment from light's perspective
 	float currentDepth = projCoords.z;
+	//Bias variable to fix shadow acne
+	float bias = max(0.05 * (1.0 - dot(exNormal, exLightPos)), 0.005);
 	// check whether current frag pos is in shadow
-	float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 
 	return shadow;
 }
@@ -128,7 +130,7 @@ void main(void)
 
 
 	// calculate shadow
-	float shadow = ShadowCalculation(exFragPosLightSpace);
+	float shadow = ShadowCalculation(exFragPosLightSpace, exNormal, exLightPos);
 	vec4 color = (ambient + (1.0 - shadow) * (diffuse + specular)) * uniformColour;
 
 	out_Color = texture(u_Texture, exTexcoord) * color;

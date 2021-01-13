@@ -34,8 +34,8 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 
 	// Rose
 	SceneNode* rose_flower = sceneGraph->AddNode(&meshes[0], rose_base);
-	rose_flower->SetFrontCull(false);
-	rose_flower->SetBackCull(false);
+	//rose_flower->SetFrontCull(true);
+	//rose_flower->SetBackCull(true);
 
 	// Stem
 	SceneNode* rose_stem = sceneGraph->AddNode(&meshes[1], rose_base);
@@ -49,8 +49,8 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	// HANDLE ////////////////////////////////////////////////////
 	SceneNode* handle = sceneGraph->AddNode(&meshes[4], root);
 	handle->SetPosition(Vector3(0.0f, 6.0f, 0.0f));
-	handle->SetFrontCull(false);
-	handle->SetBackCull(false);
+	//handle->SetFrontCull(true);
+	//handle->SetBackCull(true);
 	//////////////////////////////////////////////////////////////
 	
 	// DOME //////////////////////////////////////////////////////
