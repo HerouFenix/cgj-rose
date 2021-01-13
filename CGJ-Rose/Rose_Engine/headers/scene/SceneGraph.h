@@ -22,6 +22,6 @@ public:
 	SceneNode* AddNode();
 	SceneNode* AddNode(Mesh* m, SceneNode* parent);
 
-	void DrawSceneGraph(bool ortho = false);
+	void DrawSceneGraph(bool ortho = false, bool drawLight = false);
 	void DrawSceneGraphDepth(Shader* depthShader);
 };

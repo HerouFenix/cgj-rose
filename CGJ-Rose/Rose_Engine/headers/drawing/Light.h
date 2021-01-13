@@ -3,6 +3,7 @@
 #include "../vectors/Vector3.h"
 #include "../../../CGJ-Engine/dependencies/glew/include/GL/glew.h"
 #include "../quaternions/Quaternion.h"
+#include "Mesh.h"
 
 // ARC BALL CAMERA CLASS HEADER
 
@@ -16,6 +17,7 @@ private:
 	GLuint vbo_id;
 	Matrix4 projMatrix;
 	Matrix4 viewMatrix;
+	Mesh lightMesh;
 
 public:
 	GLuint UBO_BP;
@@ -39,7 +41,9 @@ public:
 
 	void RenderLight();
 
-	void SetupLight(GLuint UBO_BP_);
+	void DrawLight();
+
+	void SetupLight(GLuint UBO_BP_cam, GLuint UBO_BP_);
 private:
 	void setViewMatrix();
 };
