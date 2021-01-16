@@ -619,6 +619,7 @@ void setupBufferObjects() {
 void setupSkybox() {
 	std::string faces[6] = { "resources/images/right.jpg","resources/images/left.jpg" ,"resources/images/top.jpg" ,"resources/images/bottom.jpg" ,"resources/images/front.jpg" ,"resources/images/back.jpg" };
 	//std::string faces[6] = { "resources/images/back.png","resources/images/bottom.png" ,"resources/images/front.png" ,"resources/images/left.png" ,"resources/images/right.png" ,"resources/images/top.png" };
+	std::string faces[6] = { "resources/images/skybox_final/Left.jpg","resources/images/skybox_final/Right.jpg" ,"resources/images/skybox_final/Up.jpg" ,"resources/images/skybox_final/Down.jpg" ,"resources/images/skybox_final/Back.jpg" ,"resources/images/skybox_final/Front.jpg" };
 
 	skybox.SetTextures(faces);
 	skybox.SetShader(Shader("resources/shaders/Skybox.shader"));
