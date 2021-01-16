@@ -1,7 +1,7 @@
 #pragma once
 #include "../matrices/Matrix4.h"
 #include "../vectors/Vector3.h"
-#include "../../../CGJ-Engine/dependencies/glew/include/GL/glew.h"
+#include "../../Dependencies/glew/include/GL/glew.h"
 #include "../quaternions/Quaternion.h"
 #include "Mesh.h"
 

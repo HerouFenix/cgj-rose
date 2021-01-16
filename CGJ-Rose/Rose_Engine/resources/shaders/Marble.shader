@@ -146,7 +146,7 @@ void main(void) {
 	color -= smoothstep(.05, .4, noise(st * 10.1)); // Holes on splatter
 
 	// Ambient
-	float ambientStrength = 0.4;
+	float ambientStrength = 0.2;
 	vec4 ambient = exLightColour;
 	ambient.x = ambient.x * 0.1;
 	ambient.y = ambient.y * 0.1;

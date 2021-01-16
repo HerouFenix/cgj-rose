@@ -617,7 +617,7 @@ void setupBufferObjects() {
 }
 
 void setupSkybox() {
-	std::string faces[6] = { "resources/images/right.jpg","resources/images/left.jpg" ,"resources/images/top.jpg" ,"resources/images/bottom.jpg" ,"resources/images/front.jpg" ,"resources/images/back.jpg" };
+	//std::string faces[6] = { "resources/images/right.jpg","resources/images/left.jpg" ,"resources/images/top.jpg" ,"resources/images/bottom.jpg" ,"resources/images/front.jpg" ,"resources/images/back.jpg" };
 	//std::string faces[6] = { "resources/images/back.png","resources/images/bottom.png" ,"resources/images/front.png" ,"resources/images/left.png" ,"resources/images/right.png" ,"resources/images/top.png" };
 	std::string faces[6] = { "resources/images/skybox_final/Left.jpg","resources/images/skybox_final/Right.jpg" ,"resources/images/skybox_final/Up.jpg" ,"resources/images/skybox_final/Down.jpg" ,"resources/images/skybox_final/Back.jpg" ,"resources/images/skybox_final/Front.jpg" };
 
@@ -659,7 +659,7 @@ void setupCamera() {
 
 void setupLight() {
 	//Light l(Vector3(-4.0f, 13.0f, 3.5f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-	Light l(Vector3(-2.0f, 3.0f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	Light l(Vector3(-2.0f, 3.0f, 1.0f), Vector4(188.0f/255.0f, 210.0f/255.0f, 232.0f/255.0f, 1.0f));
 	l.setProjectionMatrix(scene.GetSceneGraphs()[0]->camera.getPerspProj());
 
 	scene.GetSceneGraphs()[0]->SetLight(l);
@@ -731,8 +731,8 @@ GLFWwindow* setup(int major, int minor,
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b3->setDepthMap(depthMap);
 
-	Shader basic4("resources/shaders/Wood_Shader.shader");
-	Wood_Material* b4 = new Wood_Material(basic4);
+	Shader basic4("resources/shaders/Marble.shader");
+	Marble_Material* b4 = new Marble_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b4->setDepthMap(depthMap);
 

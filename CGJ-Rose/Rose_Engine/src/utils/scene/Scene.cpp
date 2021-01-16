@@ -24,8 +24,8 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	SceneNode* root = sceneGraph->AddNode();
 
 	root->SetScale(Vector3(0.3, 0.3, 0.3));
-	//root->SetPosition(Vector3(0.0f, -0.25f, 0.0f));
-	//root->SetRotation(Quaternion(45, Vector4(0, 1, 0, 1)));
+	root->SetPosition(Vector3(0.0f, -0.25f, 0.0f));
+	root->SetRotation(Quaternion(45, Vector4(0, 1, 0, 1)));
 
 	
 	// FLOWER ////////////////////////////////////////////////////
@@ -34,6 +34,7 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 
 	// Rose
 	SceneNode* rose_flower = sceneGraph->AddNode(&meshes[0], rose_base);
+	rose_flower->SetPosition(Vector3(-0.25f, 0.0f, 0.0f));
 	//rose_flower->SetFrontCull(true);
 	//rose_flower->SetBackCull(true);
 

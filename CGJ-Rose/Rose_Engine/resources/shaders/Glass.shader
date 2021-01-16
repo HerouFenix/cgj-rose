@@ -139,7 +139,7 @@ void main(void)
 
 
 	// Ambient
-	float ambientStrength = 0.4;
+	float ambientStrength = 0.2;
 	vec4 ambient = exLightColour;
 	ambient.x = ambient.x * ambientStrength;
 	ambient.y = ambient.y * ambientStrength;
