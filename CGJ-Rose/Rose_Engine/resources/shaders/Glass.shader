@@ -165,9 +165,8 @@ void main(void)
 
 
 	// calculate shadow
-	float shadow = ShadowCalculation(exFragPosLightSpace, exNormal, exLightPos);
-	shadow = 0;
-	vec4 color = (ambient + (1.0 - shadow) * (diffuse + specular)) * uniformColour;
+	//float shadow = ShadowCalculation(exFragPosLightSpace, exNormal, exLightPos);
+	vec4 color = (ambient + diffuse + specular) * uniformColour;
 
 
 	float antiRefractionValue = 0.6;

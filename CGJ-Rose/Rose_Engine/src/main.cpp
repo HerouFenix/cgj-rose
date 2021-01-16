@@ -302,11 +302,11 @@ void drawScene()
 		particleSystem.OnUpdate(0.005f);
 		particleSystem.OnRender();
 
+		// Draw skybox
+		skybox.Draw();
 
 		scene.DrawSceneGraphs(ortho, drawLight);
 
-		// Draw skybox
-		skybox.Draw();
 	}
 }
 
