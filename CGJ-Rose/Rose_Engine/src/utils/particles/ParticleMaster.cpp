@@ -2,12 +2,26 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/compatibility.hpp>
 
+class Particle;
+
 ParticleMaster::ParticleMaster()
 {
 	
 }
 
-void ParticleMaster::Init(GLuint UBO_BP, Vector4 color) {
+void ParticleMaster::Init(
+	GLuint UBO_BP, 
+	float gravity, float life_length, float speed,
+	Vector3 position, float diameter, Vector4 color, int max_particles, int particles_per_second) {
+
+	this->PARTICLE_GRAVITY = gravity;
+	this->PARTICLE_LIFE_LENGTH = life_length;
+	this->PARTICLE_SPEED = speed;
+	this->MASTER_POSITION = position;
+	this->MASTER_DIAMETER = diameter;
+	this->MASTER_COLOR = color;
+	this->MASTER_MAX_PARTICLES = max_particles;
+	this->MASTER_PPS = particles_per_second;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -21,8 +35,6 @@ void ParticleMaster::Init(GLuint UBO_BP, Vector4 color) {
 	shader_program.Bind();
 	shader_program.SetUniformBlock("SharedMatrices", UBO_BP);
 
-	this->color = color;
-
 	GLCall(glGenVertexArrays(1, &vaoID));
 	GLCall(glBindVertexArray(vaoID));
 	GLCall(glGenBuffers(1, &vboID));
@@ -35,13 +47,11 @@ void ParticleMaster::Init(GLuint UBO_BP, Vector4 color) {
 void ParticleMaster::UpdateAndDraw(float sof)
 {
 
-	int particlesToCreate = PPS * sof;
+	int particlesToCreate = MASTER_PPS * sof;
 	int count = (int)floor(particlesToCreate);
 
 	for (int i = 0; i < count; i++) {
-		//Particle part = (generateRandomUnitVectorWithinCone(Vector3(0, 1, 0), 30));
-		Particle part = (generateRandomUnitVectorWithinSphere());
-		part.position += Vector3(0.0f, 0.2f, 0.0f);
+		Particle part = Particle(generateRandomUnitVectorWithinSphere(), this);
 		particles.push_back(part);
 	}
 
@@ -58,8 +68,6 @@ void ParticleMaster::UpdateAndDraw(float sof)
 		particles_vertices.push_back(p.position.getZ());
 	}
 
-		//std::cout << "Id: " << i << " ; Pos: " << pos << std::endl;
-
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
 	glBufferData(GL_ARRAY_BUFFER, particles_vertices.size() * sizeof(float), 0, GL_DYNAMIC_DRAW);
 	if(particles_vertices.size() > 0)
@@ -67,7 +75,7 @@ void ParticleMaster::UpdateAndDraw(float sof)
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
 	shader_program.Bind();
-	shader_program.SetUniform4fvec("u_Color", new float[] {color.getX(), color.getY(), color.getZ(), color.getW()});
+	shader_program.SetUniform4fvec("u_Color", new float[] {MASTER_COLOR.getX(), MASTER_COLOR.getY(), MASTER_COLOR.getZ(), MASTER_COLOR.getW()});
 	GLCall(glBindVertexArray(vaoID));
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glDrawArrays(GL_POINTS, 0, particles.size()));
@@ -76,31 +84,9 @@ void ParticleMaster::UpdateAndDraw(float sof)
 	shader_program.UnBind();
 }
 
-Vector3 ParticleMaster::generateRandomUnitVectorWithinCone(Vector3 coneDirection, float angle) {
-	float cosAngle = (float)cos(angle);
-	float theta = (float)(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 2.0f * M_PI);
-	float z = cosAngle + (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * (1 - cosAngle));
-	float rootOneMinusZSquared = (float)sqrt(1 - z * z);
-	float x = (float)(rootOneMinusZSquared * cos(theta));
-	float y = (float)(rootOneMinusZSquared * sin(theta));
-
-	Vector4 direction (x, y, z, 1);
-	if (coneDirection.getX() != 0 || coneDirection.getY() != 0 || (coneDirection.getZ() != 1 && coneDirection.getZ() != -1)) {
-		Vector3 rotateAxis = coneDirection.crossProd(Vector3(0, 0, 1));
-		rotateAxis.normalize();
-		float rotateAngle = (float)acos(coneDirection.dotProd(Vector3(0, 0, 1)));
-		Matrix4 rotationMatrix = Matrix4::rotation(rotateAxis, -rotateAngle);
-		direction = rotationMatrix * direction;
-	}
-	else if (coneDirection.getZ() == -1) {
-		direction.setZ(direction.getZ() * -1);
-	}
-	return direction;
-}
-
 Vector3 ParticleMaster::generateRandomUnitVectorWithinSphere() {
-	float low = -(diameter / 2);
-	float high = diameter / 2;
+	float low = -(MASTER_DIAMETER / 2);
+	float high = MASTER_DIAMETER / 2;
 	float theta = RandomFloat(0, 2 * M_PI);
 	float z = low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
 	return Vector3(sqrt(1.0f - (z * z)) * cos(theta), sqrt(1.0f - (z * z)) * sin(theta), z);
@@ -113,19 +99,22 @@ float ParticleMaster::RandomFloat(float a, float b) {
 	return a + r;
 }
 
-
-Particle::Particle(Vector3 velocity) {
-	this->velocity = velocity;
+Particle::Particle(Vector3 direction, ParticleMaster* particle_master)
+{
+	this->direction = direction;
+	this->position = particle_master->MASTER_POSITION;
+	this->particle_master = particle_master;
+	this->life_left = particle_master->PARTICLE_LIFE_LENGTH;
 }
+
 
 bool Particle::update(float sof, Shader* shader) {
 
-	velocity.setY(velocity.getY() - (PARTICLE_GRAVITY * sof));
-	Vector3 change(velocity);
-	change *= (sof * PARTICLE_SPEED);
+	direction.setY(direction.getY() - (particle_master->PARTICLE_GRAVITY * sof));
+	Vector3 change(direction);
+	change *= (sof * particle_master->PARTICLE_SPEED);
 	position += change;
-	float perc = lifeLeft / PARTICLE_LIFE_LENGTH;
-	lifeLeft -= sof;
-	return lifeLeft > 0;
+	life_left -= sof;
+	return life_left > 0;
 
 }

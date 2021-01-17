@@ -19,10 +19,13 @@ ParticleSystem::ParticleSystem(int _numberOfParticles)
 
 void ParticleSystem::OnUpdate(float time_per_frame)
 {
-	for (auto& particle : m_ParticlePool)
+	for (Particle& particle : m_ParticlePool)
 	{
-		if (!particle.Active)
+		
+		if (!particle.Active) {
 			continue;
+		}
+			
 
 		if (particle.LifeRemaining <= 0.0f)
 		{

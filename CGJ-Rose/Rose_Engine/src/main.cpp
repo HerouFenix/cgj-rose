@@ -162,24 +162,35 @@ void moveCamera() {
 void moveFloor() {
 	if (moveForward) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0, 0, -0.05);
+		pm.MASTER_POSITION += Vector3(0.0f, 0.0f, -0.05);
+		particle.Position += Vector3(0.0f, 0.0f, -0.05);
 	}
 	if (moveBackward) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0, 0, 0.05);
+		pm.MASTER_POSITION += Vector3(0.0f, 0.0f, 0.05f);
+		particle.Position += Vector3(0.0f, 0.0f, 0.05f);
 	}
 	if (moveLeft) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(-0.05, 0, 0);
+		pm.MASTER_POSITION += Vector3(-0.05f, 0.0f, 0.0f);
+		particle.Position += Vector3(-0.05f, 0.0f, 0.0f);
 	}
 	if (moveRight) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.05, 0, 0);
+		pm.MASTER_POSITION += Vector3(0.05f, 0.0f, 0.0f);
+		particle.Position += Vector3(0.05f, 0.0f, 0.0f);
 	}
 	if (moveUp) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, 0.05, 0);
+		pm.MASTER_POSITION += Vector3(0.05f, 0.05f, 0.0f);
+		particle.Position += Vector3(0.05f, 0.05f, 0.0f);
 	}
 	if (moveDown) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, -0.05, 0);
+		pm.MASTER_POSITION += Vector3(0.00f, -0.05f, 0.0f);
+		particle.Position += Vector3(0.00f, -0.05f, 0.0f);
 	}
-
-
+	
 	shouldRenderShadowMap = true;
 }
 
@@ -643,7 +654,8 @@ void setupSkybox() {
 }
 
 void setupParticleSystem() {
-	// Init here
+
+	// Instantiation based
 	particle.ColorBegin = { 202.0f / 255.0f, 44.0f / 255.0f, 146.0f / 255.0f, 1.0f };
 	particle.ColorEnd = { 242.0f / 255.0f, 198.0f / 255.0f, 226.0f / 255.0f, 1.0f };
 	particle.SizeBegin = 0.5f, particle.SizeVariation = 0.3f, particle.SizeEnd = 0.0f;
@@ -653,6 +665,10 @@ void setupParticleSystem() {
 	particle.Position = Vector3(0.05f, 0.6f, 0.0f);
 
 	particleSystem.SetupParticleMesh("resources/models/rose12.obj", 0.1f, scene.GetSceneGraphs()[0]->camera);
+
+	//Geometry Shader based
+	pm.Init(UBO_BP, 0.0f, 4.0f, 0.2f, Vector3(0.0f, 0.5f, 0.0f), 3.0f, Vector4(1.0f, 1.0f, 1.0f, 1.0f), 1000, 50);
+
 }
 
 void setupCamera() {
@@ -730,7 +746,6 @@ GLFWwindow* setup(int major, int minor,
 	setupCamera();
 	setupLight();
 	setupParticleSystem();
-	pm.Init(UBO_BP, Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 	setupDepthMap();
 
 	// SET MATERIALS ////////////////////////////////////////////
