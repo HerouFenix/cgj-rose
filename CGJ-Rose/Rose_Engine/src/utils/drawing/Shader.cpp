@@ -17,13 +17,24 @@ Shader::Shader(const std::string& path)
 
 Shader::~Shader()
 {
-	//GLCall(glDeleteProgram(m_RendererID));
+	GLCall(glDeleteProgram(m_RendererID));
 }
 
-void Shader::SetupShader(bool TexcoordsLoaded, bool NormalsLoaded)
+void Shader::SetupShader(bool TexcoordsLoaded, bool NormalsLoaded, bool geometry)
 {
 	ShaderProgramSource source = ParseShader(m_path);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource, TexcoordsLoaded, NormalsLoaded);
+	if (geometry) {
+		m_RendererID = CreateShader(source.VertexSource, source.GeometrySource, TexcoordsLoaded, NormalsLoaded, geometry);
+	}
+	else {
+		m_RendererID = CreateShader(source.VertexSource, source.FragmentSource, TexcoordsLoaded, NormalsLoaded, geometry);
+	}
+}
+
+void Shader::SetupShader_VsFsGs(bool TexcoordsLoaded, bool NormalsLoaded)
+{
+	ShaderProgramSource source = ParseShader(m_path);
+	m_RendererID = CreateShader_VsFsGs(source.VertexSource, source.FragmentSource, source.GeometrySource, TexcoordsLoaded, NormalsLoaded);
 }
 
 void Shader::SetupShader(const std::string& path, bool TexcoordsLoaded, bool NormalsLoaded)
@@ -40,11 +51,11 @@ ShaderProgramSource Shader::ParseShader(const std::string& path)
 
 	enum class ShaderType
 	{
-		NONE = -1, VERTEX = 0, FRAGMENT = 1
+		NONE = -1, VERTEX = 0, FRAGMENT = 1, GEOMETRY = 2
 	};
 
 	std::string line;
-	std::stringstream ss[2];
+	std::stringstream ss[3];
 	ShaderType type = ShaderType::NONE;
 
 	while (getline(stream, line))
@@ -59,6 +70,10 @@ ShaderProgramSource Shader::ParseShader(const std::string& path)
 			{
 				type = ShaderType::FRAGMENT;
 			}
+			else if (line.find("geometry") != std::string::npos)
+			{
+				type = ShaderType::GEOMETRY;
+			}
 		}
 		else
 		{
@@ -66,7 +81,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& path)
 		}
 	}
 
-	return { ss[0].str(), ss[1].str() };
+	return { ss[0].str(), ss[1].str(), ss[2].str() };
 }
 
 GLuint Shader::CompileShader(GLuint type, const std::string& source)
@@ -92,28 +107,81 @@ GLuint Shader::CompileShader(GLuint type, const std::string& source)
 	return id;
 }
 
-GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, bool TexcoordsLoaded, bool NormalsLoaded)
+GLuint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, bool TexcoordsLoaded, bool NormalsLoaded, bool geometry)
 {
 	GLuint program = glCreateProgram();
 	GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+	GLuint gs;
+	GLuint fs;
+	glAttachShader(program, vs);
+	if (geometry) {
+		gs = CompileShader(GL_GEOMETRY_SHADER, fragmentShader);
+		glAttachShader(program, gs);
+	}
+	else {
+		fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+		glAttachShader(program, fs);
+	}
+	glBindAttribLocation(program, VERTICES, "inPosition");
+	if (TexcoordsLoaded)
+		glBindAttribLocation(program, TEXCOORDS, "inTexcoord");
+	if (NormalsLoaded)
+		glBindAttribLocation(program, NORMALS, "inNormal");
+	if (geometry) {
+		glBindAttribLocation(program, 1, "vVelocity");
+		glBindAttribLocation(program, 2, "vColor");
+		glBindAttribLocation(program, 3, "fLifeTime");
+		glBindAttribLocation(program, 4, "fSize");
+		glBindAttribLocation(program, 5, "iType");
+	}
+
+
+	glLinkProgram(program);
+	glValidateProgram(program);
+
+	glDeleteShader(vs);
+	if (geometry) {
+		glDeleteShader(gs);
+	}
+	else {
+		glDeleteShader(fs);
+	}
+	
+	return program;
+}
+
+GLuint Shader::CreateShader_VsFsGs(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader, bool TexcoordsLoaded, bool NormalsLoaded)
+{
+	GLuint program = glCreateProgram();
+	GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+	GLuint gs = CompileShader(GL_GEOMETRY_SHADER, geometryShader);;
 	GLuint fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 	glAttachShader(program, vs);
+	glAttachShader(program, gs);
 	glAttachShader(program, fs);
-
+	
 	glBindAttribLocation(program, VERTICES, "inPosition");
 	if (TexcoordsLoaded)
 		glBindAttribLocation(program, TEXCOORDS, "inTexcoord");
 	if (NormalsLoaded)
 		glBindAttribLocation(program, NORMALS, "inNormal");
 
+	glBindAttribLocation(program, 2, "vColor");
+	glBindAttribLocation(program, 3, "fLifeTime");
+	glBindAttribLocation(program, 4, "fSize");
+	glBindAttribLocation(program, 5, "iType");
+
+
 	glLinkProgram(program);
 	glValidateProgram(program);
 
 	glDeleteShader(vs);
+	glDeleteShader(gs);
 	glDeleteShader(fs);
 
 	return program;
 }
+
 
 void Shader::Bind() const
 {
@@ -123,6 +191,27 @@ void Shader::Bind() const
 void Shader::UnBind() const
 {
 	GLCall(glUseProgram(0));
+}
+
+
+void Shader::SetUniform3fv_glm(const std::string& name, const glm::vec3 vVector)
+{
+	GLCall(glUniform3fv(GetUniformLocation(name), 1, (GLfloat*)&vVector));
+}
+
+void Shader::SetUniform3fv_glm(const std::string& name, glm::vec3* vVector)
+{
+	GLCall(glUniform3fv(GetUniformLocation(name), 1, (GLfloat*)vVector));
+}
+
+void Shader::SetUniformMatrix4fv_glm(const std::string& name, const glm::mat4 mMatrix)
+{
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, (GLfloat*)&mMatrix));
+}
+
+void Shader::SetUniformMatrix4fv_glm(const std::string& name, glm::mat4* mMatrix)
+{
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, (GLfloat*)mMatrix));
 }
 
 void Shader::SetUniform4fv(const std::string& name, float matrix[])

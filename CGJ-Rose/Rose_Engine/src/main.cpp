@@ -430,6 +430,9 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 				firstMouse = true;
 			}
 			break;
+		case GLFW_KEY_V:
+			cool_particles = !cool_particles;
+			break;
 		}
 	}
 	else if (action == GLFW_RELEASE) {
