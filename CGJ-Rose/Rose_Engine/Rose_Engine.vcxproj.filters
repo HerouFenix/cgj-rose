@@ -79,6 +79,7 @@
     <ClCompile Include="src\utils\particles\Random.cpp" />
     <ClCompile Include="src\utils\drawing\Skybox.cpp" />
     <ClCompile Include="src\utils\drawing\Light.cpp" />
+    <ClCompile Include="src\utils\particles\ParticleMaster.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera\Camera.h">
@@ -163,6 +164,7 @@
     <ClInclude Include="headers\particles\Random.h" />
     <ClInclude Include="headers\drawing\Skybox.h" />
     <ClInclude Include="headers\drawing\Light.h" />
+    <ClInclude Include="headers\particles\ParticleMaster.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic3D.shader">

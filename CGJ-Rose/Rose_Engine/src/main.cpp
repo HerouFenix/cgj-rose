@@ -32,6 +32,7 @@
 #include "../headers/materials/Rose_Material.h"
 #include "../headers/materials/Marble_Material.h"
 #include "../headers/materials/Glass_Material.h"
+#include "../headers/particles/ParticleMaster.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -119,6 +120,13 @@ Shader lightDepthShader;
 Shader lightDepthDebugShader;
 
 unsigned int shadowMapVAO = 0;
+
+ParticleMaster pm;
+bool first = true;
+
+bool cool_particles = true;
+double elapsed_time = 0.0;
+
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
@@ -286,21 +294,26 @@ void drawScene()
 		glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Emit Particles
+		if (cool_particles) {
+			// Emit Particles
+			if (spawnCounter < 25) {
 
-		if (spawnCounter < 25) {
-			particleSystem.Emit(particle);
-		}
+				particleSystem.Emit(particle);
+			}
 
-		if (spawnCounter <= 0) {
-			spawnCounter = 100;
+			if (spawnCounter <= 0) {
+				spawnCounter = 100;
+			}
+			else {
+				spawnCounter--;
+			}
+			particleSystem.OnUpdate(0.005f);
+			particleSystem.OnRender();
 		}
 		else {
-			spawnCounter--;
+			float two_decimal = (float)((int)(elapsed_time * 100 + .5)) / 100;
+			pm.UpdateAndDraw(two_decimal);
 		}
-
-		particleSystem.OnUpdate(0.005f);
-		particleSystem.OnRender();
 
 		// Draw skybox
 		skybox.Draw();
@@ -714,6 +727,7 @@ GLFWwindow* setup(int major, int minor,
 	setupCamera();
 	setupLight();
 	setupParticleSystem();
+	pm.Init(UBO_BP, Vector4(0.8f, 0.0f, 0.0f, 1.0f));
 	setupDepthMap();
 
 	// SET MATERIALS ////////////////////////////////////////////
