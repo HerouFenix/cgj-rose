@@ -222,6 +222,7 @@
   <ItemGroup>
     <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\Marble.shader" />
+    <None Include="resources\shaders\ParticleMaster.shader" />
     <None Include="resources\shaders\Rose.shader" />
     <None Include="resources\shaders\Skybox.shader" />
     <None Include="resources\shaders\Glass.shader" />

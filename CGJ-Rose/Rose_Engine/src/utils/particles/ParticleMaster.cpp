@@ -17,7 +17,7 @@ void ParticleMaster::Init(GLuint UBO_BP, Vector4 color) {
 	glPointSize(2);
 
 	shader_program = Shader("resources/shaders/ParticleMaster.shader");
-	//shader_program.SetupShader_VsFsGs(false, false);
+	shader_program.SetupShader_VsFsGs(false, false);
 	shader_program.Bind();
 	shader_program.SetUniformBlock("SharedMatrices", UBO_BP);
 
@@ -39,7 +39,8 @@ void ParticleMaster::UpdateAndDraw(float sof)
 	int count = (int)floor(particlesToCreate);
 
 	for (int i = 0; i < count; i++) {
-		Particle part = (generateRandomUnitVectorWithinCone(Vector3(0, 1, 0), 30));
+		//Particle part = (generateRandomUnitVectorWithinCone(Vector3(0, 1, 0), 30));
+		Particle part = (generateRandomUnitVectorWithinSphere());
 		part.position += Vector3(0.0f, 0.2f, 0.0f);
 		particles.push_back(part);
 	}
@@ -96,6 +97,22 @@ Vector3 ParticleMaster::generateRandomUnitVectorWithinCone(Vector3 coneDirection
 	}
 	return direction;
 }
+
+Vector3 ParticleMaster::generateRandomUnitVectorWithinSphere() {
+	float low = -(diameter / 2);
+	float high = diameter / 2;
+	float theta = RandomFloat(0, 2 * M_PI);
+	float z = low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
+	return Vector3(sqrt(1.0f - (z * z)) * cos(theta), sqrt(1.0f - (z * z)) * sin(theta), z);
+}
+
+float ParticleMaster::RandomFloat(float a, float b) {
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = b - a;
+	float r = random * diff;
+	return a + r;
+}
+
 
 Particle::Particle(Vector3 velocity) {
 	this->velocity = velocity;

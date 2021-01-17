@@ -730,7 +730,7 @@ GLFWwindow* setup(int major, int minor,
 	setupCamera();
 	setupLight();
 	setupParticleSystem();
-	pm.Init(UBO_BP, Vector4(0.8f, 0.0f, 0.0f, 1.0f));
+	pm.Init(UBO_BP, Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 	setupDepthMap();
 
 	// SET MATERIALS ////////////////////////////////////////////
@@ -800,7 +800,7 @@ void run(GLFWwindow* win)
 	while (!glfwWindowShouldClose(win))
 	{
 		double time = glfwGetTime();
-		double elapsed_time = time - last_time;
+		elapsed_time = time - last_time;
 		last_time = time;
 
 		// Double Buffers

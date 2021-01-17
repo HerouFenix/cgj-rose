@@ -20,10 +20,9 @@ public:
 	bool update(float sof, Shader* shader);
 
 private:
-	float PARTICLE_GRAVITY = 1.0f;
-	float PARTICLE_LIFE_LENGTH = 7.0f;
-	float PARTICLE_SPEED = 0.01f;
-
+	float PARTICLE_GRAVITY = 0.0f;
+	float PARTICLE_LIFE_LENGTH = 5.0f;
+	float PARTICLE_SPEED = 0.2f;
 	float lifeLeft = PARTICLE_LIFE_LENGTH;
 
 };
@@ -37,6 +36,7 @@ public:
 	std::vector<float> particles_vertices;
 	std::vector<Particle> particles;
 	Vector4 color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	float diameter = 3.0f;
 	Shader shader_program;
 
 	ParticleMaster();
@@ -44,6 +44,10 @@ public:
 	void UpdateAndDraw(float sof);
 
 	Vector3 generateRandomUnitVectorWithinCone(Vector3 coneDirection, float angle);
+
+	Vector3 generateRandomUnitVectorWithinSphere();
+
+	float RandomFloat(float a, float b);
 
 private:
 	int MAX_PARTICLES  = 1000;

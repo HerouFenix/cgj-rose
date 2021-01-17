@@ -180,6 +180,7 @@
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
     <None Include="resources\shaders\DepthDebug.shader" />
+    <None Include="resources\shaders\ParticleMaster.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
