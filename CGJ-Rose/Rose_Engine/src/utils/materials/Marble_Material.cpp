@@ -10,8 +10,6 @@ Marble_Material::Marble_Material(Shader sh)
 }
 
 void Marble_Material::setUniforms(Matrix4 model) {
-	//COLOUR///////////////////
-	shader.SetUniform4fvec("uniformColour", new float[] {colour.getX(), colour.getY(), colour.getZ(), colour.getW()});
 
 	//MODEL////////////////////
 	float model_arr[16];
