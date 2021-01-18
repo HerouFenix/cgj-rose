@@ -70,7 +70,6 @@
     <ClCompile Include="src\utils\materials\Material.cpp" />
     <ClCompile Include="src\utils\materials\Rose_Material.cpp" />
     <ClCompile Include="src\utils\materials\Basic_Material.cpp" />
-    <ClCompile Include="src\utils\materials\Wood_Material.cpp" />
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
     <ClCompile Include="src\utils\materials\Marble_Material.cpp" />
     <ClCompile Include="src\utils\materials\Glass_Material.cpp" />
@@ -155,7 +154,6 @@
     <ClInclude Include="headers\materials\Rose_Material.h" />
     <ClInclude Include="headers\materials\Basic_Material.h" />
     <ClInclude Include="headers\materials\stb_image.h" />
-    <ClInclude Include="headers\materials\Wood_Material.h" />
     <ClInclude Include="headers\materials\Stem_Material.h" />
     <ClInclude Include="headers\materials\Marble_Material.h" />
     <ClInclude Include="headers\materials\Glass_Material.h" />
@@ -167,21 +165,17 @@
     <ClInclude Include="headers\particles\ParticleMaster.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\Basic3D.shader">
-      <Filter>Resources\Shaders</Filter>
-    </None>
     <None Include="resources\shaders\Skybox.shader" />
     <None Include="resources\shaders\Marble.shader" />
     <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
-    <None Include="resources\shaders\DepthDebug.shader" />
     <None Include="resources\shaders\ParticleMaster.shader" />
     <None Include="resources\shaders\Glass.shader" />
     <None Include="resources\shaders\Rose.shader" />
     <None Include="resources\shaders\Stem_Shader.shader" />
-    <None Include="resources\shaders\Wood_Shader.shader" />
     <None Include="resources\shaders\Marble_handle.shader" />
+    <None Include="resources\shaders\Basic3D.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

@@ -4,6 +4,10 @@
 
 ArcBallCamera::ArcBallCamera()
 {
+	initialRadius = 0.0f;
+	radius = 0.0f;
+	UBO_BP = 0;
+	vbo_id = 0;
 }
 
 ArcBallCamera::ArcBallCamera(float sRadius)
@@ -50,7 +54,6 @@ void ArcBallCamera::RenderCamera(bool ortho)
 	projM.getColMajor(proj);
 
 	Matrix4 viewM = getViewMatrix();
-	//viewM = getDebugViewMat();
 	viewM.getColMajor(view);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, vbo_id);

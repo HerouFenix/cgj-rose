@@ -23,9 +23,9 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	
 	SceneNode* root = sceneGraph->AddNode();
 
-	root->SetScale(Vector3(0.3, 0.3, 0.3));
+	root->SetScale(Vector3(0.3f, 0.3f, 0.3f));
 	root->SetPosition(Vector3(0.0f, -0.25f, 0.0f));
-	root->SetRotation(Quaternion(45, Vector4(0, 1, 0, 1)));
+	root->SetRotation(Quaternion(45, Vector4(0.0f, 1.0f, 0.0f, 1.0f)));
 
 	
 	// FLOWER ////////////////////////////////////////////////////
@@ -61,12 +61,12 @@ void Scene::SetupSceneGraph(SceneGraph* sceneGraph, Mesh meshes[])
 	dome_root->SetPosition(Vector3(0.0f, 3.0f, 0.0f));
 	
 	SceneNode* dome_back = sceneGraph->AddNode(&meshes[2], dome_root);
-	dome_back->SetScale(Vector3(0.95,0.95,1.01));
+	dome_back->SetScale(Vector3(0.95f,0.95f,1.01f));
 	dome_back->SetBackCull(false);
 	dome_back->SetFrontCull(true);
 	
 	SceneNode* dome_front = sceneGraph->AddNode(&meshes[2], dome_root);
-	dome_front->SetScale(Vector3(1.01, 1.01, 1.01));
+	dome_front->SetScale(Vector3(1.01f, 1.01f, 1.01f));
 	dome_front->SetPosition(Vector3(0.0f, 0.0f, -0.2f));
 	
 	//////////////////////////////////////////////////////////////\

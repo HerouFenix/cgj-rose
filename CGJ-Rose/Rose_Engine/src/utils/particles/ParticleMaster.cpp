@@ -6,7 +6,8 @@ class Particle;
 
 ParticleMaster::ParticleMaster()
 {
-	
+	vaoID = -1;
+	vboID = -1;
 }
 
 void ParticleMaster::Init(
@@ -47,7 +48,7 @@ void ParticleMaster::Init(
 void ParticleMaster::UpdateAndDraw(float sof)
 {
 
-	int particlesToCreate = MASTER_PPS * sof;
+	int particlesToCreate = (int)(MASTER_PPS * sof);
 	int count = (int)floor(particlesToCreate);
 
 	for (int i = 0; i < count; i++) {
@@ -78,7 +79,7 @@ void ParticleMaster::UpdateAndDraw(float sof)
 	shader_program.SetUniform4fvec("u_Color", new float[] {MASTER_COLOR.getX(), MASTER_COLOR.getY(), MASTER_COLOR.getZ(), MASTER_COLOR.getW()});
 	GLCall(glBindVertexArray(vaoID));
 	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glDrawArrays(GL_POINTS, 0, particles.size()));
+	GLCall(glDrawArrays(GL_POINTS, 0, (GLsizei)particles.size()));
 	GLCall(glDisableVertexAttribArray(0));
 	GLCall(glBindVertexArray(0));
 	shader_program.UnBind();
@@ -87,7 +88,7 @@ void ParticleMaster::UpdateAndDraw(float sof)
 Vector3 ParticleMaster::generateRandomUnitVectorWithinSphere() {
 	float low = -(MASTER_DIAMETER / 2);
 	float high = MASTER_DIAMETER / 2;
-	float theta = RandomFloat(0, 2 * M_PI);
+	float theta = RandomFloat(0, 2 * (float)M_PI);
 	float z = low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
 	return Vector3(sqrt(1.0f - (z * z)) * cos(theta), sqrt(1.0f - (z * z)) * sin(theta), z);
 }

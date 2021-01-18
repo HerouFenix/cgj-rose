@@ -58,7 +58,7 @@ private:
 	Shader shader;
 	Particle_Material* particleMaterial;
 
-	float size;
-	int numberOfParticles;
-	float meshScale;
+	float size = 0.0f;
+	int numberOfParticles = 0;
+	float meshScale = 0.0F;
 };

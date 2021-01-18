@@ -15,11 +15,6 @@ Glass_Material::Glass_Material(bool justBlending)
 void Glass_Material::setUniforms(Matrix4 model)
 {
 
-	//LIGHT////////////////////
-	//shader.SetUniform3fvec("Ambient", new float[] {ambient.getX(), ambient.getY(), ambient.getZ()});
-	//shader.SetUniform3fvec("Diffuse", new float[] {diffuse.getX(), diffuse.getY(), diffuse.getZ()});
-	//shader.SetUniform3fvec("Specular", new float[] {specular.getX(), specular.getY(), specular.getZ()});
-	//shader.SetUniform1f("Shininess", shininess);
 
 	//COLOUR///////////////////
 	shader.SetUniform4fvec("uniformColour", new float[] {colour.getX(), colour.getY(), colour.getZ(), colour.getW()});
@@ -37,7 +32,6 @@ void Glass_Material::setUniforms(Matrix4 model)
 	GLCall(glBindTexture(GL_TEXTURE_2D, depthMap));
 	shader.SetUniform1i("shadowMap", depthMap);
 }
-
 
 
 void Glass_Material::setColour(Vector4 colour_input)

@@ -153,7 +153,6 @@
     <ClCompile Include="src\utils\materials\Particle_Material.cpp" />
     <ClCompile Include="src\utils\materials\Rose_Material.cpp" />
     <ClCompile Include="src\utils\materials\Stem_Material.cpp" />
-    <ClCompile Include="src\utils\materials\Wood_Material.cpp" />
     <ClCompile Include="src\utils\particles\ParticleMaster.cpp" />
     <ClCompile Include="src\utils\particles\ParticleSystem.cpp" />
     <ClCompile Include="src\utils\particles\Random.cpp" />
@@ -200,7 +199,6 @@
     <ClInclude Include="headers\drawing\VertexBuffer.h" />
     <ClInclude Include="headers\drawing\VertexBufferLayout.h" />
     <ClInclude Include="headers\materials\Stem_Material.h" />
-    <ClInclude Include="headers\materials\Wood_Material.h" />
     <ClInclude Include="headers\matrices\Matrix2.h" />
     <ClInclude Include="headers\matrices\Matrix3.h" />
     <ClInclude Include="headers\matrices\Matrix4.h" />
@@ -220,6 +218,7 @@
     <ClInclude Include="headers\materials\Marble_Material.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\Basic3D.shader" />
     <None Include="resources\shaders\Glass.shader" />
     <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\Marble.shader" />
@@ -227,12 +226,9 @@
     <None Include="resources\shaders\ParticleMaster.shader" />
     <None Include="resources\shaders\Rose.shader" />
     <None Include="resources\shaders\Skybox.shader" />
-    <None Include="resources\shaders\Basic3D.shader" />
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
-    <None Include="resources\shaders\DepthDebug.shader" />
     <None Include="resources\shaders\Stem_Shader.shader" />
-    <None Include="resources\shaders\Wood_Shader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

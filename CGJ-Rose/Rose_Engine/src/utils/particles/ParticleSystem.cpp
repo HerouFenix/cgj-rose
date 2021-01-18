@@ -65,12 +65,12 @@ void ParticleSystem::OnRender()
 		// Resize particles so they get smaller overtime
 		size = glm::lerp(particle.SizeEnd, particle.SizeBegin, life);
 
+		
 		// New particle position
 		Matrix4 transform = Matrix4::translation(particle.Position) * Matrix4::rotationZ(particle.Rotation) *
 			Matrix4::scaling(size, size, size) * Matrix4::scaling(meshScale, meshScale, meshScale);
 
 		particleMesh.setWorldTransform(transform);
-
 		particleMesh.Draw();
 	}
 }

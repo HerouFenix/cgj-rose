@@ -37,12 +37,10 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../headers/materials/stb_image.h"
-#include "../headers/materials/Wood_Material.h"
 #include "../headers/materials/Stem_Material.h"
 #include <glm\ext\matrix_clip_space.hpp>
 #include <glm\ext\matrix_transform.hpp>
 
-// TODO - Shadows ; Better Marble ; Make light correspond to actual position and equal to all materials instead of hardcoded...
 
 #define VERTICES 0
 #define TEXCOORDS 1
@@ -106,11 +104,6 @@ bool cameraReset = false;
 bool mouseHeld = false;
 bool automaticRotating = false;
 
-ParticleProps particle;
-ParticleSystem particleSystem(1000);
-int spawnCounter = 25;
-
-
 unsigned int depthMapFBO;
 unsigned int depthMap;
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
@@ -121,15 +114,20 @@ Shader lightDepthDebugShader;
 
 unsigned int shadowMapVAO = 0;
 
+ParticleProps particle;
+ParticleSystem particleSystem(1000);
+int spawnCounter = 25;
+
 ParticleMaster pm;
 bool first = true;
 
-bool cool_particles = true;
-double elapsed_time = 0.0;
+bool cool_particles = false;
 
+double elapsed_time = 0.0;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 void moveCamera() {
+
 	// ARCBALL CAMERA //
 
 	if (forwardKeyPressed) {
@@ -156,37 +154,37 @@ void moveCamera() {
 
 	cameraReset = false;
 	if (projChanged)
-		!projChanged;
+		projChanged = !projChanged;
 }
 
 void moveFloor() {
 	if (moveForward) {
-		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0, 0, -0.05);
-		pm.MASTER_POSITION += Vector3(0.0f, 0.0f, -0.05);
-		particle.Position += Vector3(0.0f, 0.0f, -0.05);
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0f, 0.0f, -0.05f);
+		pm.MASTER_POSITION += Vector3(0.0f, 0.0f, -0.05f);
+		particle.Position += Vector3(0.0f, 0.0f, -0.05f);
 	}
 	if (moveBackward) {
-		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0, 0, 0.05);
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0f, 0.0f, 0.05f);
 		pm.MASTER_POSITION += Vector3(0.0f, 0.0f, 0.05f);
 		particle.Position += Vector3(0.0f, 0.0f, 0.05f);
 	}
 	if (moveLeft) {
-		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(-0.05, 0, 0);
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(-0.05f, 0.0f, 0.0f);
 		pm.MASTER_POSITION += Vector3(-0.05f, 0.0f, 0.0f);
 		particle.Position += Vector3(-0.05f, 0.0f, 0.0f);
 	}
 	if (moveRight) {
-		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.05, 0, 0);
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.05f, 0.0f, 0.0f);
 		pm.MASTER_POSITION += Vector3(0.05f, 0.0f, 0.0f);
 		particle.Position += Vector3(0.05f, 0.0f, 0.0f);
 	}
 	if (moveUp) {
-		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, 0.05, 0);
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0f, 0.05f, 0.0f);
 		pm.MASTER_POSITION += Vector3(0.0f, 0.05f, 0.0f);
 		particle.Position += Vector3(0.0f, 0.05f, 0.0f);
 	}
 	if (moveDown) {
-		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, -0.05, 0);
+		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0f, -0.05f, 0.0f);
 		pm.MASTER_POSITION += Vector3(0.00f, -0.05f, 0.0f);
 		particle.Position += Vector3(0.00f, -0.05f, 0.0f);
 	}
@@ -196,22 +194,22 @@ void moveFloor() {
 
 void moveLight() {
 	if (moveForwardLight) {
-		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0, 0, -0.05));
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0f, 0.0f, -0.05f));
 	}
 	if (moveBackwardLight) {
-		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0, 0, 0.05));
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0f, 0.0f, 0.05f));
 	}
 	if (moveLeftLight) {
-		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(-0.05, 0, 0));
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(-0.05f, 0.0f, 0.0f));
 	}
 	if (moveRightLight) {
-		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.05, 0, 0));
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.05f, 0.0f, 0.0f));
 	}
 	if (moveUpLight) {
-		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0, 0.05, 0));
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0f, 0.05f, 0.0f));
 	}
 	if (moveDownLight) {
-		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0, -0.05, 0));
+		scene.GetSceneGraphs()[0]->light.setPosition(scene.GetSceneGraphs()[0]->light.getPosition() + Vector3(0.0f, -0.05f, 0.0f));
 	}
 
 	shouldRenderShadowMap = true;
@@ -432,7 +430,6 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 			break;
 		case GLFW_KEY_R:
 			scene.GetSceneGraphs()[0]->camera.resetCamera(); // Reset camera
-			//scene.GetSceneGraphs()[0]->GetRoot()->ResetToDefaultPosition(); // Reset objects
 			cameraReset = true;
 			break;
 		case GLFW_KEY_F:
@@ -494,7 +491,6 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods)
 	}
 
 }
-
 
 void mouse_callback(GLFWwindow* win, double xPos, double yPos) {
 	if (firstMouse) // initially set to true
@@ -644,8 +640,6 @@ void setupBufferObjects() {
 }
 
 void setupSkybox() {
-	//std::string faces[6] = { "resources/images/right.jpg","resources/images/left.jpg" ,"resources/images/top.jpg" ,"resources/images/bottom.jpg" ,"resources/images/front.jpg" ,"resources/images/back.jpg" };
-	//std::string faces[6] = { "resources/images/back.png","resources/images/bottom.png" ,"resources/images/front.png" ,"resources/images/left.png" ,"resources/images/right.png" ,"resources/images/top.png" };
 	std::string faces[6] = { "resources/images/skybox_final/Left.jpg","resources/images/skybox_final/Right.jpg" ,"resources/images/skybox_final/Up.jpg" ,"resources/images/skybox_final/Down.jpg" ,"resources/images/skybox_final/Back.jpg" ,"resources/images/skybox_final/Front.jpg" };
 
 	skybox.SetTextures(faces);
@@ -690,7 +684,6 @@ void setupCamera() {
 }
 
 void setupLight() {
-	//Light l(Vector3(-4.0f, 13.0f, 3.5f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 	Light l(Vector3(-2.0f, 3.0f, 1.0f), Vector4(188.0f/255.0f, 210.0f/255.0f, 232.0f/255.0f, 1.0f));
 	l.setProjectionMatrix(scene.GetSceneGraphs()[0]->camera.getPerspProj());
 

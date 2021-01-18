@@ -1,6 +1,8 @@
 #include "../../headers/materials/Material.h"
 
 Material::Material() {
+	depthMap = -1;
+	UBO_ID = -1;
 
 }
 

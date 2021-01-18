@@ -192,8 +192,8 @@ void Camera::rotateCamera(float xOffset, float yOffset, float sensitivity)
 
 void Camera::rotateCameraAround(Vector3 point)
 {
-	float camX = sin(glfwGetTime()) * 5 + point.getX();
-	float camZ = cos(glfwGetTime()) * 5 + point.getZ();
+	float camX = (float)sin(glfwGetTime()) * 5 + point.getX();
+	float camZ = (float)cos(glfwGetTime()) * 5 + point.getZ();
 
 	cameraEye.setX(camX);
 	cameraEye.setZ(camZ);
