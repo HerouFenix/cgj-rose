@@ -699,7 +699,7 @@ void setupScene() {
 
 void setupDepthMap() {
 	lightDepthShader = Shader("resources/shaders/LightDepth.shader");
-	lightDepthDebugShader = Shader("resources/shaders/DepthDebug.shader");
+	lightDepthDebugShader = Shader("resources/shaders/DepthMapShowcase.shader");
 
 	glGenFramebuffers(1, &depthMapFBO);
 

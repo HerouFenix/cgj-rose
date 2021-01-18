@@ -176,6 +176,7 @@
     <None Include="resources\shaders\Stem_Shader.shader" />
     <None Include="resources\shaders\Marble_handle.shader" />
     <None Include="resources\shaders\Basic3D.shader" />
+    <None Include="resources\shaders\DepthMapShowcase.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

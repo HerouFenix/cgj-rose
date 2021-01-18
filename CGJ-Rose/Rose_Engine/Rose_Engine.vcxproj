@@ -229,6 +229,7 @@
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
     <None Include="resources\shaders\Stem_Shader.shader" />
+    <None Include="resources\shaders\DepthMapShowcase.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
