@@ -182,8 +182,8 @@ void moveFloor() {
 	}
 	if (moveUp) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, 0.05, 0);
-		pm.MASTER_POSITION += Vector3(0.05f, 0.05f, 0.0f);
-		particle.Position += Vector3(0.05f, 0.05f, 0.0f);
+		pm.MASTER_POSITION += Vector3(0.0f, 0.05f, 0.0f);
+		particle.Position += Vector3(0.0f, 0.05f, 0.0f);
 	}
 	if (moveDown) {
 		scene.GetSceneGraphs()[0]->GetRoot()->position += Vector3(0.0, -0.05, 0);
@@ -667,7 +667,7 @@ void setupParticleSystem() {
 	particleSystem.SetupParticleMesh("resources/models/rose12.obj", 0.1f, scene.GetSceneGraphs()[0]->camera);
 
 	//Geometry Shader based
-	pm.Init(UBO_BP, 0.0f, 4.0f, 0.2f, Vector3(0.0f, 0.5f, 0.0f), 3.0f, Vector4(1.0f, 1.0f, 1.0f, 1.0f), 1000, 50);
+	pm.Init(UBO_BP, 0.0f, 4.0f, 0.2f, Vector3(0.0f, 0.5f, 0.0f), 3.0f, Vector4(1.0f, 0.0f, 1.0f, 0.8f), 1000, 50);
 
 }
 
@@ -763,7 +763,7 @@ GLFWwindow* setup(int major, int minor,
 	b3->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b3->setDepthMap(depthMap);
 
-	Shader basic4("resources/shaders/Marble.shader");
+	Shader basic4("resources/shaders/Marble_handle.shader");
 	Marble_Material* b4 = new Marble_Material(basic4);
 	b4->setColour(Vector4(0.4f, 0.2f, 0.1f, 1.0f));
 	b4->setDepthMap(depthMap);

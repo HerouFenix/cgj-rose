@@ -170,17 +170,18 @@
     <None Include="resources\shaders\Basic3D.shader">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="resources\shaders\Glass.shader" />
     <None Include="resources\shaders\Skybox.shader" />
-    <None Include="resources\shaders\Rose.shader" />
-    <None Include="resources\shaders\Wood_Shader.shader" />
-    <None Include="resources\shaders\Stem_Shader.shader" />
     <None Include="resources\shaders\Marble.shader" />
     <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
     <None Include="resources\shaders\DepthDebug.shader" />
     <None Include="resources\shaders\ParticleMaster.shader" />
+    <None Include="resources\shaders\Glass.shader" />
+    <None Include="resources\shaders\Rose.shader" />
+    <None Include="resources\shaders\Stem_Shader.shader" />
+    <None Include="resources\shaders\Wood_Shader.shader" />
+    <None Include="resources\shaders\Marble_handle.shader" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

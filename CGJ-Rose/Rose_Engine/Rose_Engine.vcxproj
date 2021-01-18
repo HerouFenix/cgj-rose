@@ -220,18 +220,19 @@
     <ClInclude Include="headers\materials\Marble_Material.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\Glass.shader" />
     <None Include="resources\shaders\lightSource.shader" />
     <None Include="resources\shaders\Marble.shader" />
+    <None Include="resources\shaders\Marble_handle.shader" />
     <None Include="resources\shaders\ParticleMaster.shader" />
     <None Include="resources\shaders\Rose.shader" />
     <None Include="resources\shaders\Skybox.shader" />
-    <None Include="resources\shaders\Glass.shader" />
     <None Include="resources\shaders\Basic3D.shader" />
-    <None Include="resources\shaders\Stem_Shader.shader" />
-    <None Include="resources\shaders\Wood_Shader.shader" />
     <None Include="resources\shaders\particle.shader" />
     <None Include="resources\shaders\LightDepth.shader" />
     <None Include="resources\shaders\DepthDebug.shader" />
+    <None Include="resources\shaders\Stem_Shader.shader" />
+    <None Include="resources\shaders\Wood_Shader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
