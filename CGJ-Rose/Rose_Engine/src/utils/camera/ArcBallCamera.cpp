@@ -66,27 +66,26 @@ void ArcBallCamera::RenderCamera(bool ortho)
 
 void ArcBallCamera::setOrthoProjectionMatrix(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far)
 {
-	orthoProj = Matrix4(new float[4][4]{
+	float values[4][4] = {
 		{2 / (right - left), 0                 , 0               , (left + right) / (left - right)},
 		{0                 , 2 / (top - bottom), 0               , (bottom + top) / (bottom - top)},
 		{0                 , 0                 , 2 / (near - far), (near + far) / (near - far)},
 		{0                 , 0                 , 0               , 1},
-		}
-	);
+	};
+	orthoProj = Matrix4(values);
 }
 
 void ArcBallCamera::setPrespProjectionMatrix(GLfloat fovy, GLfloat aspect, GLfloat nearZ, GLfloat farZ)
 {
 	GLfloat ang_rad = (fovy / 2.0f) * PI / 180.0f;
 	GLfloat d = 1 / tan(ang_rad);
-
-	perspProj = Matrix4(new float[4][4]{
+	float values[4][4] = {
 			{(d / aspect), 0,  0                                , 0                                  },
 			{0           , d,  0                                , 0                                  },
 			{0           , 0,  ((nearZ + farZ) / (nearZ - farZ)), 2 * (nearZ * farZ) / (nearZ - farZ)},
 			{0           , 0, -1                                , 0                                  }
-		}
-	);
+	};
+	perspProj = Matrix4(values);
 }
 
 const Matrix4 ArcBallCamera::getViewMatrix() {

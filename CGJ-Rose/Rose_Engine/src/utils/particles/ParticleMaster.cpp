@@ -76,7 +76,8 @@ void ParticleMaster::UpdateAndDraw(float sof)
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
 	shader_program.Bind();
-	shader_program.SetUniform4fvec("u_Color", new float[] {MASTER_COLOR.getX(), MASTER_COLOR.getY(), MASTER_COLOR.getZ(), MASTER_COLOR.getW()});
+	float values[4] = { MASTER_COLOR.getX(), MASTER_COLOR.getY(), MASTER_COLOR.getZ(), MASTER_COLOR.getW() };
+	shader_program.SetUniform4fvec("u_Color", values);
 	GLCall(glBindVertexArray(vaoID));
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glDrawArrays(GL_POINTS, 0, (GLsizei)particles.size()));

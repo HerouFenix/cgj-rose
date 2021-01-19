@@ -29,6 +29,9 @@ struct ParticleProps
 class ParticleSystem
 {
 public:
+	
+	int numberOfParticles = 0;
+	
 	ParticleSystem(int _numberOfParticles);
 
 	void OnUpdate(float time_per_frame);
@@ -59,6 +62,6 @@ private:
 	Particle_Material* particleMaterial;
 
 	float size = 0.0f;
-	int numberOfParticles = 0;
+	
 	float meshScale = 0.0F;
 };

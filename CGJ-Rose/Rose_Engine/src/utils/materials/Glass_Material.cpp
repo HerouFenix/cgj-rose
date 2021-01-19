@@ -17,7 +17,8 @@ void Glass_Material::setUniforms(Matrix4 model)
 
 
 	//COLOUR///////////////////
-	shader.SetUniform4fvec("uniformColour", new float[] {colour.getX(), colour.getY(), colour.getZ(), colour.getW()});
+	float values[4] = { colour.getX(), colour.getY(), colour.getZ(), colour.getW() };
+	shader.SetUniform4fvec("uniformColour", values);
 
 
 	GLCall(glActiveTexture(GL_TEXTURE0 + texture.ID));

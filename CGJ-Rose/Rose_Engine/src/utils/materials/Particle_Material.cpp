@@ -12,7 +12,8 @@ Particle_Material::Particle_Material(Shader sh)
 void Particle_Material::setUniforms(Matrix4 model)
 {
 	//COLOUR///////////////////
-	shader.SetUniform4fvec("u_Color", new float[] {colour.getX(), colour.getY(), colour.getZ(), colour.getW()});
+	float values[4] = { colour.getX(), colour.getY(), colour.getZ(), colour.getW() };
+	shader.SetUniform4fvec("u_Color", values);
 
 	//MODEL////////////////////
 	float model_arr[16];

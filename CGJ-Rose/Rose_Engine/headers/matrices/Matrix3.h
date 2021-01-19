@@ -17,7 +17,8 @@ class Matrix3 {
 	public:
 		// FUNCTION DECLARATIONS
 		/********************************************/ /**
-		 * Creates a new Matrix3 object with all cells set to 0
+		 * Creates a 
+		 Matrix3 object with all cells set to 0
 		 ***********************************************/
 		Matrix3();
 

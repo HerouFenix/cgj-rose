@@ -19,7 +19,8 @@ private:
 public:
 	// FUNCTION DECLARATIONS
 	/********************************************/ /**
-	 * Creates a new Matrix4 object with all cells set to 0
+	 * Creates a 
+	 Matrix4 object with all cells set to 0
 	 ***********************************************/
 	Matrix4();
 

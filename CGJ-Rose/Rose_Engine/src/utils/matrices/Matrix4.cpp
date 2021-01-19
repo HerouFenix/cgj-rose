@@ -433,27 +433,33 @@ Matrix4& Matrix4::transpose() {
 }
 
 Matrix4 Matrix4::identity() {
-	return Matrix4(new float[4][4]{ {1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1} });
+	float values[4][4] = { {1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1} };
+	return Matrix4(values);
 }
 
 Matrix4 Matrix4::scaling(float sx, float sy, float sz, float sw) {
-	return Matrix4(new float[4][4]{ {sx,0,0,0}, {0,sy,0,0}, {0,0,sz,0}, {0,0,0,sw} });
+	float values[4][4] = { {sx,0,0,0}, {0,sy,0,0}, {0,0,sz,0}, {0,0,0,sw} };
+	return Matrix4(values);
 }
 
 Matrix4 Matrix4::scaling(Vector3& vec) {
-	return Matrix4(new float[4][4]{ {vec.getX(),0,0,0}, {0,vec.getY(),0,0}, {0,0,vec.getZ(),0}, {0,0,0,1} });
+	float values[4][4] = { {vec.getX(),0,0,0}, {0,vec.getY(),0,0}, {0,0,vec.getZ(),0}, {0,0,0,1} };
+	return Matrix4(values);
 }
 
 Matrix4 Matrix4::scaling(Vector4& vec) {
-	return Matrix4(new float[4][4]{ {vec.getX(),0,0,0}, {0,vec.getY(),0,0}, {0,0,vec.getZ(),0}, {0,0,0,vec.getW()} });
+	float values[4][4] = { {vec.getX(),0,0,0}, {0,vec.getY(),0,0}, {0,0,vec.getZ(),0}, {0,0,0,vec.getW()} };
+	return Matrix4(values);
 }
 
 Matrix4 Matrix4::translation(float sx, float sy, float sz) {
-	return Matrix4(new float[4][4]{ {1,0,0,sx}, {0,1,0,sy}, {0,0,1,sz}, {0,0,0,1} });
+	float values[4][4] = { {1,0,0,sx}, {0,1,0,sy}, {0,0,1,sz}, {0,0,0,1} };
+	return Matrix4(values);
 }
 
 Matrix4 Matrix4::translation(Vector3& vec) {
-	return Matrix4(new float[4][4]{ {1,0,0,vec.getX()}, {0,1,0,vec.getY()}, {0,0,1,vec.getZ()}, {0,0,0,1} });
+	float values[4][4] = { {1,0,0,vec.getX()}, {0,1,0,vec.getY()}, {0,0,1,vec.getZ()}, {0,0,0,1} };
+	return Matrix4(values);
 }
 
 Matrix4 Matrix4::rotation(float sx, float sy, float sz, bool radians, bool round) {
@@ -560,15 +566,13 @@ Matrix4 Matrix4::rotationZ(float ang, bool radians, bool round) {
 		cosAng = roundf(cosAng * 10000000) / 10000000;
 		sinAng = roundf(sinAng * 10000000) / 10000000;
 	}
-
-	return Matrix4(
-		new float[4][4]{
+	float values[4][4] = {
 			{cosAng, -sinAng, 0, 0},
 			{sinAng, cosAng, 0, 0},
 			{0, 0, 1, 0},
 			{0,0,0,1}
-		}
-	);
+	};
+	return Matrix4(values);
 }
 
 void Matrix4::clean()

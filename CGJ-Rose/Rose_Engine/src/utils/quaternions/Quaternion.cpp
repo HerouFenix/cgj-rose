@@ -233,12 +233,13 @@ Matrix4 Quaternion::GLRotationMatrix()
 	float zz = qn.z * qn.z;
 	float zt = qn.z * qn.a;
 
-	return Matrix4(new float[4][4]{
+	float values[4][4] = {
 		{1.0f - 2.0f * (yy + zz),2.0f * (xy - zt), 2.0f * (xz + yt), 0.0f},
 		{2.0f * (xy + zt), 1.0f - 2.0f * (xx + zz), 2.0f * (yz - xt), 0.0f},
 		{2.0f * (xz - yt), 2.0f * (yz + xt), 1.0f - 2.0f * (xx + yy), 0.0f},
 		{0.0f, 0.0f, 0.0f, 1.0f}
-		});
+	};
+	return Matrix4(values);
 
 }
 
